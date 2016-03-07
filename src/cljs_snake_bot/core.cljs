@@ -7,7 +7,7 @@
             [cljs.core.async :as async :refer [<! timeout]]))
 
 (nodejs/enable-util-print!)
-  
+
 (def ws (nodejs/require "ws"))
 (def socket (ws (str "ws://" s/host-name ":" s/host-port "/" s/game-mode)))
 
@@ -17,10 +17,19 @@
 (defn json-parse [j]
   (js->clj (JSON/parse j) :keywordize-keys true))
 
+(defn clean-up[]
+  (.close socket))
+
+(defn print-game-ended-info []
+  (println "Game ended and here some stats should be presented"))
+
 (defn game-loop []
   (go-loop []
-    (async/<! (async/timeout 200))
-    (recur)))
+    (async/<! (async/timeout 10))
+    (if @s/game-running
+      (recur)
+      (do (print-game-ended-info)
+          (clean-up)))))
 
 (defn setup-listener []
     (.on socket "message"

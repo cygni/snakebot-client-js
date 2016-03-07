@@ -7,6 +7,6 @@
 
 (defn get-move-message [player-id tick direction]
   {:type c/register-move-message
-   :direction "DOWN" ;(if #(nil? direction) "DOWN" direction)
+   :direction (if #(nil? direction) "DOWN" direction)
    :gameTick tick
    :receivingPlayerId player-id})
