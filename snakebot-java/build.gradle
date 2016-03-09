@@ -1,0 +1,22 @@
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://mavenrepo.snake.cygni.se"
+    }
+}
+
+apply plugin: 'java'
+
+dependencies {
+    compile 'se.cygni.snakebot:snakebot-client:0.0.3-SNAPSHOT'
+}
+
+task run(type:JavaExec) {
+   main = 'se.cygni.snake.MySnakePlayer'
+   classpath = sourceSets.main.runtimeClasspath
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.11'
+}
