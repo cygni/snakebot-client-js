@@ -13,7 +13,7 @@ dependencies {
 }
 
 task run(type:JavaExec) {
-   main = 'se.cygni.snake.MySnakePlayer'
+   main = 'se.cygni.snake.ExampleSnakePlayer'
    classpath = sourceSets.main.runtimeClasspath
 }
 

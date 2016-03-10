@@ -13,7 +13,7 @@ var renderer        = null;
 var verboseLogging  = true;
 
 // Connect to the Snake servers training dojo, the client log is quiet.
-var client = Mamba('localhost', 8080, onEvent, false).connect("training");
+var client = Mamba('snake.cygni.se', 80, onEvent, false).connect("training");
 
 // The game info is available after server registration (@see registrationComplete()).
 var gameInfo = null;

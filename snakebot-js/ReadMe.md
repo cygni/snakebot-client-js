@@ -10,9 +10,9 @@ This a Snake Client written in javascript (ECMAScript 5).
 
 ## Installation
 
-A. Clone the repository: `git clone https://github.com/.../snakebot`.
+A. Clone the repository: `git clone https://github.com/cygni/snakebot-clients.git`.
 
-B. Open: `<repo>/src/main/javascript`
+B. Open: `<repo>/snakebot-js`
 
 C. Execute: `npm install`
 
@@ -28,7 +28,7 @@ C. Execute: `npm install`
 Open `snake-cli.js` in your favourite editor.
 
 Edit the server connection parameters.   
-See *var client = Mamba('localhost', 8080, onEvent, false).connect("training")*
+See *var client = Mamba('snake.cygni.se', 80, onEvent, false).connect("training")*
 
 Change your player name...  
 See *::prepareNewGame(){...}*
