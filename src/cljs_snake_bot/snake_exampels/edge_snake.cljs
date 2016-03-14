@@ -6,19 +6,21 @@
 ; It will pick the first usable direction according to that pattern and go with that
 
 (def dir-lookup
-  [{:x-d 0 :y-d 1 :dir "RIGHT"}
-   {:x-d 1 :y-d 0 :dir "UP"}
-   {:x-d 0 :y-d -1 :dir "LEFT"}
-   {:x-d -1 :y-d 0 :dir "DOWN"}])
+  [{:x-d 1 :y-d 0 :dir "RIGHT"}
+   {:x-d 0 :y-d -1 :dir "UP"}
+   {:x-d -1 :y-d 0 :dir "LEFT"}
+   {:x-d 0 :y-d 1 :dir "DOWN"}])
+
+(defn is-usable-tile [tile]
+  (or (= "empty" (:content tile))
+      (= "food" (:content tile))))
 
 (defn is-usable [head-x head-y dir-template tiles]
   (let [x (+ head-x (:x-d dir-template))
         y (+ head-y (:y-d dir-template))
-        target-tile (first (drop x (first (drop y tiles))))]
+        target-tile (get (get tiles x) y)]
         (println "x " x " y " y " tt " target-tile)
-    (if (and
-          (and (< 0 x) (< 0 y))
-          (= "empty" (:content target-tile)))
+    (if (is-usable-tile target-tile)
       (:dir dir-template)
       nil)))
 

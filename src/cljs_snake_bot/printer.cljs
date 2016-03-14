@@ -12,16 +12,9 @@
     "food" "F"))
 
 (defn print-pretty-map [map]
-  (let [tiles (:tiles map)]
+  (let [tiles (apply mapv list (:tiles map))]
    (println)
    (mapv #(println (mapv (fn [t] (format-tile t)) %)) tiles)))
-
-(defn print-win-message []
-  (println "---------------------------------")
-  (println "-                               -")
-  (println "-         YOU WON DUDE          -")
-  (println "-                               -")
-  (println "---------------------------------"))
 
 (defn print-registration-message [msg]
   (println "player registrated"))
@@ -62,7 +55,3 @@
 (defn print-map-updated-message [msg]
   (when (:pretty-print-map-updated s/printer-settings)
     (print-pretty-map (:map msg))))
-
-
-(defn print-stats []
-  ())

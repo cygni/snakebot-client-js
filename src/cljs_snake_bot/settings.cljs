@@ -11,8 +11,8 @@
 (def game-running (atom true))
 (def game-tick (atom 0))
 
-(def host-name "localhost")
-(def host-port "8080")
+(def host-name "snake.cygni.se")
+(def host-port "80")
 (def game-mode "training")
 
 (def printer-settings
