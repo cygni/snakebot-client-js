@@ -9,7 +9,7 @@
 2. with a command prompt/ terminal traverse to the root folder where the project.clj file is located
 3. lein deps
 4. lein cljsbuild once
-5. node ./server.ja
+5. node ./server.js
 
 # Structure
 
