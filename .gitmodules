@@ -1,3 +1,0 @@
-[submodule "snakebot-clojurescript"]
-	path = snakebot-clojurescript
-	url = https://github.com/Maddemacher/cygni-cljs-snake-bot-client.git
