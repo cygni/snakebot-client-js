@@ -2,6 +2,13 @@
 
 # Do you want to be one of the cool kids?
 
+You are now standing at a cross road in your life. You have been tasked with writing the best snake bot ever. There are a number of paths to walk down, a number of hats to pull your rabbit out of. But the important thing to know is that this is the only righteus one.
+
+I present to you a clojurescript template for your snake-bot. This template is the first step on your journey.
+
+LISP (Luxurious Immense Super Programming) will take you out of the tar pit and acend you into a higher being. A being that only speak in parentheses and data. This is the path towards the pearly gates and it will turn you into the Alpha and the Omega of programming. 
+
+When you have walked the path of the righteus you will earn a seat in the high heavens and you will gaze down from your mountain of awesomenes upon the lesser beings of the world.
 
 # Get it running
 
@@ -70,4 +77,5 @@ Here is where you will include your snake. Update the final line of "on-map-upda
 And now your snake should start moving upwards instead.
 
 Woho!
-  
+
+You have now the ability to be one of the cool kids. Yay you!
