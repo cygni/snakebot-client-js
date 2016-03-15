@@ -2,13 +2,13 @@
 
 ### Do you want to be one of the cool kids?
 
-You are now standing at a cross road in your life. You have been tasked with writing the best snake bot ever. There are a number of paths to walk down, a number of hats to pull your rabbit out of. But the important thing to know is that this is the only righteus one.
+You are now standing at a cross road in your life. You have been tasked with writing the best snake bot ever. There are a number of paths to walk down, a number of hats to pull your rabbit out of. But the important thing to know is that this is the only righteous one.
 
-I present to you a clojurescript template for your snake-bot. This template is the first step on your journey.
+I present to you a Clojurescript template for your snake-bot. This template is the first step on your journey.
 
-LISP (Luxurious Immense Super Programming) will take you out of the tar pit and acend you into a higher being. A being that only speak in parentheses and data. This is the path towards the pearly gates and it will turn you into the Alpha and the Omega of programming. 
+LISP (Luxurious Immense Super Programming) will take you out of the tar pit and ascend you into a higher being. A being that only speak in parentheses and data. This is the path towards the pearly gates and it will turn you into the Alpha and the Omega of programming.
 
-When you have walked the path of the righteus you will earn a seat in the high heavens and you will gaze down from your mountain of awesomenes upon the lesser beings of the world.
+When you have walked the path of the righteous you will earn a seat in the high heavens and you will gaze down from your mountain of awesomeness upon the lesser beings of the world.
 
 # Get it running
 
@@ -17,6 +17,10 @@ When you have walked the path of the righteus you will earn a seat in the high h
 3. lein deps
 4. lein cljsbuild once
 5. node ./server.js
+
+### Development tips
+
+instead of "lein cljsbuild once" do "lein cljsbuild auto" this will start a file watcher that will recompile the javascript upon file changes.
 
 # Structure
 
@@ -51,7 +55,7 @@ Here is where you will include your snake. Update the final line of "on-map-upda
 ```
 
   I would place my snake in its own namespace. Require that namespace into this file and call some get-move function that returns your next move. An example can be found below
-  
+
 - super-snake.cljs
 ```clojure
   (ns cljs-snake-bot.snake-examples.super-snake
@@ -59,7 +63,7 @@ Here is where you will include your snake. Update the final line of "on-map-upda
 
   (defn get-next-movement [msg] "UP")
 ```
-  
+
 - events.cljs
 ```clojure
   (ns cljs-snake-bot.events
@@ -68,7 +72,7 @@ Here is where you will include your snake. Update the final line of "on-map-upda
               [cljs-snake-bot.settings :as s]
               [cljs-snake-bot.printer :as p]
               [cljs-snake-bot.snake-examples.super-snake :as ss])
-              
+
     (defn on-map-updated [msg]
       (p/print-map-updated-message msg)
       (swap! s/game-tick inc)
