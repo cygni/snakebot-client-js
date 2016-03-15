@@ -7,7 +7,7 @@
 (defn format-tile [tile]
   (condp = (:content tile)
     "empty" " "
-    "snakehead" (if (= (:playerId tile) @s/player-id) "$" "@")
+    "snakehead" (if (= (:playerId tile) (:player-id @s/game-state)) "$" "@")
     "snakebody" "#"
     "food" "F"))
 
@@ -39,7 +39,7 @@
 
 (defn print-snake-died-message [msg]
   (when (:pretty-print-snake-died s/printer-settings)
-    (if (= @s/player-id (:playerId msg))
+    (if (= (s/state-get :player-id) (:playerId msg))
       (print-you-died-message msg)
       (print-enemy-died-message msg))))
 
