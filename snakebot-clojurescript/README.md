@@ -13,6 +13,7 @@ When you have walked the path of the righteous you will earn a seat in the high 
 # Get it running
 
 1. Install leiningen. Follow the instructions at http://leiningen.org/
+2. Install NodeJs. Follow the instructions at https://nodejs.org/en/download/
 2. with a command prompt/ terminal traverse to the root folder where the project.clj file is located
 3. lein deps
 4. lein cljsbuild once
