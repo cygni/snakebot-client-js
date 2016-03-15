@@ -12,7 +12,11 @@
   (s/state-set :player-id (:receivingPlayerId msg))
   (s/state-set :player-color (:color msg))
   (s/state-set :is-playing true)
-  (msgs/get-start-game-message (s/state-get :player-id)))
+  (if (s/state-get :is-game-host)
+    (msgs/get-start-game-message (s/state-get :player-id))
+    (do (println "Waiting on map updates")
+        nil)))
+
 
 (defn on-map-updated [msg]
   (p/print-map-updated-message msg)
