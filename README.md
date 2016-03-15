@@ -36,34 +36,37 @@ Update the settings of your client either if you want to change what the printer
 
 Here is where you will include your snake. Update the final line of "on-map-updated" and pass it any valid movement directional string and it will send that to the server. A snippet can be found below:
 
+```clojure
 (defn on-map-updated [msg]
   (p/print-map-updated-message msg)
   (swap! s/game-tick inc)
   (msgs/get-move-message @s/player-id @s/game-tick "DOWN")) // Change "DOWN" into something else
-  
+```
+
   I would place my snake in its own namespace. Require that namespace into this file and call some get-move function that returns your next move. An example can be found below
   
 - super-snake.cljs
-  
+```clojure
   (ns cljs-snake-bot.snake-examples.super-snake
     (:require [cljs.core :as core]))
 
   (defn get-next-movement [msg] "UP")
+```
   
 - events.cljs
-
-(ns cljs-snake-bot.events
-  (:require [cljs.nodejs :as nodejs]
-            [cljs-snake-bot.messages :as msgs]
-            [cljs-snake-bot.settings :as s]
-            [cljs-snake-bot.printer :as p]
-            [cljs-snake-bot.snake-examples.super-snake :as ss])
-            
-  (defn on-map-updated [msg]
-    (p/print-map-updated-message msg)
-    (swap! s/game-tick inc)
-    (msgs/get-move-message @s/player-id @s/game-tick (ss/get-next-movement msg))
-    
+```clojure
+  (ns cljs-snake-bot.events
+    (:require [cljs.nodejs :as nodejs]
+              [cljs-snake-bot.messages :as msgs]
+              [cljs-snake-bot.settings :as s]
+              [cljs-snake-bot.printer :as p]
+              [cljs-snake-bot.snake-examples.super-snake :as ss])
+              
+    (defn on-map-updated [msg]
+      (p/print-map-updated-message msg)
+      (swap! s/game-tick inc)
+      (msgs/get-move-message @s/player-id @s/game-tick (ss/get-next-movement msg))
+```
 And now your snake should start moving upwards instead.
 
 Woho!
