@@ -21,20 +21,9 @@
                   "target"]
 
   :cljsbuild {
-    :builds [{:id "dev"
-              :source-paths ["src"]
-              :figwheel true
+    :builds [{:source-paths ["src"]
               :compiler {
-                :main cljs-snake-bot.core
-                :output-to "target/server_dev/cljs_snake_bot.js"
-                :output-dir "target/server_dev"
-                :target :nodejs
-                :optimizations :none
-                :source-map true}}
-             {:id "prod"
-              :source-paths ["src"]
-              :compiler {
-                :output-to "server.js"
+                :output-to "snake-bot.js"
                 :output-dir "target/server_prod"
                 :target :nodejs
                 :optimizations :simple}}]})

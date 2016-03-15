@@ -2,7 +2,6 @@
     (:require [cljs.nodejs :as nodejs]
               [cljs-snake-bot.settings :as s]))
 
-(nodejs/enable-util-print!)
 (def colors (nodejs/require "colors"))
 
 (defn get-tile-color [tile]

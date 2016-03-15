@@ -3,8 +3,6 @@
             [cljs-snake-bot.constants :as c]
             [cljs-snake-bot.events :as e]))
 
-(nodejs/enable-util-print!)
-
 (defn get-response-message [message]
   (let [messageType (:type message)]
     (condp = messageType

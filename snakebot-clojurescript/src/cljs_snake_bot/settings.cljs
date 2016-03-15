@@ -8,7 +8,6 @@
                   :game-width 0
                   :number-of-players 0
                   :is-playing false
-                  :is-game-host true
                   :game-tick 0
                   :game-running true}))
 
@@ -23,6 +22,9 @@
   (if (fn? value)
    (swap! game-state update-in [key] value)
    (swap! game-state assoc key value)))
+
+(defn state-set-many [value-map]
+     (reset! game-state (merge @game-state value-map)))
 
 (def printer-settings
    {:pretty-print-map-updated true
