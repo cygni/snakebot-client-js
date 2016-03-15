@@ -1,4 +1,4 @@
-# cygni-cljs-snake-bot-client
+# Cygni Clojurescript Snake Bot Client
 
 # Do you want to be one of the cool kids?
 
