@@ -14,7 +14,8 @@
 
   :source-paths ["src"]
 
-  :npm {:dependencies  [ws "1.0.1"]}
+  :npm {:dependencies  [ws "1.0.1"
+                        colors "1.1.2"]}
 
   :clean-targets ["server.js"
                   "target"]

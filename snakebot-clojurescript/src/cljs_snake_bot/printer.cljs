@@ -3,6 +3,14 @@
               [cljs-snake-bot.settings :as s]))
 
 (nodejs/enable-util-print!)
+(def colors (nodejs/require "colors"))
+
+(defn get-tile-color [tile]
+  (condp = (:content tile)
+    "empty" colors.white
+    "snakehead" (if (= (:playerId tile) (:player-id @s/game-state)) colors.green colors.cyan)
+    "snakebody" (if (= (:playerId tile) (:player-id @s/game-state)) colors.green colors.cyan)
+    "food" colors.red))
 
 (defn format-tile [tile]
   (condp = (:content tile)
@@ -11,10 +19,13 @@
     "snakebody" "#"
     "food" "F"))
 
+(defn get-printable-tile [tile]
+  ((get-tile-color tile) (format-tile tile)))
+
 (defn print-pretty-map [map]
   (let [tiles (apply mapv list (:tiles map))]
    (println)
-   (mapv #(println (mapv (fn [t] (format-tile t)) %)) tiles)))
+   (mapv #(println (mapv (fn [t] (get-printable-tile t)) %)) tiles)))
 
 (defn print-registration-message [msg]
   (println "player registrated"))
