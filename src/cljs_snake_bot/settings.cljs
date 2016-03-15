@@ -15,6 +15,8 @@
 (def host-port "80")
 (def game-mode "training")
 
+(def is-game-host true)
+
 (def printer-settings
   {
     :pretty-print-map-updated true

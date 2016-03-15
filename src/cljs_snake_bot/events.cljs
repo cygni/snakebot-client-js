@@ -2,9 +2,7 @@
   (:require [cljs.nodejs :as nodejs]
             [cljs-snake-bot.messages :as msgs]
             [cljs-snake-bot.settings :as s]
-            [cljs-snake-bot.printer :as p]
-            [cljs-snake-bot.snake-examples.random-snake :as rs]
-            [cljs-snake-bot.snake-examples.edge-snake :as es]))
+            [cljs-snake-bot.printer :as p]))
 
 (nodejs/enable-util-print!)
 
@@ -20,7 +18,7 @@
 (defn on-map-updated [msg]
   (p/print-map-updated-message msg)
   (swap! s/game-tick inc)
-  (msgs/get-move-message @s/player-id @s/game-tick (es/get-next-movement msg)))
+  (msgs/get-move-message @s/player-id @s/game-tick "DOWN"))
 
 (defn on-game-ended [msg]
   (p/print-game-ended-message msg)
