@@ -26,7 +26,7 @@
 (defn game-loop []
   (go-loop []
     (async/<! (async/timeout 10))
-    (if @s/game-running
+    (if (s/state-get :game-running)
       (recur)
       (do (print-game-ended-info)
           (clean-up)))))

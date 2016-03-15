@@ -1,31 +1,36 @@
 (ns cljs-snake-bot.settings)
 
-(def player-name (atom (str)))
-(def player-color (atom (str)))
-(def player-id (atom (str)))
-(def game-id (atom (str)))
-(def game-height (atom 0))
-(def game-width (atom 0))
-(def number-of-players (atom 0))
-(def is-playing (atom true))
-(def game-running (atom true))
-(def game-tick (atom 0))
+(def game-state (atom
+                 {:player-name ""
+                  :player-color ""
+                  :player-id ""
+                  :game-height 0
+                  :game-width 0
+                  :number-of-players 0
+                  :is-playing false
+                  :is-game-host true
+                  :game-tick 0
+                  :game-running true}))
 
 (def host-name "snake.cygni.se")
 (def host-port "80")
 (def game-mode "training")
 
-(def is-game-host true)
+(defn state-get [key]
+  (key @game-state))
+
+(defn state-set [key value]
+  (if (fn? value)
+   (swap! game-state update-in [key] value)
+   (swap! game-state assoc key value)))
 
 (def printer-settings
-  {
-    :pretty-print-map-updated true
+   {:pretty-print-map-updated true
     :pretty-print-game-ended false
     :pretty-print-game-starting false
     :pretty-print-snake-died true
     :pretty-print-invalid-player-name false
-    :pretty-print-win-message false
-   })
+    :pretty-print-win-message false})
 
 (def default-map
   {:width 10

@@ -26,7 +26,7 @@
 
 (defn get-next-movement [msg]
  (let [snake-infos (:snakeInfos (:map msg))
-       me (first (filter #(= (:name %) @s/player-name) snake-infos))
+       me (first (filter #(= (:name %) (s/state-get :player-name)) snake-infos))
        tiles (:tiles (:map msg))
        new-dir (some #(is-usable (:x me) (:y me) % tiles) dir-lookup)]
        (println "me " me)
