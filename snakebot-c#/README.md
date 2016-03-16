@@ -4,7 +4,7 @@
 
 I would like to begin this section with some wise words from a great and wise man.
 
-> I didn’t want to be just a *snake* building champion; I wanted to be the best *snake* builder of all times. **Arnold Schwarzenegger**
+> I didn’t want to be just a *snake* building champion; I wanted to be the best *snake* builder of all times. <br /> **Arnold Schwarzenegger**
 
 Within this repository you can find the beginning of the same journey that Mr. Schwarzenegger walked so many years ago. 
 A journey that took him, an insignificant young boy from Steiermark in Austria, all the way to the podium at not one but **seven** Mr. Snake Olympia events.
