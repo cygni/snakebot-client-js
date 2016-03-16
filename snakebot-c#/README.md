@@ -9,11 +9,11 @@ I would like to begin this section with some wise words from a great and wise ma
 Within this repository you can find the beginning of the same journey that Mr. Schwarzenegger walked so many years ago. 
 A journey that took him, an insignificant young boy from Steiermark in Austria, all the way to the podium at not one but **seven** Mr. Snake Olympia events.
 
-Here you can find a Snake Client written in the C# language for the .Net Core platform ans ASP .Net 5.
+Here you can find a Snake Client written in the C# language for the .Net Core platform and ASP .Net 5.
 
 I would also like to leave you with a qoute from the formentioned great man
 
-> Anything I’ve ever attempted, I was always willing to fail. So you can’t always win, but don’t afraid of making decisions. You can’t be paralyzed by fear of failure or you will never push yourself. You keep pushing because you believe in yourself and in your vision and you know that it is the right thing to do, and success will come. So don’t be afraid to fail. **Arnold Schwarzenegger**
+> Anything I’ve ever attempted, I was always willing to fail. So you can’t always win, but don’t be afraid of making decisions. You can’t be paralyzed by the fear of failure or you will never push yourself. You keep pushing because you believe in yourself and in your vision and you know that it is the right thing to do, and success will come. So don’t be afraid to fail. <br /> **Arnold Schwarzenegger**
 
 
 ### Requirements
