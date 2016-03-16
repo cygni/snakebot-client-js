@@ -16,7 +16,8 @@ namespace CygniSnakeBot.Client
         
         private readonly ISnakeClient _client;
         private long _gameTick;
-        private readonly IList<PlayerInfo> _playerInfos = new List<PlayerInfo>();
+
+        protected readonly IList<PlayerInfo> PlayerInfos = new List<PlayerInfo>();
 
         protected Snake(string name, string color, ISnakeClient client)
         {
@@ -50,7 +51,7 @@ namespace CygniSnakeBot.Client
 
         protected virtual void ClientOnOnGameEnded(object sender, GameEndedEventArgs gameEndedEventArgs)
         {
-            ConsoleMapPrinter.Printer(gameEndedEventArgs.Map, _playerInfos);
+            ConsoleMapPrinter.Printer(gameEndedEventArgs.Map, PlayerInfos);
             IsPlaying = false;
         }
 
@@ -65,8 +66,10 @@ namespace CygniSnakeBot.Client
 
         protected virtual void ClientOnOnPlayerRegistered(object sender, PlayerRegisteredEventArgs playerRegisteredEventArgs)
         {
-            _playerInfos.Add(new PlayerInfo(playerRegisteredEventArgs.ReceivingPlayerId, playerRegisteredEventArgs.Color));
-            _client.StartGame(playerRegisteredEventArgs.GameId, playerRegisteredEventArgs.ReceivingPlayerId);
+            PlayerInfos.Add(new PlayerInfo(playerRegisteredEventArgs.ReceivingPlayerId, playerRegisteredEventArgs.Color));
+
+            if(_client.GameMode == "training")
+                _client.StartGame(playerRegisteredEventArgs.GameId, playerRegisteredEventArgs.ReceivingPlayerId);
         }
 
         protected virtual void ClientOnOnInvalidPlayerName(object sender, InvalidPlayerNameEventArgs invalidPlayerNameEventArgs)

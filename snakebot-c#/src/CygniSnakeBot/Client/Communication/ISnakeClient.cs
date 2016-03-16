@@ -14,6 +14,7 @@ namespace CygniSnakeBot.Client.Communication
         event EventHandler OnConnected;
         event EventHandler OnSessionClosed;
 
+        string GameMode { get; }
         void StartGame(string gameId, string playerId);
         void IssueMovementCommand(MovementDirection direction, long gameTick);
         void RegisterPlayer(string playerName, string playerColor);

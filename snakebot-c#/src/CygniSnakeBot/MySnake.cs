@@ -12,7 +12,7 @@ namespace CygniSnakeBot
 
         protected override MovementDirection OnGameTurn(Map map, long gameTick)
         {
-            ConsoleMapPrinter.Printer(map);
+            ConsoleMapPrinter.Printer(map, PlayerInfos);
             // figure out a good move
 
             // do calculated move

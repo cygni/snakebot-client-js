@@ -15,7 +15,6 @@ namespace CygniSnakeBot.Client.Communication
 
         private readonly string _serverHost;
         private readonly int _serverPort;
-        private readonly string _gameMode;
         private readonly GameSettings _gameSettings;
         private string _playerId;
 
@@ -41,15 +40,17 @@ namespace CygniSnakeBot.Client.Communication
         {
             _serverHost = serverHost;
             _serverPort = serverPort;
-            _gameMode = gameMode;
+            GameMode = gameMode;
             _gameSettings = gameSettings;
             _socket = socket;
             _converter = converter;
         }
 
+        public string GameMode { get; }
+
         public void Connect()
         {
-            var uri = new Uri($"ws://{_serverHost}:{_serverPort}/{_gameMode}");
+            var uri = new Uri($"ws://{_serverHost}:{_serverPort}/{GameMode}");
             _socket.ConnectAsync(uri, CancellationToken.None).Wait();
 
             _receiveTask = new Task(Receive);
@@ -120,13 +121,7 @@ namespace CygniSnakeBot.Client.Communication
 
         private void SendMessage(object msg)
         {
-            if (_socket.State != WebSocketState.Open)
-            {
-                Connect();
-            }
-
-            var message = _converter.Serialize(msg);
-            var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
+            var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(_converter.Serialize(msg)));
 
             _socket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
 
@@ -135,6 +130,7 @@ namespace CygniSnakeBot.Client.Communication
                 OnSessionClosed?.Invoke(null, null);
             }
         }
+
 
         public void StartGame(string gameId, string playerId)
         {
