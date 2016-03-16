@@ -1,6 +1,6 @@
 # Cygni C# .Net Snake Bot Client
 
-# SSSSssSSSssSSSSSSsssSSSss
+## Baby, I'm just gonna snake, snake, snake, snake, snake. I snake it off, I snake it off
 
 I would like to begin this section with some wise words from a great and wise man.
 
@@ -16,44 +16,46 @@ I would also like to leave you with a qoute from the formentioned great man
 > Anything I’ve ever attempted, I was always willing to fail. So you can’t always win, but don’t afraid of making decisions. You can’t be paralyzed by fear of failure or you will never push yourself. You keep pushing because you believe in yourself and in your vision and you know that it is the right thing to do, and success will come. So don’t be afraid to fail. **Arnold Schwarzenegger**
 
 
-# Requirements
+### Requirements
 
 - Windows 8 or higher (The current websocket implementation requires this.)
 - .Net Core version 1.0.0-rc1-update1. Follow the instructions at: http://docs.asp.net/en/latest/getting-started/index.html
 - ASP .Net 5 RC. Follow the instructions at: https://get.asp.net/
 - Visual Studio 2015
 
-# Get it running
+### Get it running
 
 - Open the solution in Visual Studio 2015
 - Restore packages
 - Build
 - Run (Theres not much more to it)
 
-# Structure
+### Structure
 
-### CygniSnakeBot
+#### CygniSnakeBot
 
 This is the main project that contains all the source.
 
-- Client
-	- Communication
-	- Events
-	- Tiles
-- MySnake.cs
-- Program.cs
+- Client (Contains some helper classes for printing, a couple of DTOs and some other stuff)
+	- Communication (Contains the websocket, serialization/deserialization and the different messages)
+	- Events (the different event arguments that can be passed from the server)
+	- Tiles (Contains all the different map tiles that exist within a map)
+- MySnake.cs (Class that holds the current snake player logic) 
+- Program.cs (Main entry point)
 
-### CygniSnakeBot.Tests
+#### CygniSnakeBot.Tests
 
 This project, as the name entails, contains all the unit tests for the main project.
 
-# What to change
+### What to change
 
-The only two files you should need to modify is MySnake.cs and Program.cs.
+The only two files you should need to modify is MySnake.cs and Program.cs. These two files hold the main entry point of everything and the snake class that is currently playing and hopefully winning the snake tournament.
 
-### MySnake.cs
+#### MySnake.cs
 
-Here is where you should put your awesome strategy for winning in this game and life in general.
+Here is where you should put your awesome strategy for winning in this game and life in general. Only make sure that by the end of OnGameTurn you return whatever movement action you would like to perform. All the information avaliable to you about the world is contained within the passed map object.
+
+If the printer line is not commented out a ANSI printer will print the current map state to the console. Your snake will have a different color than the rest of the snakes (Hopefully ^^ ). 
 
 ```csharp
     public class DemoSnake : Snake
@@ -74,7 +76,7 @@ Here is where you should put your awesome strategy for winning in this game and 
     }
 ```
 
-### Program.cs
+#### Program.cs
 
 Here is the main entry point for everything. Here is where the settings for the game and the client is initialized.
 Change these two objects if you want different settings on the map or if you want to run the game against another host/port/gamemode.
