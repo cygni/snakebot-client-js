@@ -11,8 +11,6 @@ namespace CygniSnakeBot.Client.Communication
 {
     public class SnakeClient : ISnakeClient, IDisposable
     {
-        private const int BufferSize = 1024;
-
         private readonly string _serverHost;
         private readonly int _serverPort;
         private readonly GameSettings _gameSettings;
@@ -22,14 +20,14 @@ namespace CygniSnakeBot.Client.Communication
         private readonly IConverter _converter;
         private Task _receiveTask;
 
-        public event EventHandler<MapUpdateEventArgs> OnMapUpdate;
-        public event EventHandler<SnakeDeadEventArgs> OnSnakeDead;
-        public event EventHandler<GameEndedEventArgs> OnGameEnded;
-        public event EventHandler<GameStartingEventArgs> OnGameStarting;
-        public event EventHandler<PlayerRegisteredEventArgs> OnPlayerRegistered;
-        public event EventHandler<InvalidPlayerNameEventArgs> OnInvalidPlayerName;
-        public event EventHandler OnConnected;
-        public event EventHandler OnSessionClosed;
+        public Action<MapUpdate> OnMapUpdate { private get; set; }
+        public Action<SnakeDead> OnSnakeDead { private get; set; }
+        public Action<GameEnded> OnGameEnded { private get; set; }
+        public Action<GameStarting> OnGameStarting { private get; set; }
+        public Action<PlayerRegistered> OnPlayerRegistered { private get; set; }
+        public Action<InvalidPlayerName> OnInvalidPlayerName { private get; set; }
+        public Action OnConnected { private get; set; }
+        public Action OnSessionClosed { private get; set; }
 
         public SnakeClient(string serverHost, int serverPort, string gameMode, GameSettings gameSettings)
             : this(serverHost, serverPort, gameMode, gameSettings, new ClientWebSocket(), new JsonConverter())
@@ -56,31 +54,14 @@ namespace CygniSnakeBot.Client.Communication
             _receiveTask = new Task(Receive);
             _receiveTask.Start();
 
-            OnConnected?.Invoke(null, null);
+            OnConnected?.Invoke();
         }
 
         private async void Receive()
         {
-            var sb = new StringBuilder();
-
             while (_socket.State == WebSocketState.Open)
             {
-                var buffer = new byte[BufferSize];
-                var result = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-               
-                sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
-
-                if (result.EndOfMessage)
-                {
-                    ActOnMessage(sb.ToString());
-                    sb.Clear();
-                }
-
-                if (result.MessageType != WebSocketMessageType.Close)
-                    continue;
-
-                await _socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                OnSessionClosed?.Invoke(null, null);
+                ActOnMessage(await _socket.ReceiveAsync());
             }
         }
 
@@ -91,27 +72,27 @@ namespace CygniSnakeBot.Client.Communication
             switch (messageType)
             {
                 case MessageType.GameEnded:
-                    OnGameEnded?.Invoke(null, _converter.Deserialize<GameEndedEventArgs>(jsonString));
+                    OnGameEnded?.Invoke(_converter.Deserialize<GameEnded>(jsonString));
                     break;
 
                 case MessageType.MapUpdated:
-                    OnMapUpdate?.Invoke(null, _converter.Deserialize<MapUpdateEventArgs>(jsonString));
+                    OnMapUpdate?.Invoke(_converter.Deserialize<MapUpdate>(jsonString));
                     break;
 
                 case MessageType.SnakeDead:
-                    OnSnakeDead?.Invoke(null, _converter.Deserialize<SnakeDeadEventArgs>(jsonString));
+                    OnSnakeDead?.Invoke(_converter.Deserialize<SnakeDead>(jsonString));
                     break;
 
                 case MessageType.GameStarting:
-                    OnGameStarting?.Invoke(null, _converter.Deserialize<GameStartingEventArgs>(jsonString));
+                    OnGameStarting?.Invoke(_converter.Deserialize<GameStarting>(jsonString));
                     break;
 
                 case MessageType.PlayerRegistered:
-                    OnPlayerRegistered?.Invoke(null, _converter.Deserialize<PlayerRegisteredEventArgs>(jsonString));
+                    OnPlayerRegistered?.Invoke(_converter.Deserialize<PlayerRegistered>(jsonString));
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    OnInvalidPlayerName?.Invoke(null, _converter.Deserialize<InvalidPlayerNameEventArgs>(jsonString));
+                    OnInvalidPlayerName?.Invoke(_converter.Deserialize<InvalidPlayerName>(jsonString));
                     break;
 
                 default:
@@ -121,17 +102,9 @@ namespace CygniSnakeBot.Client.Communication
 
         private void SendMessage(object msg)
         {
-            var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(_converter.Serialize(msg)));
-
-            _socket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
-
-            if (_socket.State == WebSocketState.Closed)
-            {
-                OnSessionClosed?.Invoke(null, null);
-            }
+            _socket.SendAsync(_converter.Serialize(msg));
         }
-
-
+        
         public void StartGame(string gameId, string playerId)
         {
             _playerId = playerId;

@@ -3,7 +3,7 @@ using CygniSnakeBot.Client.Communication.Messages;
 
 namespace CygniSnakeBot.Client.Events
 {
-    public abstract class GameEvent : EventArgs, IGameMessage
+    public abstract class GameEvent : IGameMessage
     {
         public string GameId { get; }
 

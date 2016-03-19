@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +8,8 @@ namespace CygniSnakeBot.Client.Communication
 {
     public class ClientWebSocket : IClientWebSocket
     {
+        private const int BufferSize = 1024;
+
         public WebSocketState State => _socket.State;
 
         private readonly System.Net.WebSockets.ClientWebSocket _socket = new System.Net.WebSockets.ClientWebSocket();
@@ -16,9 +19,22 @@ namespace CygniSnakeBot.Client.Communication
             return _socket.ConnectAsync(uri, cancellationToken);
         }
 
-        public Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
+        public async Task<string> ReceiveAsync()
         {
-            return _socket.ReceiveAsync(buffer, cancellationToken);
+            var sb = new StringBuilder();
+            
+            while (true)
+            {
+                var buffer = new byte[BufferSize];
+                var result = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
+
+                if (result.EndOfMessage)
+                {
+                    return sb.ToString();
+                }
+            }
         }
 
         public Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken)
@@ -26,9 +42,11 @@ namespace CygniSnakeBot.Client.Communication
             return _socket.CloseAsync(closeStatus, statusDescription, cancellationToken);
         }
 
-        public Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken)
+        public Task SendAsync(string message)
         {
-            return _socket.SendAsync(buffer, messageType, endOfMessage, cancellationToken);
+            var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
+
+            return _socket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }
 }

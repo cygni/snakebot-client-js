@@ -2,7 +2,7 @@
 
 namespace CygniSnakeBot.Client.Events
 {
-    public class GameStartingEventArgs : GameEvent
+    public class GameStarting : GameEvent
     {
         public int NoofPlayers { get; }
 
@@ -12,7 +12,7 @@ namespace CygniSnakeBot.Client.Events
 
         public override string Type => MessageType.GameStarting;
 
-        public GameStartingEventArgs(string gameId, string receivingPlayerId, int noofPlayers, int width, int height) 
+        public GameStarting(string gameId, string receivingPlayerId, int noofPlayers, int width, int height) 
             : base(gameId, receivingPlayerId)
         {
             NoofPlayers = noofPlayers;

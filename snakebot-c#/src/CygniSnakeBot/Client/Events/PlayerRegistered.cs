@@ -2,7 +2,7 @@
 
 namespace CygniSnakeBot.Client.Events
 {
-    public class PlayerRegisteredEventArgs : GameEvent
+    public class PlayerRegistered : GameEvent
     {
         public string Name { get; }
 
@@ -14,7 +14,7 @@ namespace CygniSnakeBot.Client.Events
 
         public override string Type => MessageType.PlayerRegistered;
 
-        public PlayerRegisteredEventArgs(string name, string color, GameSettings gameSettings, string gameMode, string gameId, string receivingPlayerId) 
+        public PlayerRegistered(string name, string color, GameSettings gameSettings, string gameMode, string gameId, string receivingPlayerId) 
             : base(gameId, receivingPlayerId)
         {
             Name = name;

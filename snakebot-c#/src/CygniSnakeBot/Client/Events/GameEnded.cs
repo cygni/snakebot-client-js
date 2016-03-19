@@ -2,7 +2,7 @@
 
 namespace CygniSnakeBot.Client.Events
 {
-    public class GameEndedEventArgs : GameEvent
+    public class GameEnded : GameEvent
     {
         public long GameTick { get; }
 
@@ -12,7 +12,7 @@ namespace CygniSnakeBot.Client.Events
 
         public override string Type => MessageType.GameEnded;
 
-        public GameEndedEventArgs(string gameId, string receivingPlayerId, long gameTick, string playerWinnerId, Map map)
+        public GameEnded(string gameId, string receivingPlayerId, long gameTick, string playerWinnerId, Map map)
             : base(gameId, receivingPlayerId)
         {
             GameTick = gameTick;

@@ -25,56 +25,57 @@ namespace CygniSnakeBot.Client
             Color = color;
             _client = client;
 
-            _client.OnConnected += ClientOnOnConnected;
-            _client.OnSessionClosed += ClientOnOnSessionClosed;
-            _client.OnPlayerRegistered += ClientOnOnPlayerRegistered;
-            _client.OnInvalidPlayerName += ClientOnOnInvalidPlayerName;
-            _client.OnGameStarting += ClientOnOnGameStarting;
-            _client.OnGameEnded += ClientOnOnGameEnded;
-            _client.OnMapUpdate += ClientOnOnMapUpdate;
+            _client.OnConnected = ClientOnOnConnected;
+            _client.OnSessionClosed = ClientOnOnSessionClosed;
+            _client.OnPlayerRegistered = ClientOnOnPlayerRegistered;
+            _client.OnInvalidPlayerName = ClientOnOnInvalidPlayerName;
+            _client.OnGameStarting = ClientOnOnGameStarting;
+            _client.OnGameEnded = ClientOnOnGameEnded;
+
+            _client.OnMapUpdate = ClientOnOnMapUpdate;
         }
 
-        protected virtual void ClientOnOnConnected(object sender, EventArgs eventArgs)
+        protected virtual void ClientOnOnConnected()
         {
             _client.RegisterPlayer(Name, Color);
         }
 
-        protected virtual void ClientOnOnSessionClosed(object sender, EventArgs eventArgs)
+        protected virtual void ClientOnOnSessionClosed()
         {
             IsPlaying = false;
         }
 
-        protected virtual void ClientOnOnGameStarting(object sender, GameStartingEventArgs gameStartingEventArgs)
+        protected virtual void ClientOnOnGameStarting(GameStarting gameStarting)
         {
             IsPlaying = true;
         }
 
-        protected virtual void ClientOnOnGameEnded(object sender, GameEndedEventArgs gameEndedEventArgs)
+        protected virtual void ClientOnOnGameEnded(GameEnded gameEnded)
         {
-            ConsoleMapPrinter.Printer(gameEndedEventArgs.Map, PlayerInfos);
+            ConsoleMapPrinter.Printer(gameEnded.Map, PlayerInfos);
             IsPlaying = false;
         }
 
-        private void ClientOnOnMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventArgs)
+        private void ClientOnOnMapUpdate(MapUpdate mapUpdate)
         {
-            _gameTick = mapUpdateEventArgs.GameTick;
+            _gameTick = mapUpdate.GameTick;
             
-            var direction = OnGameTurn(mapUpdateEventArgs.Map, _gameTick);
+            var direction = OnGameTurn(mapUpdate.Map, _gameTick);
 
             _client.IssueMovementCommand(direction, _gameTick);
         }
 
-        protected virtual void ClientOnOnPlayerRegistered(object sender, PlayerRegisteredEventArgs playerRegisteredEventArgs)
+        protected virtual void ClientOnOnPlayerRegistered(PlayerRegistered playerRegistered)
         {
-            PlayerInfos.Add(new PlayerInfo(playerRegisteredEventArgs.ReceivingPlayerId, playerRegisteredEventArgs.Color));
+            PlayerInfos.Add(new PlayerInfo(playerRegistered.ReceivingPlayerId, playerRegistered.Color));
 
             if(_client.GameMode == "training")
-                _client.StartGame(playerRegisteredEventArgs.GameId, playerRegisteredEventArgs.ReceivingPlayerId);
+                _client.StartGame(playerRegistered.GameId, playerRegistered.ReceivingPlayerId);
         }
 
-        protected virtual void ClientOnOnInvalidPlayerName(object sender, InvalidPlayerNameEventArgs invalidPlayerNameEventArgs)
+        protected virtual void ClientOnOnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
         {
-            var reason = Enum.GetName(typeof (PlayerNameInvalidReason), invalidPlayerNameEventArgs.ReasonCode);
+            var reason = Enum.GetName(typeof (PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
 
             throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
         }
