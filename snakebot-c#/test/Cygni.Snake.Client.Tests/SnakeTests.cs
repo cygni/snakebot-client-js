@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Cygni.Snake.Client;
+using Cygni.Snake.Client.Communication;
+using Cygni.Snake.Client.Communication.Messages;
+using Cygni.Snake.Client.Communication.Serialization;
+using Cygni.Snake.Client.Events;
+using Cygni.Snake.Client.Tiles;
 using Xunit;
-using CygniSnakeBot.Client;
-using CygniSnakeBot.Client.Communication;
-using CygniSnakeBot.Client.Communication.Messages;
-using CygniSnakeBot.Client.Communication.Serialization;
-using CygniSnakeBot.Client.Events;
-using CygniSnakeBot.Client.Tiles;
 using Moq;
 
 namespace CygniSnakeBot.tests
@@ -35,7 +34,7 @@ namespace CygniSnakeBot.tests
 
             var sc = new SnakeClient("localhost", 1, "tournament", new GameSettings(), clientMock.Object,
                 new JsonConverter());
-            new MySnake("supersnake", "black", sc);
+            new FakeSnake(sc);
 
             sc.Connect();
 
@@ -63,8 +62,8 @@ namespace CygniSnakeBot.tests
 
             var sc = new SnakeClient("localhost", 1, "training", new GameSettings(), clientMock.Object,
                 new JsonConverter());
-            new MySnake("supersnake", "black", sc);
-            
+            new FakeSnake(sc);
+
             sc.Connect();
 
             Thread.Sleep(1000);
@@ -85,10 +84,10 @@ namespace CygniSnakeBot.tests
                 return Task.Factory.StartNew(() => new JsonConverter().Serialize(new MapUpdate("", "", 1337,
                     new Map(0, 0, new List<IEnumerable<ITileContent>>(), new List<SnakeInfo>()))));
             });
-            
+
             var sc = new SnakeClient("localhost", 1, "training", new GameSettings(), clientMock.Object,
                 new JsonConverter());
-            new MySnake("supersnake", "black", sc);
+            new FakeSnake(sc);
 
             sc.Connect();
 
