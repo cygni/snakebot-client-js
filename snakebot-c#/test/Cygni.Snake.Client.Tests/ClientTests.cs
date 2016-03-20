@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Cygni.Snake.Client;
@@ -29,10 +28,8 @@ namespace CygniSnakeBot.tests
 
             _socketMock.Setup(m => m.ReceiveAsync()).Returns(Task.Factory.StartNew(() => jsonString));
 
-            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter())
-            {
-                OnMapUpdate = (args) => { eventArgs = args; }
-            };
+            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter());
+            client.OnMapUpdate((args) => { eventArgs = args; });
 
             client.Connect();
 
@@ -48,22 +45,20 @@ namespace CygniSnakeBot.tests
         {
             _socketMock = new Mock<IClientWebSocket>();
             const string jsonString = "{\"gameId\":\"1a3d727e-40cb-4982-ba75-9cd67c0cf896\",\"name\":\"#emil\",\"color\":\"black\",\"gameSettings\":{\"width\":50,\"height\":25,\"maxNoofPlayers\":5,\"startSnakeLength\":1,\"timeInMsPerTick\":250,\"obstaclesEnabled\":false,\"foodEnabled\":true,\"edgeWrapsAround\":false,\"headToTailConsumes\":false,\"tailConsumeGrows\":false,\"addFoodLikelihood\":15,\"removeFoodLikelihood\":5,\"addObstacleLikelihood\":15,\"removeObstacleLikelihood\":15},\"gameMode\":\"training\",\"receivingPlayerId\":\"fb5cbf29-fd3c-4012-af0b-bd32ad10c9f7\",\"type\":\"se.cygni.snake.api.response.PlayerRegistered\"}";
-            PlayerRegistered eventArgs = null; 
+            PlayerRegistered eventArgs = null;
 
             _socketMock.Setup(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).Returns(Task.Delay(1));
             _socketMock.Setup(m => m.State).Returns(WebSocketState.Open);
 
             _socketMock.Setup(m => m.ReceiveAsync()).Returns(Task.Factory.StartNew(() => jsonString));
 
-            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter())
-            {
-                OnPlayerRegistered = (args) => { eventArgs = args; }
-            };
+            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter());
+            client.OnPlayerRegistered(args => { eventArgs = args; });
 
             client.Connect();
 
             Retry.For(() => eventArgs != null, TimeSpan.FromSeconds(5));
-            
+
             Assert.Equal(eventArgs.Name, "#emil");
             Assert.Equal(eventArgs.GameMode, "training");
             Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
@@ -84,10 +79,8 @@ namespace CygniSnakeBot.tests
 
             _socketMock.Setup(m => m.ReceiveAsync()).Returns(Task.Factory.StartNew(() => jsonString));
 
-            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter())
-            {
-                OnGameStarting = (args) => { eventArgs = args; }
-            };
+            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter());
+            client.OnGameStarting(args => { eventArgs = args; });
 
             client.Connect();
 
@@ -102,18 +95,18 @@ namespace CygniSnakeBot.tests
         public void ClientShouldInvokeGameEndedEvent()
         {
             _socketMock = new Mock<IClientWebSocket>();
-            const string jsonString = "{\"playerWinnerId\":\"bestWinner\",\"gameId\":\"1a3d727e-40cb-4982-ba75-9cd67c0cf896\",\"gameTick\":1,\"map\":{\"width\":50,\"height\":25,\"worldTick\":1,\"tiles\":[],\"receivingPlayerId\":null,\"type\":\"se.cygni.snake.api.model.Map\"},\"receivingPlayerId\":\"fb5cbf29 - fd3c - 4012 - af0b - bd32ad10c9f7\",\"type\":\"se.cygni.snake.api.event.GameEndedEvent\"}";
+            const string jsonString =
+                "{\"playerWinnerId\":\"bestWinner\",\"gameId\":\"1a3d727e-40cb-4982-ba75-9cd67c0cf896\",\"gameTick\":1,\"map\":{\"width\":50,\"height\":25,\"worldTick\":1,\"tiles\":[],\"receivingPlayerId\":null,\"type\":\"se.cygni.snake.api.model.Map\"},\"receivingPlayerId\":\"fb5cbf29 - fd3c - 4012 - af0b - bd32ad10c9f7\",\"type\":\"se.cygni.snake.api.event.GameEndedEvent\"}";
             GameEnded eventArgs = null;
 
-            _socketMock.Setup(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).Returns(Task.Delay(1));
+            _socketMock.Setup(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.Delay(1));
             _socketMock.Setup(m => m.State).Returns(WebSocketState.Open);
 
             _socketMock.Setup(m => m.ReceiveAsync()).Returns(Task.Factory.StartNew(() => jsonString));
 
-            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter())
-            {
-                OnGameEnded = (args) => { eventArgs = args; }
-            };
+            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter());
+            client.OnGameEnded(args => { eventArgs = args; });
 
             client.Connect();
 
@@ -136,10 +129,8 @@ namespace CygniSnakeBot.tests
 
             _socketMock.Setup(m => m.ReceiveAsync()).Returns(Task.Factory.StartNew(() => jsonString));
 
-            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter())
-            {
-                OnSnakeDead = (args) => { eventArgs = args; }
-            };
+            var client = new SnakeClient("localhost", 1, "training", null, _socketMock.Object, new JsonConverter());
+            client.OnSnakeDead(args => { eventArgs = args; });
 
             client.Connect();
 

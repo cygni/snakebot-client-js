@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Cygni.Snake.Client.Communication.Messages;
@@ -19,16 +18,15 @@ namespace Cygni.Snake.Client.Communication
         private readonly IClientWebSocket _socket;
         private readonly IConverter _converter;
         private Task _receiveTask;
-
-        public Action<MapUpdate> OnMapUpdate { private get; set; }
-        public Action<SnakeDead> OnSnakeDead { private get; set; }
-        public Action<GameEnded> OnGameEnded { private get; set; }
-        public Action<GameStarting> OnGameStarting { private get; set; }
-        public Action<PlayerRegistered> OnPlayerRegistered { private get; set; }
-        public Action<InvalidPlayerName> OnInvalidPlayerName { private get; set; }
-        public Action OnConnected { private get; set; }
-        public Action OnSessionClosed { private get; set; }
-
+        private Action<MapUpdate> _onMapUpdate;
+        private Action<SnakeDead> _onSnakeDead;
+        private Action<GameEnded> _onGameEnded;
+        private Action<GameStarting> _onGameStarting;
+        private Action<PlayerRegistered> _onPlayerRegistered;
+        private Action<InvalidPlayerName> _onInvalidPlayerName;
+        private Action _onConnected;
+        private Action _onSessionClosed;
+        
         public SnakeClient(string serverHost, int serverPort, string gameMode, GameSettings gameSettings)
             : this(serverHost, serverPort, gameMode, gameSettings, new ClientWebSocket(), new JsonConverter())
         {
@@ -44,6 +42,46 @@ namespace Cygni.Snake.Client.Communication
             _converter = converter;
         }
 
+        public void OnSnakeDead(Action<SnakeDead> onSnakeDead)
+        {
+            _onSnakeDead = onSnakeDead;
+        }
+
+        public void OnGameEnded(Action<GameEnded> onGameEnded)
+        {
+            _onGameEnded = onGameEnded;
+        }
+
+        public void OnGameStarting(Action<GameStarting> onGameStaring)
+        {
+            _onGameStarting = onGameStaring;
+        }
+
+        public void OnPlayerRegistered(Action<PlayerRegistered> onPlayerRegistered)
+        {
+            _onPlayerRegistered = onPlayerRegistered;
+        }
+
+        public void OnInvalidPlayerName(Action<InvalidPlayerName> onInvalidPlayerName)
+        {
+            _onInvalidPlayerName = onInvalidPlayerName;
+        }
+
+        public void OnMapUpdate(Action<MapUpdate> onMapUpdate)
+        {
+            _onMapUpdate = onMapUpdate;
+        }
+
+        public void OnConnected(Action onConnected)
+        {
+            _onConnected = onConnected;
+        }
+
+        public void OnSessionClosed(Action onSessionClosed)
+        {
+            _onSessionClosed = onSessionClosed;
+        }
+
         public string GameMode { get; }
 
         public void Connect()
@@ -54,7 +92,7 @@ namespace Cygni.Snake.Client.Communication
             _receiveTask = new Task(Receive);
             _receiveTask.Start();
 
-            OnConnected?.Invoke();
+            _onConnected?.Invoke();
         }
 
         private async void Receive()
@@ -72,27 +110,27 @@ namespace Cygni.Snake.Client.Communication
             switch (messageType)
             {
                 case MessageType.GameEnded:
-                    OnGameEnded?.Invoke(_converter.Deserialize<GameEnded>(jsonString));
+                    _onGameEnded?.Invoke(_converter.Deserialize<GameEnded>(jsonString));
                     break;
 
                 case MessageType.MapUpdated:
-                    OnMapUpdate?.Invoke(_converter.Deserialize<MapUpdate>(jsonString));
+                    _onMapUpdate?.Invoke(_converter.Deserialize<MapUpdate>(jsonString));
                     break;
 
                 case MessageType.SnakeDead:
-                    OnSnakeDead?.Invoke(_converter.Deserialize<SnakeDead>(jsonString));
+                    _onSnakeDead?.Invoke(_converter.Deserialize<SnakeDead>(jsonString));
                     break;
 
                 case MessageType.GameStarting:
-                    OnGameStarting?.Invoke(_converter.Deserialize<GameStarting>(jsonString));
+                    _onGameStarting?.Invoke(_converter.Deserialize<GameStarting>(jsonString));
                     break;
 
                 case MessageType.PlayerRegistered:
-                    OnPlayerRegistered?.Invoke(_converter.Deserialize<PlayerRegistered>(jsonString));
+                    _onPlayerRegistered?.Invoke(_converter.Deserialize<PlayerRegistered>(jsonString));
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    OnInvalidPlayerName?.Invoke(_converter.Deserialize<InvalidPlayerName>(jsonString));
+                    _onInvalidPlayerName?.Invoke(_converter.Deserialize<InvalidPlayerName>(jsonString));
                     break;
 
                 default:

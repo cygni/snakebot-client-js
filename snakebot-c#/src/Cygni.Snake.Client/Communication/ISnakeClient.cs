@@ -5,14 +5,14 @@ namespace Cygni.Snake.Client.Communication
 {
     public interface ISnakeClient
     {
-        Action<SnakeDead> OnSnakeDead { set; }
-        Action<GameEnded> OnGameEnded { set; }
-        Action<GameStarting> OnGameStarting { set; }
-        Action<PlayerRegistered> OnPlayerRegistered { set; }
-        Action<InvalidPlayerName> OnInvalidPlayerName { set; }
-        Action<MapUpdate> OnMapUpdate { set; } 
-        Action OnConnected { set; }
-        Action OnSessionClosed { set; }
+        void OnSnakeDead(Action<SnakeDead> onSnakeDead);
+        void OnGameEnded(Action<GameEnded> onGameEnded);
+        void OnGameStarting(Action<GameStarting> onGameStaring);
+        void OnPlayerRegistered(Action<PlayerRegistered> onPlayerRegistered);
+        void OnInvalidPlayerName(Action<InvalidPlayerName> onInvalidPlayerName);
+        void OnMapUpdate(Action<MapUpdate> onMapUpdate);
+        void OnConnected(Action onConnected);
+        void OnSessionClosed(Action onSessionClosed);
 
         string GameMode { get; }
         void StartGame(string gameId, string playerId);

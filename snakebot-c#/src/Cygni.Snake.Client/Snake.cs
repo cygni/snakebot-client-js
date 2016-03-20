@@ -25,38 +25,37 @@ namespace Cygni.Snake.Client
             Color = color;
             _client = client;
 
-            _client.OnConnected = ClientOnOnConnected;
-            _client.OnSessionClosed = ClientOnOnSessionClosed;
-            _client.OnPlayerRegistered = ClientOnOnPlayerRegistered;
-            _client.OnInvalidPlayerName = ClientOnOnInvalidPlayerName;
-            _client.OnGameStarting = ClientOnOnGameStarting;
-            _client.OnGameEnded = ClientOnOnGameEnded;
-
-            _client.OnMapUpdate = ClientOnOnMapUpdate;
+            _client.OnConnected(OnClientConnected);
+            _client.OnSessionClosed(OnSessionClosed);
+            _client.OnPlayerRegistered(OnPlayerRegistered);
+            _client.OnInvalidPlayerName(OnInvalidPlayerName);
+            _client.OnGameStarting(OnGameStarting);
+            _client.OnGameEnded(OnGameEnded);
+            _client.OnMapUpdate(OnMapUpdate);
         }
 
-        protected virtual void ClientOnOnConnected()
+        protected virtual void OnClientConnected()
         {
             _client.RegisterPlayer(Name, Color);
         }
 
-        protected virtual void ClientOnOnSessionClosed()
+        protected virtual void OnSessionClosed()
         {
             IsPlaying = false;
         }
 
-        protected virtual void ClientOnOnGameStarting(GameStarting gameStarting)
+        protected virtual void OnGameStarting(GameStarting gameStarting)
         {
             IsPlaying = true;
         }
 
-        protected virtual void ClientOnOnGameEnded(GameEnded gameEnded)
+        protected virtual void OnGameEnded(GameEnded gameEnded)
         {
             ConsoleMapPrinter.Printer(gameEnded.Map, PlayerInfos);
             IsPlaying = false;
         }
 
-        private void ClientOnOnMapUpdate(MapUpdate mapUpdate)
+        private void OnMapUpdate(MapUpdate mapUpdate)
         {
             _gameTick = mapUpdate.GameTick;
             
@@ -65,7 +64,7 @@ namespace Cygni.Snake.Client
             _client.IssueMovementCommand(direction, _gameTick);
         }
 
-        protected virtual void ClientOnOnPlayerRegistered(PlayerRegistered playerRegistered)
+        protected virtual void OnPlayerRegistered(PlayerRegistered playerRegistered)
         {
             PlayerInfos.Add(new PlayerInfo(playerRegistered.ReceivingPlayerId, playerRegistered.Color));
 
@@ -73,7 +72,7 @@ namespace Cygni.Snake.Client
                 _client.StartGame(playerRegistered.GameId, playerRegistered.ReceivingPlayerId);
         }
 
-        protected virtual void ClientOnOnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
+        protected virtual void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
         {
             var reason = Enum.GetName(typeof (PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
 
