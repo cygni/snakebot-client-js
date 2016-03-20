@@ -15,7 +15,7 @@
         /// <summary>
         /// Gets or sets the maximum number of players in a game.
         /// </summary> 
-        public int MaxPlayers { get; set; } = 5;
+        public int MaxNoofPlayers { get; set; } = 5;
 
         /// <summary>
         /// Gets or sets the starting length of a snake.
