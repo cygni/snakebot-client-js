@@ -22,3 +22,9 @@ func (s *snake) onMapUpdated(mapUpdatedMessage communication.MapUpdatedMessage) 
 ```
 
 #### main.go
+
+
+
+### Todo
+
+1. Fix panic handling

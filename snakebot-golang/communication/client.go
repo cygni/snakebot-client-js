@@ -12,6 +12,7 @@ type Client struct {
 	writeChannel     chan []byte
 	ReadChannel      chan []byte
 	ErrorChannel     chan string
+	FinishChannel    chan bool
 }
 
 func NewClient(host string, port int, mode string) Client {
@@ -22,6 +23,7 @@ func NewClient(host string, port int, mode string) Client {
 	client.writeChannel = make(chan []byte)
 	client.ReadChannel = make(chan []byte)
 	client.ErrorChannel = make(chan string)
+	client.FinishChannel = make(chan bool)
 
 	go reader(client)
 	go writer(client)
@@ -31,17 +33,36 @@ func NewClient(host string, port int, mode string) Client {
 }
 
 func (client *Client) Close() {
-	client.ErrorChannel <- "planned close"
+	client.ErrorChannel <- "Planned Close"
 }
 
 func closer(client Client) {
 	for {
 		select {
-		case <-client.ErrorChannel:
-			close(client.ErrorChannel)
-			close(client.ReadChannel)
-			close(client.writeChannel)
-			client.socketConnection.Close()
+		case _, ok := <-client.ErrorChannel:
+			if !ok {
+				continue
+			}
+
+			if client.ErrorChannel != nil {
+				close(client.ErrorChannel)
+				client.ErrorChannel = nil
+			}
+
+			if client.ReadChannel != nil {
+				close(client.ReadChannel)
+				client.ReadChannel = nil
+			}
+
+			if client.writeChannel != nil {
+				close(client.writeChannel)
+				client.writeChannel = nil
+			}
+
+			if client.socketConnection != nil {
+				client.socketConnection.Close()
+				client.socketConnection = nil
+			}
 		}
 	}
 }
@@ -49,17 +70,22 @@ func closer(client Client) {
 func reader(client Client) {
 	for {
 		select {
-		case <-client.ErrorChannel:
+		case _, ok := <-client.ErrorChannel:
+			if !ok {
+				continue
+			}
 			return
 		default:
 			_, message, err := client.socketConnection.ReadMessage()
 
 			if err != nil {
-				log.Fatal("Error while reading ", err)
-				return
+				log.Fatal("Error while Reading ", err)
+				if client.ErrorChannel != nil {
+					client.ErrorChannel <- fmt.Sprintf("%s", err)
+				}
 			}
 
-			//			fmt.Printf("got message: %s\n", string(message))
+			//	fmt.Printf("got message: %s\n", string(message))
 			client.ReadChannel <- message
 		}
 	}
@@ -67,17 +93,25 @@ func reader(client Client) {
 
 func writer(client Client) {
 	for {
-		var msg []byte
 		select {
-		case msg = <-client.writeChannel:
+		case msg, ok := <-client.writeChannel:
+			if !ok {
+				continue
+			}
+
 			err := client.socketConnection.WriteMessage(websocket.TextMessage, msg)
 
 			if err != nil {
-				log.Fatal("error while writing ", err)
-				client.ErrorChannel <- "close"
+				log.Fatal("Error while Writing ", err)
+				if client.ErrorChannel != nil {
+					client.ErrorChannel <- fmt.Sprintf("%s", err)
+				}
 			}
 
-		case <-client.ErrorChannel:
+		case _, ok := <-client.ErrorChannel:
+			if !ok {
+				continue
+			}
 			return
 		}
 	}
@@ -87,7 +121,10 @@ func (client *Client) connect(host string, port int, mode string) {
 	connection, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("ws://%s:%d/%s", host, port, mode), nil)
 
 	if err != nil {
-		log.Fatal("unable to connect", err)
+		log.Fatal("Unable to Connect", err)
+		if client.ErrorChannel != nil {
+			client.ErrorChannel <- fmt.Sprintf("%s", err)
+		}
 	}
 
 	client.socketConnection = connection

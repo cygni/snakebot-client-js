@@ -6,19 +6,25 @@ import "encoding/json"
 func (client *Client) RegisterPlayer(name string, color string) {
 	registrationMessage := getPlayerRegistrationMessage(name, color)
 	jsonMessage, _ := json.Marshal(&registrationMessage)
-	client.writeChannel <- jsonMessage
+	client.WriteMessage(jsonMessage)
 }
 
 func (client *Client) StartGame(playerId string) {
 	startGameMessage := getStartGameMessage(playerId)
 	jsonMessage, _ := json.Marshal(&startGameMessage)
-	client.writeChannel <- jsonMessage
+	client.WriteMessage(jsonMessage)
 }
 
 func (client *Client) RegisterMove(direction string, playerId string) {
 	registerMoveMessage := getRegisterMoveMessage(direction, playerId)
 	jsonMessage, _ := json.Marshal(&registerMoveMessage)
-	client.writeChannel <- jsonMessage
+	client.WriteMessage(jsonMessage)
+}
+
+func (client *Client) WriteMessage(message []byte) {
+	if client.writeChannel != nil {
+		client.writeChannel <- message
+	}
 }
 
 //Inbound message parsers

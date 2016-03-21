@@ -68,15 +68,33 @@ type MapUpdatedMessage struct {
 }
 
 type InvalidPlayerNameMessage struct {
+	gameMessage
+	ReasonCode int `json:"reasonCode"`
 }
 
 type GameEndedMessage struct {
+	gameMessage
+	PlayerWinnerId string `json:"playerWinnerId"`
+	GameId         string `json:"gameId"`
+	GameTick       int    `json:"gameTick"`
+	Map            Map    `json:"map"`
 }
 
 type SnakeDeadMessage struct {
+	gameMessage
+	PlayerId    string `json:"playerId"`
+	X           int    `json:"x"`
+	Y           int    `json:"y"`
+	GameId      string `json:"gameId"`
+	GameTick    int    `json:"gameTick"`
+	DeathReason string `json:"deathReason"`
 }
 
 type GameStartingMessage struct {
+	gameMessage
+	NoOfPlayers int `json:"noofPlayers"`
+	Width       int `json:"width"`
+	Height      int `json:"height"`
 }
 
 type Map struct {
@@ -87,16 +105,4 @@ type Map struct {
 
 type Tile struct {
 	Content string `json:"content"`
-}
-
-//Stringer functions
-func (tile Tile) String() string {
-	switch tile.Content {
-	case "snakebody":
-		return "#"
-	case "snakehead":
-		return "@"
-	default:
-		return " "
-	}
 }

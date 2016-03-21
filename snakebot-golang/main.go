@@ -1,6 +1,10 @@
 package main
 
-import "./communication"
+import (
+	"fmt"
+
+	"./communication"
+)
 import "./snake"
 
 const hostName string = "snake.cygni.se"
@@ -14,10 +18,10 @@ func main() {
 	s := snake.NewSnake("emil", "black", c)
 	s.Init()
 
+	var message string
 	select {
-	case <-s.FinishChannel:
-		return
-	case <-c.ErrorChannel:
+	case message = <-s.FinishChannel:
+		fmt.Println("Snake finished: ", message)
 		return
 	}
 }
