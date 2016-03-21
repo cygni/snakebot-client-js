@@ -61,9 +61,9 @@ func (s *snake) onPlayerRegistered(registrationMessage communication.PlayerRegis
 }
 
 func (s *snake) onMapUpdated(mapUpdatedMessage communication.MapUpdatedMessage) {
-	//Do stuff
 	printer.PrintMap(mapUpdatedMessage.Map, s.playerId)
 
+	//Do (hopefully) smart stuff
 	s.Client.RegisterMove("UP", s.playerId)
 }
 

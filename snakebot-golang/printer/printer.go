@@ -2,6 +2,7 @@ package printer
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fatih/color"
 
@@ -31,14 +32,17 @@ func printColored(tile communication.Tile, playerId string) {
 	}
 
 	fmt.Print(tile)
+	color.Unset()
 }
 
 func PrintMap(m communication.Map, playerId string) {
+	fmt.Println(strings.Repeat("-", m.Width))
 	for r, row := range m.Map {
 		for c := range row {
 			printColored(m.Map[c][r], playerId)
 		}
 		fmt.Print("\n")
 	}
-	color.Unset()
+
+	fmt.Println(strings.Repeat("-", m.Width))
 }
