@@ -32,20 +32,22 @@ I would also like to leave you with a qoute from the formentioned great man
 
 ### Structure
 
-#### CygniSnakeBot
+#### Cygni.Snake.Client
+This is the main library that contains all the functionality needed to get everything running.
+It contains communication logic, event handling, helper classes for printing and all the neccessary DTOs.
 
-This is the main project that contains all the source.
+#### Cygni.Snake.Client.Tests
 
-- Client (Contains some helper classes for printing, a couple of DTOs and some other stuff)
-	- Communication (Contains the websocket, serialization/deserialization and the different messages)
-	- Events (the different event arguments that can be passed from the server)
-	- Tiles (Contains all the different map tiles that exist within a map)
+This project, as the name entails, contains all the unit tests for the main library project.
+
+#### Cygni.Snake.SampleBot
+
+This project holds the file that you as a user might need to change.
+
 - MySnake.cs (Class that holds the current snake player logic) 
 - Program.cs (Main entry point)
 
-#### CygniSnakeBot.Tests
 
-This project, as the name entails, contains all the unit tests for the main project.
 
 ### What to change
 
