@@ -37,22 +37,16 @@ func eventLoop(s snake) {
 		case msg = <-s.Client.ReadChannel:
 			switch communication.ParseGameMessage(msg).Type {
 			case communication.GameEnded:
-				fmt.Println("GameEnded message received")
 				s.onGameEnded(communication.ParseGameEndedMessage(msg))
 			case communication.MapUpdated:
-				fmt.Println("MapUpdated message received")
 				s.onMapUpdated(communication.ParseMapUpdatedMessage(msg))
 			case communication.SnakeDead:
-				fmt.Println("SnakeDead message received")
 				s.onSnakeDead(communication.ParseSnakeDeadMessage(msg))
 			case communication.GameStarting:
-				fmt.Println("GameStarting message received")
 				s.onGameStarting(communication.ParseGameStartingMessage(msg))
 			case communication.PlayerRegistered:
-				fmt.Println("PlayerRegistered message received")
 				s.onPlayerRegistered(communication.ParsePlayerRegisteredMessage(msg))
 			case communication.InvalidPlayerName:
-				fmt.Println("InvalidPlayerName message received")
 				s.onInvalidPlayerName(communication.ParseInvalidPlayerNameMessage(msg))
 			}
 		}
@@ -68,7 +62,7 @@ func (s *snake) onPlayerRegistered(registrationMessage communication.PlayerRegis
 
 func (s *snake) onMapUpdated(mapUpdatedMessage communication.MapUpdatedMessage) {
 	//Do stuff
-	printer.PrintMap(mapUpdatedMessage.Map)
+	printer.PrintMap(mapUpdatedMessage.Map, s.playerId)
 
 	s.Client.RegisterMove("UP", s.playerId)
 }
@@ -91,6 +85,6 @@ func (s *snake) onSnakeDead(snakeDeadMessage communication.SnakeDeadMessage) {
 }
 
 func (s *snake) onGameEnded(gameEndedMessage communication.GameEndedMessage) {
-	printer.PrintMap(gameEndedMessage.Map)
+	printer.PrintMap(gameEndedMessage.Map, s.playerId)
 	s.FinishChannel <- "Game Ended"
 }

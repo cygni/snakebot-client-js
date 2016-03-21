@@ -15,7 +15,7 @@ func main() {
 	c := communication.NewClient(hostName, port, mode)
 	defer c.Close()
 
-	s := snake.NewSnake("emil", "black", c)
+	s := snake.NewSnake("golangsnake", "black", c)
 	s.Init()
 
 	var message string

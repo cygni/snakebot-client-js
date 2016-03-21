@@ -104,5 +104,6 @@ type Map struct {
 }
 
 type Tile struct {
-	Content string `json:"content"`
+	Content  string `json:"content"`
+	PlayerId string `json:"PlayerId"`
 }
