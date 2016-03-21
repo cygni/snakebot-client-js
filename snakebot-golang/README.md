@@ -35,7 +35,7 @@ This is a judgement free zone. The only form of judgement that is accepted is si
 1. Install golang, follow the instructions at https://golang.org/
 2. In a terminal go to the repository root
 3. go get github.com/gorilla/websocket
-4. go get go get github.com/fatih/color
+4. go get github.com/fatih/color
 5. go run ./main.go
 
 
