@@ -12,7 +12,7 @@
 
 #### snake.go
 
-```golang
+```go
 func (s *snake) onMapUpdated(mapUpdatedMessage communication.MapUpdatedMessage) {
 	//Do stuff
 	printer.PrintMap(mapUpdatedMessage.Map)
