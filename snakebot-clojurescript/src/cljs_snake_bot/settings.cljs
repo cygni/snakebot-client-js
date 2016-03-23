@@ -32,7 +32,7 @@
     :pretty-print-game-starting false
     :pretty-print-snake-died true
     :pretty-print-invalid-player-name false
-    :pretty-print-win-message false})
+    :pretty-print-player-registration false})
 
 (def default-map
   {:width 10

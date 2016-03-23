@@ -1,10 +1,12 @@
 (ns cljs-snake-bot.messagehandler
   (:require [cljs.nodejs :as nodejs]
             [cljs-snake-bot.constants :as c]
+            [cljs-snake-bot.printer :as p]
             [cljs-snake-bot.events :as e]))
 
 (defn get-response-message [message]
   (let [messageType (:type message)]
+    (swap! p/messages conj message)
     (condp = messageType
       c/player-registered-message (e/on-player-registered message)
       c/map-updated-message (e/on-map-updated message)

@@ -4,6 +4,7 @@
             [cljs-snake-bot.messagehandler :as mh]
             [cljs-snake-bot.constants :as c]
             [cljs-snake-bot.settings :as s]
+            [cljs-snake-bot.printer :as p]
             [cljs.core.async :as async :refer [<! timeout]]))
 
 (nodejs/enable-util-print!)
@@ -20,16 +21,12 @@
 (defn clean-up[]
   (.close socket))
 
-(defn print-game-ended-info []
-  (println "Game ended and here some stats should be presented"))
-
 (defn game-loop []
   (go-loop []
     (async/<! (async/timeout 10))
     (if (s/state-get :game-running)
       (recur)
-      (do (print-game-ended-info)
-          (clean-up)))))
+      (clean-up))))
 
 (defn setup-listener []
     (.on socket "message"
@@ -48,6 +45,7 @@
 (defn -main []
   (println "Booting up")
   (setup-socket)
+  (p/renderer)
   (game-loop))
 
 (set! *main-cli-fn* -main)
