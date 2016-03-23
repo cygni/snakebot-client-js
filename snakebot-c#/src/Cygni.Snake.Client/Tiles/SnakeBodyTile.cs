@@ -1,4 +1,6 @@
-﻿namespace Cygni.Snake.Client.Tiles
+﻿using System;
+
+namespace Cygni.Snake.Client.Tiles
 {
     public class SnakeBodyTile : SnakePartTile, ITileContent
     {
@@ -14,6 +16,11 @@
         {
             Order = order;
             Tail = tail;
+        }
+        public void Print()
+        {
+            Console.ForegroundColor = Color;
+            Console.Write("#");
         }
     }
 }

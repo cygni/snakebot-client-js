@@ -19,9 +19,9 @@ namespace Cygni.Snake.SampleBot
             // this is just here to keep the console from closing on us.
             do
             {
-                Task.Delay(TimeSpan.FromSeconds(10)).Wait();
+                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
 
-            } while (snake.IsPlaying);
+            } while (snake.GameRunning);
             // don't close the console because the game is over.
             Console.ReadLine();
         }

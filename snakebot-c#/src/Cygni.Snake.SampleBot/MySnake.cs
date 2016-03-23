@@ -9,10 +9,10 @@ namespace Cygni.Snake.SampleBot
             : base(name, color, snakeClient)
         {
         }
-
+        
         protected override MovementDirection OnGameTurn(Map map, long gameTick)
         {
-            ConsoleMapPrinter.Printer(map, PlayerInfos);
+            Printer.Enque(map);
             // figure out a good move
 
             // do calculated move
