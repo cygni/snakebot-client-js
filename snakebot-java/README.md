@@ -30,7 +30,7 @@ To run your client:
 
 ## Implementation
 
-There is only one class in this project, have a look at ExampleSnakePlayer.java. The main method to start in looks like this:
+There is only one class in this project, have a look at SimpleSnakePlayer.java. The main method to start in looks like this:
 
 ```java
 @Override
