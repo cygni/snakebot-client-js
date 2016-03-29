@@ -27,6 +27,7 @@
     "empty" "white"
     "snakehead"  (get-color (:playerId tile))
     "snakebody" (get-color (:playerId tile))
+    "obstacle" "yellow"
     "food" "red"))
 
 (defn format-tile [tile]
@@ -34,6 +35,7 @@
     "empty" " "
     "snakehead" (if (= (:playerId tile) (:player-id @s/game-state)) "$" "@")
     "snakebody" "#"
+    "obstacle" "0"
     "food" "F"))
 
 (defn get-printable-tile [tile]
