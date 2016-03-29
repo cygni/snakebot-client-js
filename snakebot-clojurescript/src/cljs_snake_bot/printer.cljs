@@ -8,13 +8,26 @@
 (def colors (nodejs/require "colors"))
 
 (def messages (atom []))
+(def snake-colors (atom []))
+
+(defn get-next-color []
+ (let [color (first @s/snake-colors)]
+   (swap! s/snake-colors subvec 1)
+   color))
+
+(defn get-color [id]
+  (let [c (some #(when (= (:id %) id) (:color %)) @snake-colors)]
+    (if (some? c)
+      c
+      (do (swap! snake-colors conj {:id id :color (get-next-color)})
+          (get-color id)))))
 
 (defn get-tile-color [tile]
   (condp = (:content tile)
-    "empty" colors.white
-    "snakehead" (if (= (:playerId tile) (:player-id @s/game-state)) colors.green colors.cyan)
-    "snakebody" (if (= (:playerId tile) (:player-id @s/game-state)) colors.green colors.cyan)
-    "food" colors.red))
+    "empty" "white"
+    "snakehead"  (get-color (:playerId tile))
+    "snakebody" (get-color (:playerId tile))
+    "food" "red"))
 
 (defn format-tile [tile]
   (condp = (:content tile)
@@ -24,15 +37,17 @@
     "food" "F"))
 
 (defn get-printable-tile [tile]
-  ((get-tile-color tile) (format-tile tile)))
+  (colors.stylize (format-tile tile) (get-tile-color tile)))
+
+(defn get-printable-snake-info [snake]
+  (colors.stylize (str (:name snake) (if (not (:alive snake)) "- [RIP]" "") "-" (:points snake) "pts" "-" (:id snake)) (get-color (:id snake))))
 
 (defn print-pretty-map [map]
   (let [tiles (apply mapv list (:tiles map))
         snakeInfos (:snakeInfos map)
         firstTiles (take (count snakeInfos) tiles)
         rest (drop (count snakeInfos) tiles)]
-   (println)
-   (mapv #(println (mapv (fn [t] (get-printable-tile t)) %1) (:name %2) "-" (:points %2) "pts") firstTiles snakeInfos)
+   (mapv #(println (mapv (fn [t] (get-printable-tile t)) %1) (get-printable-snake-info %2)) firstTiles snakeInfos)
    (mapv #(println (mapv (fn [t] (get-printable-tile t)) %)) rest)))
 
 (defn print-registration-message [msg]
@@ -77,6 +92,7 @@
 
 (defn print-map-updated-message [msg]
   (when (:pretty-print-map-updated s/printer-settings)
+    (println "\ngame tick: " (:gameTick msg))
     (print-pretty-map (:map msg))))
 
 (defn renderer []
@@ -92,5 +108,6 @@
             c/snake-died-message (print-snake-died-message msg)
             c/game-starting-message (print-game-starting-message msg)
             c/invalid-player-name-message (print-invalid-player-name-message msg))))
-      (if (s/state-get :game-running)
+      (if (or (s/state-get :game-running)
+              (> (count @messages) 0))
         (recur))))

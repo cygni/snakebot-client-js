@@ -15,6 +15,8 @@
 (def host-port "80")
 (def game-mode "training")
 
+(def snake-colors (atom ["green" "blue" "cyan" "yellow" "gray"]))
+
 (defn state-get [key]
   (key @game-state))
 
@@ -28,11 +30,11 @@
 
 (def printer-settings
    {:pretty-print-map-updated true
-    :pretty-print-game-ended false
+    :pretty-print-game-ended true
     :pretty-print-game-starting false
     :pretty-print-snake-died true
-    :pretty-print-invalid-player-name false
-    :pretty-print-player-registration false})
+    :pretty-print-invalid-player-name true
+    :pretty-print-player-registration true})
 
 (def default-map
   {:width 10
