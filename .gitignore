@@ -16,3 +16,4 @@ out
 
 # OSX
 .DS_Store
+/snakebot-clojurescript/snake-bot.js
