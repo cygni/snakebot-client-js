@@ -17,7 +17,7 @@ When you have walked the path of the righteous you will earn a seat in the high 
 2. with a command prompt/ terminal traverse to the root folder where the project.clj file is located
 3. lein deps
 4. lein cljsbuild once
-5. node ./server.js
+5. node ./snake-bot.js
 
 ### Development tips
 
