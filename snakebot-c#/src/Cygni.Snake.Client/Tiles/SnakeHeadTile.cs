@@ -1,4 +1,6 @@
-﻿namespace Cygni.Snake.Client.Tiles
+﻿using System;
+
+namespace Cygni.Snake.Client.Tiles
 {
     public class SnakeHeadTile : SnakePartTile, ITileContent
     {
@@ -11,6 +13,11 @@
         public SnakeHeadTile(string playerId, string name) : base(playerId)
         {
             Name = name;
+        }
+        public void Print()
+        {
+            Console.ForegroundColor = Color;
+            Console.Write("@");
         }
     }
 }

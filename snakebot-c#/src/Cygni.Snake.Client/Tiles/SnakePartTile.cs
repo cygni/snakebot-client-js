@@ -1,8 +1,12 @@
-﻿namespace Cygni.Snake.Client.Tiles
+﻿using System;
+using System.Collections.Generic;
+using Cygni.Snake.Client.Communication;
+
+namespace Cygni.Snake.Client.Tiles
 {
-    public abstract class SnakePartTile
+    public abstract class SnakePartTile : Colored
     {
-        protected SnakePartTile(string playerId)
+        protected SnakePartTile(string playerId) : base(playerId)
         {
             PlayerId = playerId;
         }

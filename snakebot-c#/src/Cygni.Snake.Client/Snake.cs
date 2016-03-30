@@ -8,14 +8,17 @@ namespace Cygni.Snake.Client
     /// <summary>
     /// A skeleton class to help create snakes.
     /// </summary>
-    public abstract class Snake
+    public abstract class Snake : IDisposable
     {
         public string Name { get; }
         public string Color { get; }
         public bool IsPlaying { get; private set; }
-        
+        public string PlayerId { get; private set; }
+        public bool GameRunning { get; set; } = true;
+
         private readonly ISnakeClient _client;
         private long _gameTick;
+        protected readonly ConsoleMapPrinter Printer;
 
         protected readonly IList<PlayerInfo> PlayerInfos = new List<PlayerInfo>();
 
@@ -24,6 +27,8 @@ namespace Cygni.Snake.Client
             Name = name;
             Color = color;
             _client = client;
+            Printer = new ConsoleMapPrinter(PlayerInfos);
+            Printer.Start();
 
             _client.OnConnected(OnClientConnected);
             _client.OnSessionClosed(OnSessionClosed);
@@ -32,6 +37,15 @@ namespace Cygni.Snake.Client
             _client.OnGameStarting(OnGameStarting);
             _client.OnGameEnded(OnGameEnded);
             _client.OnMapUpdate(OnMapUpdate);
+            _client.OnSnakeDead(OnSnakeDead);
+        }
+
+        private void OnSnakeDead(SnakeDead snakeDead)
+        {
+            if (PlayerId == snakeDead.PlayerId)
+                IsPlaying = false;
+
+            Printer.Enque(snakeDead);
         }
 
         protected virtual void OnClientConnected()
@@ -46,13 +60,13 @@ namespace Cygni.Snake.Client
 
         protected virtual void OnGameStarting(GameStarting gameStarting)
         {
-            IsPlaying = true;
+            GameRunning = true;
         }
 
         protected virtual void OnGameEnded(GameEnded gameEnded)
         {
-            ConsoleMapPrinter.Printer(gameEnded.Map, PlayerInfos);
-            IsPlaying = false;
+            Printer.Enque(gameEnded);
+            GameRunning = false;
         }
 
         private void OnMapUpdate(MapUpdate mapUpdate)
@@ -66,9 +80,11 @@ namespace Cygni.Snake.Client
 
         protected virtual void OnPlayerRegistered(PlayerRegistered playerRegistered)
         {
-            PlayerInfos.Add(new PlayerInfo(playerRegistered.ReceivingPlayerId, playerRegistered.Color));
+            PlayerId = playerRegistered.ReceivingPlayerId;
+            PlayerInfos.Add(new PlayerInfo(PlayerId, playerRegistered.Color));
+            IsPlaying = true;
 
-            if(_client.GameMode == "training")
+            if (_client.GameMode == "training")
                 _client.StartGame(playerRegistered.GameId, playerRegistered.ReceivingPlayerId);
         }
 
@@ -80,5 +96,10 @@ namespace Cygni.Snake.Client
         }
 
         protected abstract MovementDirection OnGameTurn(Map map, long gameTick);
+
+        public void Dispose()
+        {
+            Printer?.Close();
+        }
     }
 }

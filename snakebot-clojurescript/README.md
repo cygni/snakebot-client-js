@@ -44,6 +44,8 @@ instead of "lein cljsbuild once" do "lein cljsbuild auto" this will start a file
 
 Update the settings of your client either if you want to change what the printer prints, the map used for the games, if you are the host for the game or not, or what hostname/port/gamemode the server is running.
 
+You can also change what colors the snakes will be assigned to. All that you need to do is to change the snake-colors atom. Available options are; black, red, green, yellow, blue, magenta, cyan, white, gray and if the author of the colors.js package accepts my pull request you will also have; america, rainbow, random and zebra. Just remember that the color names are case sensitive.
+
 ### Events.cljs
 
 Here is where you will include your snake. Update the final line of "on-map-updated" and pass it any valid movement directional string and it will send that to the server. A snippet can be found below:
@@ -88,6 +90,10 @@ Woho!
 
 Update this one if you need more NodeJs dependencies or if you need to optimize your solution or something similar.
 To see how NodeJs dependencies are used. Look at the core.cljs file.
+
+## Utils
+
+There is a small utils library included that provides some basic helper functions. Documentation for the functions are found within the utils.cljs file.
 
 
 You have now the ability to be one of the cool kids. Yay you!

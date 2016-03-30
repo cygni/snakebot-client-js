@@ -6,7 +6,6 @@
             [cljs-snake-bot.snake-examples.edge-snake :as es]))
 
 (defn on-player-registered [msg]
-  (p/print-registration-message msg)
   (s/state-set-many {:player-name (:name msg)
                      :player-id (:receivingPlayerId msg)
                      :player-color (:color msg)
@@ -17,22 +16,18 @@
 
 
 (defn on-map-updated [msg]
-  (p/print-map-updated-message msg)
   (s/state-set :game-tick (:gameTick msg))
   (msgs/get-move-message (s/state-get :player-id) (s/state-get :game-tick) (es/get-next-movement msg)))
 
 (defn on-game-ended [msg]
-  (p/print-game-ended-message msg)
   (s/state-set :game-running false?)
   nil)
 
 (defn on-snake-died [msg]
-  (p/print-snake-died-message msg)
   (s/state-set :is-playing false?)
   nil)
 
 (defn on-game-starting [msg]
-  (p/print-game-starting-message msg)
   (s/state-set-many {:number-of-players (:noofPlayers msg)
                      :game-height (:height msg)
                      :game-width (:width msg)
@@ -41,5 +36,4 @@
   nil)
 
 (defn on-invalid-player-name [msg]
-  (p/print-invalid-player-name-message msg)
   nil)

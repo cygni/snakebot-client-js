@@ -1,8 +1,10 @@
-﻿using Cygni.Snake.Client.Communication.Messages;
+﻿using System;
+using Cygni.Snake.Client.Communication;
+using Cygni.Snake.Client.Communication.Messages;
 
 namespace Cygni.Snake.Client.Events
 {
-    public class GameEnded : GameEvent
+    public class GameEnded : GameEvent, IPrintable
     {
         public long GameTick { get; }
 
@@ -18,6 +20,13 @@ namespace Cygni.Snake.Client.Events
             GameTick = gameTick;
             PlayerWinnerId = playerWinnerId;
             Map = map;
+        }
+
+        public void Print()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Game Ended");
+            Map.Print();
         }
     }
 }
