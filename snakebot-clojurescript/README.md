@@ -96,4 +96,15 @@ To see how NodeJs dependencies are used. Look at the core.cljs file.
 There is a small utils library included that provides some basic helper functions. Documentation for the functions are found within the utils.cljs file.
 
 
+## Tests
+
+There are a couple of tests written for this client. They can be found within the test folder.
+To run these tests do the following:
+
+1. Download and install SlimerJS. Follow the instructions at https://slimerjs.org/ and remember to set the script to your path
+2. in a terminal traverse to the project root
+3. lein deps
+4. lein doo slimer test
+
+
 You have now the ability to be one of the cool kids. Yay you!
