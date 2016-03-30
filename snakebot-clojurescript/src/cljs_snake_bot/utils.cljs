@@ -65,13 +65,14 @@
         target-x (+ (:x my-head) (:x-d action-template))
         target-y (+ (:y my-head) (:y-d action-template))
         target-tile (get-tile-at target-x target-y tiles)]
-   (condp = (:content target-tile)
-     "empty" "nothing"
-     "food" "food"
-     "obstacle" "death"
-     "snakehead" "death"
-     "snakebody" "death"
-     "death")))
+   (when (and (some? my-head) (some? action-template))
+     (condp = (:content target-tile)
+       "empty" "nothing"
+       "food" "food"
+       "obstacle" "death"
+       "snakehead" "death"
+       "snakebody" "death"
+       "death"))))
 
 ;Function used to evaluate if one can use a direction or not
 ;Takes a direction as a string, an id of a snake, and the tiles from a map update event
@@ -80,5 +81,6 @@
   (not= (get-result-of-dir dir id tiles) "death"))
 
 ;Calculates the manhattan distanccec from a start point; x,y to a target point; target-x, target-y
-(defn manhattan-distance [x y target-x target-y]
-  (+ (Math.abs (- x target-x)) (Math.abs (- y target-y))))
+(defn manhattan-distance
+  ([{x1 :x y1 :y} {x2 :x y2 :y}] (+ (Math.abs (- x1 x2)) (Math.abs (- y1 y2))))
+  ([x y target-x target-y] (+ (Math.abs (- x target-x)) (Math.abs (- y target-y)))))

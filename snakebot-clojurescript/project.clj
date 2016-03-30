@@ -10,7 +10,8 @@
 
   :plugins [[lein-cljsbuild "1.1.1"]
             [lein-figwheel "0.5.0-2"]
-            [lein-npm "0.6.1"]]
+            [lein-npm "0.6.1"]
+            [lein-doo "0.1.7-SNAPSHOT"]]
 
   :source-paths ["src"]
 
@@ -21,9 +22,18 @@
                   "target"]
 
   :cljsbuild {
-    :builds [{:source-paths ["src"]
+    :builds [{:id "dev"
+              :source-paths ["src"]
               :compiler {
                 :output-to "snake-bot.js"
                 :output-dir "target/server_prod"
                 :target :nodejs
-                :optimizations :simple}}]})
+                :optimizations :simple}},
+             {:id "test"
+              :source-paths ["src" "test"]
+              :compiler {
+                         :output-to "target/test/testmain.js"
+                         :output-dir "target/test"
+                         :main cljs-snake-bot.runner
+                         :optimizations :none
+                         :target :nodej}}]})
