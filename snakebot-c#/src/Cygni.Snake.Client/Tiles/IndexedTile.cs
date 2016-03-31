@@ -1,7 +1,6 @@
 ﻿using System;
-using Cygni.Snake.Client.Tiles;
 
-namespace Cygni.Snake.Client.Utils
+namespace Cygni.Snake.Client.Tiles
 {
     public class IndexedTile
     {
