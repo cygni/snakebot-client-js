@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cygni.Snake.Client;
 using Cygni.Snake.Client.Tiles;
-using Cygni.Snake.Client.Utils;
 using Xunit;
 
 namespace CygniSnakeBot.tests
