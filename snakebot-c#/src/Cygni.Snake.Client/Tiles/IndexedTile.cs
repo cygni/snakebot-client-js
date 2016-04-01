@@ -4,11 +4,18 @@ namespace Cygni.Snake.Client.Tiles
 {
     public class IndexedTile
     {
-        public ITileContent Tile { get; set; }
+        public IndexedTile(ITileContent tile, int x, int y)
+        {
+            Tile = tile;
+            X = x;
+            Y = y;
+        }
 
-        public int X { get; set; }
+        public ITileContent Tile { get; }
 
-        public int Y { get; set; }
+        public int X { get; }
+
+        public int Y { get; }
 
         public int ManhattanDistanceTo(IndexedTile other)
         {

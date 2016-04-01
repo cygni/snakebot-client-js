@@ -12,7 +12,7 @@ namespace Cygni.Snake.Client
 
         public int Height { get; }
 
-        public IEnumerable<IEnumerable<ITileContent>> Tiles { get; }
+        public IEnumerable<IndexedTile> Tiles { get; }
 
         public IEnumerable<SnakeInfo> SnakeInfos { get; }
 
@@ -20,18 +20,18 @@ namespace Cygni.Snake.Client
         {
             Width = width;
             Height = height;
-            Tiles = tiles;
-            SnakeInfos = snakeInfos;
+            Tiles = IndexizeTiles(tiles);
+            SnakeInfos = snakeInfos?.ToList();
         }
 
         private IEnumerable<IndexedTile> GetTilesOfType(string contentType)
         {
-            return IndexizeTiles().Where(t => t.Tile.Content.Equals(contentType));
+            return Tiles.Where(t => t.Tile.Content.Equals(contentType));
         }
 
-        private IEnumerable<IndexedTile> IndexizeTiles()
+        private static IEnumerable<IndexedTile> IndexizeTiles(IEnumerable<IEnumerable<ITileContent>> tiles)
         {
-            return Tiles.SelectMany((row, x) => row.Select((tile, y) => new IndexedTile() { Tile = tile, X = x, Y = y }));
+            return tiles.SelectMany((row, x) => row.Select((tile, y) => new IndexedTile(tile, x, y))).ToList();
         }
 
         public IEnumerable<IndexedTile> GetFoods()
@@ -55,7 +55,7 @@ namespace Cygni.Snake.Client
 
         public IEnumerable<IndexedTile> GetSnakeParts()
         {
-            return IndexizeTiles().Where(t => t.Tile.Content.Equals(SnakeBodyTile.CONTENT) || t.Tile.Content.Equals(SnakeHeadTile.CONTENT));
+            return Tiles.Where(t => t.Tile.Content.Equals(SnakeBodyTile.CONTENT) || t.Tile.Content.Equals(SnakeHeadTile.CONTENT));
         }
 
         public IEnumerable<IndexedTile> GetSnakeSpread(string playerId)
@@ -74,8 +74,7 @@ namespace Cygni.Snake.Client
 
         public DirectionalResult GetResultOfDirection(string playerId, MovementDirection dir)
         {
-            var indexizedTiles = IndexizeTiles().ToList();
-            var myHead = indexizedTiles.FirstOrDefault(h => h.Tile is SnakeHeadTile && ((SnakeHeadTile)h.Tile).PlayerId.Equals(playerId));
+            var myHead = Tiles.FirstOrDefault(h => h.Tile is SnakeHeadTile && ((SnakeHeadTile)h.Tile).PlayerId.Equals(playerId));
 
             var tx = myHead.X;
             var ty = myHead.Y;
@@ -98,7 +97,7 @@ namespace Cygni.Snake.Client
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
             }
 
-            var targetTile = indexizedTiles.FirstOrDefault(t => t.X == tx && t.Y == ty);
+            var targetTile = Tiles.FirstOrDefault(t => t.X == tx && t.Y == ty);
             switch (targetTile?.Tile.Content)
             {
                 case SnakeBodyTile.CONTENT:
@@ -122,14 +121,15 @@ namespace Cygni.Snake.Client
         public void Print()
         {
             Console.WriteLine(new string('-', Width + 2));
+            var tileGroups = Tiles.GroupBy(t => t.Y).ToList();
             for (var y = 0; y < Height; y++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("|"); // end line
 
-                for (var x = 0; x < Width; x++)
+                foreach (var indexedTile in tileGroups.ElementAt(y))
                 {
-                    Tiles.ElementAt(x).ElementAt(y).Print();
+                    indexedTile.Tile.Print();
                 }
 
                 Console.ForegroundColor = ConsoleColor.White;
