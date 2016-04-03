@@ -16,7 +16,6 @@ namespace Cygni.Snake.Client
         public bool GameRunning { get; set; } = true;
 
         private readonly ISnakeClient _client;
-        private long _gameTick;
         protected readonly ConsoleMapPrinter Printer;
 
         protected SnakeBot(string name, string color, ISnakeClient client)
@@ -68,11 +67,10 @@ namespace Cygni.Snake.Client
 
         private void OnMapUpdate(MapUpdate mapUpdate)
         {
-            _gameTick = mapUpdate.GameTick;
-            
-            var direction = OnGameTurn(mapUpdate.Map, _gameTick);
+            long gameTick = mapUpdate.GameTick;
+            var direction = OnGameTurn(mapUpdate.Map, gameTick);
 
-            _client.IssueMovementCommand(direction, _gameTick);
+            _client.IssueMovementCommand(direction, gameTick);
         }
 
         protected virtual void OnPlayerRegistered(PlayerRegistered playerRegistered)
