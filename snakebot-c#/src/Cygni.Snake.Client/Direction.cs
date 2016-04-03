@@ -1,6 +1,6 @@
 ﻿namespace Cygni.Snake.Client
 {
-    public enum MovementDirection
+    public enum Direction
     {
         Up,
         Down,

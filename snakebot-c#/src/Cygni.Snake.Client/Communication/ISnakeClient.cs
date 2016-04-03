@@ -16,7 +16,7 @@ namespace Cygni.Snake.Client.Communication
 
         string GameMode { get; }
         void StartGame(string gameId, string playerId);
-        void IssueMovementCommand(MovementDirection direction, long gameTick);
+        void IssueMovementCommand(Direction direction, long gameTick);
         void RegisterPlayer(string playerName, string playerColor);
         void Connect();
     }

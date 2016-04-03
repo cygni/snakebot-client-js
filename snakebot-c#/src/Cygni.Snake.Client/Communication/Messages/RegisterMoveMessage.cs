@@ -2,13 +2,13 @@
 {
     public class RegisterMoveMessage : GameMessage
     {
-        public MovementDirection Direction { get; }
+        public Direction Direction { get; }
 
         public long GameTick { get; }
 
         public override string Type => MessageType.RegisterMove;
 
-        public RegisterMoveMessage(MovementDirection direction, long gameTick, string playerId)
+        public RegisterMoveMessage(Direction direction, long gameTick, string playerId)
             : base(playerId)
         {
             Direction = direction;

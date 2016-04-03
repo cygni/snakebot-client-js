@@ -13,20 +13,24 @@ import se.cygni.snake.api.model.SnakeDirection;
 import se.cygni.snake.api.response.PlayerRegistered;
 import se.cygni.snake.client.AnsiPrinter;
 import se.cygni.snake.client.BaseSnakeClient;
+import se.cygni.snake.client.MapUtil;
 
-public class ExampleSnakePlayer extends BaseSnakeClient {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class SimpleSnakePlayer extends BaseSnakeClient {
 
     private static Logger log = LoggerFactory
-            .getLogger(ExampleSnakePlayer.class);
+            .getLogger(SimpleSnakePlayer.class);
 
     private AnsiPrinter ansiPrinter;
-
 
     public static void main(String[] args) {
 
         Runnable task = () -> {
 
-            ExampleSnakePlayer sp = new ExampleSnakePlayer();
+            SimpleSnakePlayer sp = new SimpleSnakePlayer();
             sp.connect();
 
             // Keep this process alive as long as the
@@ -47,7 +51,7 @@ public class ExampleSnakePlayer extends BaseSnakeClient {
         thread.start();
     }
 
-    public ExampleSnakePlayer() {
+    public SimpleSnakePlayer() {
         ansiPrinter = new AnsiPrinter(true);
     }
 
@@ -55,9 +59,34 @@ public class ExampleSnakePlayer extends BaseSnakeClient {
     public void onMapUpdate(MapUpdateEvent mapUpdateEvent) {
         ansiPrinter.printMap(mapUpdateEvent);
 
-        // Choose action here!
-        registerMove(mapUpdateEvent.getGameTick(), SnakeDirection.DOWN);
+        // MapUtil contains lot's of useful methods for querying the map!
+        MapUtil mapUtil = new MapUtil(mapUpdateEvent.getMap(), getPlayerId());
+
+
+        List<SnakeDirection> directions = new ArrayList<>();
+
+        // Let's see in which directions I can move
+        if (mapUtil.canIMoveInDirection(SnakeDirection.LEFT))
+            directions.add(SnakeDirection.LEFT);
+        if (mapUtil.canIMoveInDirection(SnakeDirection.RIGHT))
+            directions.add(SnakeDirection.RIGHT);
+        if (mapUtil.canIMoveInDirection(SnakeDirection.UP))
+            directions.add(SnakeDirection.UP);
+        if (mapUtil.canIMoveInDirection(SnakeDirection.DOWN))
+            directions.add(SnakeDirection.DOWN);
+
+        Random r = new Random();
+        SnakeDirection chosenDirection = SnakeDirection.DOWN;
+
+        // Choose a random direction
+        if (!directions.isEmpty())
+            chosenDirection = directions.get(r.nextInt(directions.size()));
+
+        // Register action here!
+        registerMove(mapUpdateEvent.getGameTick(), chosenDirection);
     }
+
+
 
     @Override
     public void onInvalidPlayerName(InvalidPlayerName invalidPlayerName) {
@@ -99,7 +128,7 @@ public class ExampleSnakePlayer extends BaseSnakeClient {
     public void onConnected() {
         log.info("Connected, registering for training...");
         GameSettings gameSettings = new GameSettings.GameSettingsBuilder()
-                .withWidth(50)
+                .withWidth(25)
                 .withHeight(25)
                 .withMaxNoofPlayers(5)
                 .build();

@@ -2,142 +2,158 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cygni.Snake.Client.Communication;
-using Cygni.Snake.Client.Tiles;
 
 namespace Cygni.Snake.Client
 {
     public class Map : IPrintable
     {
+        private readonly IReadOnlyList<int> _foodPositions;
+        private readonly IReadOnlyList<int> _obstaclePositions;
+        private readonly IReadOnlyList<SnakeInfo> _snakeInfos;
+
         public int Width { get; }
 
         public int Height { get; }
 
-        public IEnumerable<IndexedTile> Tiles { get; }
-
-        public IEnumerable<SnakeInfo> SnakeInfos { get; }
-
-        public Map(int width, int height, IEnumerable<IEnumerable<ITileContent>> tiles, IEnumerable<SnakeInfo> snakeInfos)
+        public Map(int width, int height, IEnumerable<SnakeInfo> snakeInfos, IEnumerable<int> foodPositions, IEnumerable<int> obstaclePositions)
         {
+            // TODO: Consider enumerating to list of MapCoordinate instances. How to do this for snake-infos? Needs map width.
+            _foodPositions = foodPositions.ToList();
+            _obstaclePositions = obstaclePositions.ToList();
+            _snakeInfos = snakeInfos.ToList();
+
             Width = width;
             Height = height;
-            Tiles = IndexizeTiles(tiles);
-            SnakeInfos = snakeInfos?.ToList();
         }
 
-        private IEnumerable<IndexedTile> GetTilesOfType(string contentType)
+        public SnakeInfo GetSnake(string id)
         {
-            return Tiles.Where(t => t.Tile.Content.Equals(contentType));
+            return _snakeInfos.FirstOrDefault(s => s.Id.Equals(id, StringComparison.Ordinal));
         }
 
-        private static IEnumerable<IndexedTile> IndexizeTiles(IEnumerable<IEnumerable<ITileContent>> tiles)
+        public IEnumerable<MapCoordinate> GetFoods()
         {
-            return tiles.SelectMany((row, x) => row.Select((tile, y) => new IndexedTile(tile, x, y))).ToList();
+            return _foodPositions.Select(p => MapCoordinate.FromIndex(p, Width));
         }
 
-        public IEnumerable<IndexedTile> GetFoods()
+        public IEnumerable<MapCoordinate> GetObstacles()
         {
-            return GetTilesOfType(FoodTile.CONTENT);
+            return _obstaclePositions.Select(p => MapCoordinate.FromIndex(p, Width));
         }
 
-        public IEnumerable<IndexedTile> GetObstacles()
+        public IEnumerable<MapCoordinate> GetSnakeHeads()
         {
-            return GetTilesOfType(ObstacleTile.CONTENT);
+            return _snakeInfos.Where(snake => snake.Positions.Any())
+                .Select(snake => MapCoordinate.FromIndex(snake.HeadPosition, Width));
         }
 
-        public IEnumerable<IndexedTile> GetSnakeHeads()
+        public IEnumerable<MapCoordinate> GetSnakeBodies()
         {
-            return GetTilesOfType(SnakeHeadTile.CONTENT);
-        }
-        public IEnumerable<IndexedTile> GetSnakeBodies()
-        {
-            return GetTilesOfType(SnakeBodyTile.CONTENT);
+            return _snakeInfos.Where(s => s.Positions.Any())
+                .SelectMany(s => s.Positions.Skip(1))
+                .Select(p => MapCoordinate.FromIndex(p, Width));
         }
 
-        public IEnumerable<IndexedTile> GetSnakeParts()
+        public IEnumerable<MapCoordinate> GetSnakeParts()
         {
-            return Tiles.Where(t => t.Tile.Content.Equals(SnakeBodyTile.CONTENT) || t.Tile.Content.Equals(SnakeHeadTile.CONTENT));
+            return _snakeInfos.SelectMany(s => s.Positions).Select(p => MapCoordinate.FromIndex(p, Width));
         }
 
-        public IEnumerable<IndexedTile> GetSnakeSpread(string playerId)
+        public IEnumerable<MapCoordinate> GetSnakeSpread(string playerId)
         {
-            var head = GetSnakeHeads().FirstOrDefault(h => h.Tile is SnakeHeadTile && ((SnakeHeadTile)h.Tile).PlayerId.Equals(playerId));
-            var body = GetSnakeBodies().Where(b => b.Tile is SnakeBodyTile && ((SnakeBodyTile)b.Tile).PlayerId.Equals(playerId)).OrderBy(b => ((SnakeBodyTile)b.Tile).Order);
-
-            if (head == null)
-                throw new ArgumentException($"Cannot find snake spread of snake with id:{playerId}");
-
-            var op = new List<IndexedTile>() { head };
-            op.AddRange(body);
-
-            return op;
-        }
-
-        public DirectionalResult GetResultOfDirection(string playerId, MovementDirection dir)
-        {
-            var myHead = Tiles.FirstOrDefault(h => h.Tile is SnakeHeadTile && ((SnakeHeadTile)h.Tile).PlayerId.Equals(playerId));
-
-            var tx = myHead.X;
-            var ty = myHead.Y;
-
-            switch (dir)
+            var snake = GetSnake(playerId);
+            if (snake == null)
             {
-                case MovementDirection.Up:
-                    ty--;
-                    break;
-                case MovementDirection.Down:
-                    ty++;
-                    break;
-                case MovementDirection.Left:
-                    tx--;
-                    break;
-                case MovementDirection.Right:
-                    tx++;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
+                throw new ArgumentException($"No snake with id: {playerId}");
             }
 
-            var targetTile = Tiles.FirstOrDefault(t => t.X == tx && t.Y == ty);
-            switch (targetTile?.Tile.Content)
+            return snake.Positions.Select(index => MapCoordinate.FromIndex(index, Width));
+        }
+
+        public DirectionalResult GetResultOfDirection(string playerId, Direction dir)
+        {
+            var mySnake = GetSnake(playerId);
+            if (mySnake == null)
             {
-                case SnakeBodyTile.CONTENT:
-                case SnakeHeadTile.CONTENT:
-                case ObstacleTile.CONTENT:
+                throw new ArgumentException($"No snake with id: {playerId}");
+            }
+
+            var myHead = MapCoordinate.FromIndex(mySnake.HeadPosition, Width);
+            var target = myHead.GetDestination(dir);
+
+            var targetTile = GetTileAt(ToIndex(target.X, target.Y));
+            switch (targetTile.Type)
+            {
+                case TileType.SnakeHead:
+                case TileType.SnakeBody:
+                case TileType.Obstacle:
                     return DirectionalResult.Death;
-                case FoodTile.CONTENT:
+                case TileType.Food:
                     return DirectionalResult.Points;
-                case EmptyTile.CONTENT:
+                case TileType.Empty:
                     return DirectionalResult.Nothing;
             }
 
             return DirectionalResult.Death;
         }
 
-        public bool AbleToUseDirection(string playerId, MovementDirection dir)
+        public bool AbleToUseDirection(string playerId, Direction dir)
         {
             return GetResultOfDirection(playerId, dir).Equals(DirectionalResult.Death) == false;
+        }
+
+        private Tile GetTileAt(int index)
+        {
+            foreach (var snake in _snakeInfos)
+            {
+                if (index == snake.HeadPosition)
+                {
+                    return Tile.SnakeHead(snake.Id);
+                }
+                if (snake.Positions.Any() && snake.Positions.Contains(index))
+                {
+                    return Tile.SnakeBody(snake.Id);
+                }
+            }
+
+            if (_foodPositions.Contains(index))
+            {
+                return Tile.Food();
+            }
+
+            if (_obstaclePositions.Contains(index) || index < 0 || index >= Width * Height)
+            {
+                return Tile.Obstacle();
+            }
+            return Tile.Empty();
         }
 
         public void Print()
         {
             Console.WriteLine(new string('-', Width + 2));
-            var tileGroups = Tiles.GroupBy(t => t.Y).ToList();
             for (var y = 0; y < Height; y++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("|"); // end line
 
-                foreach (var indexedTile in tileGroups.ElementAt(y))
+                for (var x = 0; x < Width; ++x)
                 {
-                    indexedTile.Tile.Print();
+                    int index = ToIndex(x, y);
+                    var tile = GetTileAt(index);
+                    Console.ForegroundColor = tile.PrintColor;
+                    Console.Write(tile.PrintCharacter);
                 }
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("| ");
-                SnakeInfos.ElementAtOrDefault(y)?.Print();
                 Console.Write("\n"); // end line
             }
             Console.WriteLine(new string('-', Width + 2));
+        }
+
+        private int ToIndex(int x, int y)
+        {
+            return x + y * Width;
         }
     }
 }

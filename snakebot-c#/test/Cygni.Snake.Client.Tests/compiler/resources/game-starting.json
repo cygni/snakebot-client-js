@@ -1,0 +1,8 @@
+﻿{
+    "gameId": "1a3d727e-40cb-4982-ba75-9cd67c0cf896",
+    "noofPlayers": 5,
+    "width": 50,
+    "height": 25,
+    "receivingPlayerId": "fb5cbf29-fd3c-4012-af0b-bd32ad10c9f7",
+    "type": "se.cygni.snake.api.event.GameStartingEvent"
+}

@@ -12,12 +12,9 @@ namespace Cygni.Snake.Client
         private readonly Queue<IPrintable> _mapPrintQueue;
         private CancellationTokenSource _token;
         
-        public IEnumerable<PlayerInfo> PlayerInfos { get; set; }
-        
-        public ConsoleMapPrinter(IEnumerable<PlayerInfo> playerInfos)
+        public ConsoleMapPrinter()
         {
             _mapPrintQueue = new Queue<IPrintable>();
-            PlayerInfos = playerInfos;
         }
 
         public void Enque(IPrintable printable)

@@ -155,7 +155,7 @@ namespace Cygni.Snake.Client.Communication
             SendMessage(new PlayerRegistrationMessage(playerName, playerColor, _gameSettings, _playerId));
         }
 
-        public void IssueMovementCommand(MovementDirection direction, long gameTick)
+        public void IssueMovementCommand(Direction direction, long gameTick)
         {
             SendMessage(new RegisterMoveMessage(direction, gameTick, _playerId));
         }

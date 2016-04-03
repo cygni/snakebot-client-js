@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Cygni.Snake.Client.Communication;
 using Cygni.Snake.Client.Events;
 
@@ -8,7 +7,7 @@ namespace Cygni.Snake.Client
     /// <summary>
     /// A skeleton class to help create snakes.
     /// </summary>
-    public abstract class Snake : IDisposable
+    public abstract class SnakeBot : IDisposable
     {
         public string Name { get; }
         public string Color { get; }
@@ -17,17 +16,14 @@ namespace Cygni.Snake.Client
         public bool GameRunning { get; set; } = true;
 
         private readonly ISnakeClient _client;
-        private long _gameTick;
         protected readonly ConsoleMapPrinter Printer;
 
-        protected readonly IList<PlayerInfo> PlayerInfos = new List<PlayerInfo>();
-
-        protected Snake(string name, string color, ISnakeClient client)
+        protected SnakeBot(string name, string color, ISnakeClient client)
         {
             Name = name;
             Color = color;
             _client = client;
-            Printer = new ConsoleMapPrinter(PlayerInfos);
+            Printer = new ConsoleMapPrinter();
             Printer.Start();
 
             _client.OnConnected(OnClientConnected);
@@ -71,17 +67,15 @@ namespace Cygni.Snake.Client
 
         private void OnMapUpdate(MapUpdate mapUpdate)
         {
-            _gameTick = mapUpdate.GameTick;
-            
-            var direction = OnGameTurn(mapUpdate.Map, _gameTick);
+            long gameTick = mapUpdate.GameTick;
+            var direction = OnGameTurn(mapUpdate.Map, gameTick);
 
-            _client.IssueMovementCommand(direction, _gameTick);
+            _client.IssueMovementCommand(direction, gameTick);
         }
 
         protected virtual void OnPlayerRegistered(PlayerRegistered playerRegistered)
         {
             PlayerId = playerRegistered.ReceivingPlayerId;
-            PlayerInfos.Add(new PlayerInfo(PlayerId, playerRegistered.Color));
             IsPlaying = true;
 
             if (_client.GameMode == "training")
@@ -95,11 +89,20 @@ namespace Cygni.Snake.Client
             throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
         }
 
-        protected abstract MovementDirection OnGameTurn(Map map, long gameTick);
+        protected abstract Direction OnGameTurn(Map map, long gameTick);
 
         public void Dispose()
         {
-            Printer?.Close();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Printer?.Close();
+            }
         }
     }
 }

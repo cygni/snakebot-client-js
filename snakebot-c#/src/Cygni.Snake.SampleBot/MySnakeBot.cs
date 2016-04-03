@@ -3,20 +3,20 @@ using Cygni.Snake.Client.Communication;
 
 namespace Cygni.Snake.SampleBot
 {
-    public class MySnake : Client.Snake
+    public class MySnakeBot : Client.SnakeBot
     {
-        public MySnake(string name, string color, ISnakeClient snakeClient)
+        public MySnakeBot(string name, string color, ISnakeClient snakeClient)
             : base(name, color, snakeClient)
         {
         }
         
-        protected override MovementDirection OnGameTurn(Map map, long gameTick)
+        protected override Direction OnGameTurn(Map map, long gameTick)
         {
             Printer.Enque(map);
             // figure out a good move
 
             // do calculated move
-            return MovementDirection.Down;
+            return Direction.Down;
         }
     }
 }

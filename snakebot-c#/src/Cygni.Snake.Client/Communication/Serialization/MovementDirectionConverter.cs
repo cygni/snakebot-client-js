@@ -8,17 +8,17 @@ namespace Cygni.Snake.Client.Communication.Serialization
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            JToken.FromObject(Enum.GetName(typeof (MovementDirection), value).ToUpper()).WriteTo(writer);
+            JToken.FromObject(Enum.GetName(typeof (Direction), value).ToUpper()).WriteTo(writer);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            return Enum.Parse(typeof (MovementDirection), reader.ReadAsString());
+            return Enum.Parse(typeof (Direction), reader.ReadAsString());
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof (MovementDirection);
+            return objectType == typeof (Direction);
         }
     }
 }

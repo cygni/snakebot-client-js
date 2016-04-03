@@ -1,41 +1,34 @@
-﻿using System;
-using Cygni.Snake.Client.Communication;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Cygni.Snake.Client
 {
-    public class SnakeInfo : Colored, IPrintable
+    public class SnakeInfo
     {
+        public SnakeInfo(string id, string name, int points, IEnumerable<int> positions)
+        {
+            Id = id;
+            Name = name;
+            Points = points;
+            Positions = positions?.ToList() ?? new List<int>();
+        }
+
         public string Id { get; }
 
         public string Name { get; }
 
-        public int Length { get; }
-
-        public int X { get; }
-
-        public int Y { get; }
-        
         public int Points { get; }
 
-        public SnakeInfo(string id, string name, int length, int x, int y, int points) : base(id)
-        {
-            Id = id;
-            Name = name;
-            Length = length;
-            X = x;
-            Y = y;
-            Points = points;
-        }
+        public IReadOnlyList<int> Positions { get; }
+
+        /// <summary>
+        /// Gets the position of this snakes head. Or -1 if this snake is dead.
+        /// </summary>
+        public int HeadPosition => Positions.Any() ? Positions.First() : -1;
 
         public override string ToString()
         {
             return Name + " - " + Points + " pts";
-        }
-
-        public void Print()
-        {
-            Console.ForegroundColor = Color;
-            Console.Write(this);
         }
     }
 }
