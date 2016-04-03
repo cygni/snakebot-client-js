@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Cygni.Snake.Client;
 using Cygni.Snake.Client.Communication;
 using Cygni.Snake.Client.Communication.Messages;
 using Cygni.Snake.Client.Communication.Serialization;
 using Cygni.Snake.Client.Events;
-using Cygni.Snake.Client.Tiles;
-using Xunit;
 using Moq;
+using Xunit;
 
-namespace CygniSnakeBot.tests
+namespace Cygni.Snake.Client.Tests
 {
     public class SnakeTests
     {
@@ -81,8 +79,7 @@ namespace CygniSnakeBot.tests
             clientMock.Setup(m => m.ReceiveAsync()).Returns(() =>
             {
                 clientMock.Setup(m => m.State).Returns(WebSocketState.Closed);
-                return Task.Factory.StartNew(() => new JsonConverter().Serialize(new MapUpdate("", "", 1337,
-                    new Map(0, 0, new List<IEnumerable<ITileContent>>(), new List<SnakeInfo>()))));
+                return Task.Factory.StartNew(() => TestResources.GetResourceText("map-update.json", Encoding.UTF8));
             });
 
             var sc = new SnakeClient("localhost", 1, "training", new GameSettings(), clientMock.Object,

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cygni.Snake.Client.Communication;
 
 namespace Cygni.Snake.Client
@@ -9,23 +11,22 @@ namespace Cygni.Snake.Client
 
         public string Name { get; }
 
-        public int Length { get; }
-
-        public int X { get; }
-
-        public int Y { get; }
-        
         public int Points { get; }
 
-        public SnakeInfo(string id, string name, int length, int x, int y, int points) : base(id)
+        public SnakeInfo(string id, string name, int points, IEnumerable<int> positions) : base(id)
         {
             Id = id;
             Name = name;
-            Length = length;
-            X = x;
-            Y = y;
             Points = points;
+            Positions = positions?.ToList() ?? new List<int>();
         }
+
+        public IReadOnlyList<int> Positions { get; }
+
+        /// <summary>
+        /// Gets the position of this snakes head. Or -1 if this snake is dead.
+        /// </summary>
+        public int HeadPosition => Positions.Any() ? Positions.First() : -1;
 
         public override string ToString()
         {

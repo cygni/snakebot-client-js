@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace CygniSnakeBot.tests.Helpers
+namespace Cygni.Snake.Client.Tests.Helpers
 {
     public static class Retry
     {

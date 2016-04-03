@@ -8,11 +8,8 @@ namespace Cygni.Snake.Client.Tiles
 
         public string Content => CONTENT;
         
-        public string Name { get; }
-
-        public SnakeHeadTile(string playerId, string name) : base(playerId)
+        public SnakeHeadTile(string playerId) : base(playerId)
         {
-            Name = name;
         }
         public void Print()
         {

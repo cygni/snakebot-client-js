@@ -8,15 +8,10 @@ namespace Cygni.Snake.Client.Tiles
 
         public string Content => CONTENT;
         
-        public int Order { get; }
-
-        public bool Tail { get; }
-
-        public SnakeBodyTile(string playerId, int order, bool tail) : base(playerId)
+        public SnakeBodyTile(string playerId) : base(playerId)
         {
-            Order = order;
-            Tail = tail;
         }
+
         public void Print()
         {
             Console.ForegroundColor = Color;

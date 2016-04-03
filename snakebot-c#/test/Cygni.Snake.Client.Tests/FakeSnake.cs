@@ -1,7 +1,6 @@
-﻿using Cygni.Snake.Client;
-using Cygni.Snake.Client.Communication;
+﻿using Cygni.Snake.Client.Communication;
 
-namespace CygniSnakeBot.tests
+namespace Cygni.Snake.Client.Tests
 {
     public class FakeSnake :Snake
     {
