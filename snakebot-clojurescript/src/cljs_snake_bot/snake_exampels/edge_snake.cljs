@@ -1,6 +1,6 @@
 (ns cljs-snake-bot.snake-examples.edge-snake
   (:require [cljs-snake-bot.settings :as s]
-            [cljs-snake-bot.utils :as u]))
+            [cljs-snake-bot.utils.map-utils :as mu]))
 
 ; This snake ot will try use the same algorithm as a basic maze solver
 ; It will follow this movement priority pattern: Right Up, Left, Down
@@ -10,14 +10,14 @@
 
 (def last-direction (atom "DOWN"))
 
-(defn is-usable [dir tiles]
- (u/able-to-use-dir dir (s/state-get :player-id) tiles))
+(defn is-usable [dir map]
+ (mu/able-to-use-dir dir (s/state-get :player-id) map))
 
 (defn get-next-movement [msg]
- (let [tiles (:tiles (:map msg))]
-   (if (is-usable @last-direction tiles)
+ (let [map (:map msg)]
+   (if (is-usable @last-direction map)
      @last-direction
-     (let [new-dir (some #(when (is-usable % tiles) %) dir-lookup)]
+     (let [new-dir (some #(when (is-usable % map) %) dir-lookup)]
        (if new-dir
          (do (reset! last-direction new-dir)
              new-dir)

@@ -35,5 +35,4 @@
                          :output-to "target/test/testmain.js"
                          :output-dir "target/test"
                          :main cljs-snake-bot.runner
-                         :optimizations :none
-                         :target :nodej}}]})
+                         :optimizations :none}}]})
