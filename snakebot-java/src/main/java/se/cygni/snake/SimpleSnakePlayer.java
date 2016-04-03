@@ -66,15 +66,11 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
         List<SnakeDirection> directions = new ArrayList<>();
 
         // Let's see in which directions I can move
-        if (mapUtil.canIMoveInDirection(SnakeDirection.LEFT))
-            directions.add(SnakeDirection.LEFT);
-        if (mapUtil.canIMoveInDirection(SnakeDirection.RIGHT))
-            directions.add(SnakeDirection.RIGHT);
-        if (mapUtil.canIMoveInDirection(SnakeDirection.UP))
-            directions.add(SnakeDirection.UP);
-        if (mapUtil.canIMoveInDirection(SnakeDirection.DOWN))
-            directions.add(SnakeDirection.DOWN);
-
+        for (SnakeDirection direction : SnakeDirection.values()) {
+            if (mapUtil.canIMoveInDirection(direction)) {
+                directions.add(direction);
+            }
+        }
         Random r = new Random();
         SnakeDirection chosenDirection = SnakeDirection.DOWN;
 
@@ -139,16 +135,6 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
     @Override
     public String getName() {
         return "#emil";
-    }
-
-    /**
-     * Note, color is currently not used.
-     *
-     * @return
-     */
-    @Override
-    public String getColor() {
-        return "black";
     }
 
     @Override
