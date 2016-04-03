@@ -9,9 +9,9 @@ namespace Cygni.Snake.Client.Tests
         {
         }
 
-        protected override MovementDirection OnGameTurn(Map map, long gameTick)
+        protected override Direction OnGameTurn(Map map, long gameTick)
         {
-            return MovementDirection.Down;
+            return Direction.Down;
         }
     }
 }

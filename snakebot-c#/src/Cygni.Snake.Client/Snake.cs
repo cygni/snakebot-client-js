@@ -95,7 +95,7 @@ namespace Cygni.Snake.Client
             throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
         }
 
-        protected abstract MovementDirection OnGameTurn(Map map, long gameTick);
+        protected abstract Direction OnGameTurn(Map map, long gameTick);
 
         public void Dispose()
         {

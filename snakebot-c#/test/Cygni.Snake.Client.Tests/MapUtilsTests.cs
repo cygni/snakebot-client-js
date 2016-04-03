@@ -139,10 +139,10 @@ namespace Cygni.Snake.Client.Tests
                 new SnakeInfo(String.Empty, String.Empty, 0, new[] {24}),
             }, new[] {1, 2, 23}, new int[0]);
 
-            Assert.Equal(map.GetResultOfDirection("bestsnake", MovementDirection.Up), DirectionalResult.Death);
-            Assert.Equal(map.GetResultOfDirection("bestsnake", MovementDirection.Right), DirectionalResult.Points);
-            Assert.Equal(map.GetResultOfDirection("bestsnake", MovementDirection.Left), DirectionalResult.Death);
-            Assert.Equal(map.GetResultOfDirection("bestsnake", MovementDirection.Down), DirectionalResult.Death);
+            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Up), DirectionalResult.Death);
+            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Right), DirectionalResult.Points);
+            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Left), DirectionalResult.Death);
+            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Down), DirectionalResult.Death);
         }
 
         [Fact]
@@ -157,10 +157,10 @@ namespace Cygni.Snake.Client.Tests
                 new SnakeInfo(String.Empty, String.Empty, 0, new[] {24}),
             }, new[] { 1, 2, 23 }, new int[0]);
 
-            Assert.False(map.AbleToUseDirection("bestsnake", MovementDirection.Up));
-            Assert.True(map.AbleToUseDirection("bestsnake", MovementDirection.Right));
-            Assert.False(map.AbleToUseDirection("bestsnake", MovementDirection.Left));
-            Assert.False(map.AbleToUseDirection("bestsnake", MovementDirection.Down));
+            Assert.False(map.AbleToUseDirection("bestsnake", Direction.Up));
+            Assert.True(map.AbleToUseDirection("bestsnake", Direction.Right));
+            Assert.False(map.AbleToUseDirection("bestsnake", Direction.Left));
+            Assert.False(map.AbleToUseDirection("bestsnake", Direction.Down));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Cygni.Snake.Client.Communication.Serialization
         {
             var contract = base.CreateContract(objectType);
 
-            if(typeof(MovementDirection).IsAssignableFrom(objectType))
+            if(typeof(Direction).IsAssignableFrom(objectType))
                 contract.Converter = new MovementDirectionConverter();
 
             return contract;

@@ -65,33 +65,13 @@ namespace Cygni.Snake.Client
             return snake.Positions.Select(index => MapCoordinate.FromIndex(index, Width));
         }
 
-        public DirectionalResult GetResultOfDirection(string playerId, MovementDirection dir)
+        public DirectionalResult GetResultOfDirection(string playerId, Direction dir)
         {
             var mySnake = _snakeInfos.FirstOrDefault(snake => snake.Id.Equals(playerId, StringComparison.Ordinal));
             var myHead = MapCoordinate.FromIndex(mySnake.HeadPosition, Width);
+            var target = myHead.GetDestination(dir);
 
-            var tx = myHead.X;
-            var ty = myHead.Y;
-
-            switch (dir)
-            {
-                case MovementDirection.Up:
-                    ty--;
-                    break;
-                case MovementDirection.Down:
-                    ty++;
-                    break;
-                case MovementDirection.Left:
-                    tx--;
-                    break;
-                case MovementDirection.Right:
-                    tx++;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
-            }
-
-            var targetTile = GetTileAt(ToIndex(tx, ty));
+            var targetTile = GetTileAt(ToIndex(target.X, target.Y));
             switch (targetTile.Type)
             {
                 case TileType.SnakeHead:
@@ -107,7 +87,7 @@ namespace Cygni.Snake.Client
             return DirectionalResult.Death;
         }
 
-        public bool AbleToUseDirection(string playerId, MovementDirection dir)
+        public bool AbleToUseDirection(string playerId, Direction dir)
         {
             return GetResultOfDirection(playerId, dir).Equals(DirectionalResult.Death) == false;
         }

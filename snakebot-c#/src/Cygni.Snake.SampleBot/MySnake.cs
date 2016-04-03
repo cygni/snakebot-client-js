@@ -10,13 +10,13 @@ namespace Cygni.Snake.SampleBot
         {
         }
         
-        protected override MovementDirection OnGameTurn(Map map, long gameTick)
+        protected override Direction OnGameTurn(Map map, long gameTick)
         {
             Printer.Enque(map);
             // figure out a good move
 
             // do calculated move
-            return MovementDirection.Down;
+            return Direction.Down;
         }
     }
 }
