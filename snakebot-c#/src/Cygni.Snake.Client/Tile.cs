@@ -1,5 +1,6 @@
 using System;
-using Cygni.Snake.Client.Communication;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Cygni.Snake.Client
 {
@@ -12,7 +13,7 @@ namespace Cygni.Snake.Client
         private Tile(TileType type, ConsoleColor color)
         {
             Type = type;
-            PrintCharacter = GetPrintCharacted(type);
+            PrintCharacter = GetPrintCharacter(type);
             PrintColor = color;
         }
 
@@ -22,7 +23,7 @@ namespace Cygni.Snake.Client
 
         public TileType Type { get; }
 
-        private static string GetPrintCharacted(TileType type)
+        private static string GetPrintCharacter(TileType type)
         {
             switch (type)
             {
@@ -50,5 +51,33 @@ namespace Cygni.Snake.Client
         public static Tile SnakeHead(string id) => new Tile(TileType.SnakeHead, PlayerColors.GetColor(id));
 
         public static Tile SnakeBody(string id) => new Tile(TileType.SnakeBody, PlayerColors.GetColor(id));
+
+        private static class PlayerColors
+        {
+            private static readonly IDictionary<string, ConsoleColor> AssignedColors = new Dictionary<string, ConsoleColor>();
+            private static readonly IReadOnlyList<ConsoleColor> AvailableColors = Enum.GetValues(typeof(ConsoleColor)).OfType<ConsoleColor>().ToList();
+
+            public static ConsoleColor GetColor(string id)
+            {
+                lock (AssignedColors)
+                {
+                    ConsoleColor color;
+                    if (AssignedColors.TryGetValue(id, out color))
+                    {
+                        return color;
+                    }
+
+                    color = GetUnassignedColor();
+                    AssignedColors[id] = color;
+                    return color;
+                }
+            }
+
+            private static ConsoleColor GetUnassignedColor()
+            {
+                var assigned = AssignedColors.Values;
+                return AvailableColors.FirstOrDefault(c => !assigned.Contains(c));
+            }
+        }
     }
 }
