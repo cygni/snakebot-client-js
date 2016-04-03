@@ -5,12 +5,6 @@ namespace Cygni.Snake.Client
 {
     public class SnakeInfo
     {
-        public string Id { get; }
-
-        public string Name { get; }
-
-        public int Points { get; }
-
         public SnakeInfo(string id, string name, int points, IEnumerable<int> positions)
         {
             Id = id;
@@ -18,6 +12,12 @@ namespace Cygni.Snake.Client
             Points = points;
             Positions = positions?.ToList() ?? new List<int>();
         }
+
+        public string Id { get; }
+
+        public string Name { get; }
+
+        public int Points { get; }
 
         public IReadOnlyList<int> Positions { get; }
 
