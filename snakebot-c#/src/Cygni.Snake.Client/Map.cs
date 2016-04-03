@@ -26,6 +26,11 @@ namespace Cygni.Snake.Client
             Height = height;
         }
 
+        public SnakeInfo GetSnake(string id)
+        {
+            return _snakeInfos.FirstOrDefault(s => s.Id.Equals(id, StringComparison.Ordinal));
+        }
+
         public IEnumerable<MapCoordinate> GetFoods()
         {
             return _foodPositions.Select(p => MapCoordinate.FromIndex(p, Width));
@@ -56,7 +61,7 @@ namespace Cygni.Snake.Client
 
         public IEnumerable<MapCoordinate> GetSnakeSpread(string playerId)
         {
-            var snake = _snakeInfos.FirstOrDefault(s => s.Id.Equals(playerId, StringComparison.Ordinal));
+            var snake = GetSnake(playerId);
             if (snake == null)
             {
                 throw new ArgumentException($"No snake with id: {playerId}");
@@ -67,7 +72,12 @@ namespace Cygni.Snake.Client
 
         public DirectionalResult GetResultOfDirection(string playerId, Direction dir)
         {
-            var mySnake = _snakeInfos.FirstOrDefault(snake => snake.Id.Equals(playerId, StringComparison.Ordinal));
+            var mySnake = GetSnake(playerId);
+            if (mySnake == null)
+            {
+                throw new ArgumentException($"No snake with id: {playerId}");
+            }
+
             var myHead = MapCoordinate.FromIndex(mySnake.HeadPosition, Width);
             var target = myHead.GetDestination(dir);
 
