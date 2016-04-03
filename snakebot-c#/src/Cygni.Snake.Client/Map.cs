@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cygni.Snake.Client.Communication;
-using Cygni.Snake.Client.Tiles;
 
 namespace Cygni.Snake.Client
 {
@@ -93,15 +92,15 @@ namespace Cygni.Snake.Client
             }
 
             var targetTile = GetTileAt(ToIndex(tx, ty));
-            switch (targetTile?.Content)
+            switch (targetTile.Type)
             {
-                case SnakeBodyTile.CONTENT:
-                case SnakeHeadTile.CONTENT:
-                case ObstacleTile.CONTENT:
+                case TileType.SnakeHead:
+                case TileType.SnakeBody:
+                case TileType.Obstacle:
                     return DirectionalResult.Death;
-                case FoodTile.CONTENT:
+                case TileType.Food:
                     return DirectionalResult.Points;
-                case EmptyTile.CONTENT:
+                case TileType.Empty:
                     return DirectionalResult.Nothing;
             }
 
@@ -113,30 +112,30 @@ namespace Cygni.Snake.Client
             return GetResultOfDirection(playerId, dir).Equals(DirectionalResult.Death) == false;
         }
 
-        private ITileContent GetTileAt(int index)
+        private Tile GetTileAt(int index)
         {
             foreach (var snake in _snakeInfos)
             {
                 if (index == snake.HeadPosition)
                 {
-                    return new SnakeHeadTile(snake.Id);
+                    return Tile.SnakeHead(snake.Id);
                 }
                 if (snake.Positions.Any() && snake.Positions.Contains(index))
                 {
-                    return new SnakeBodyTile(snake.Id);
+                    return Tile.SnakeBody(snake.Id);
                 }
             }
 
             if (_foodPositions.Contains(index))
             {
-                return new FoodTile();
+                return Tile.Food();
             }
 
             if (_obstaclePositions.Contains(index) || index < 0 || index >= Width * Height)
             {
-                return new ObstacleTile();
+                return Tile.Obstacle();
             }
-            return new EmptyTile();
+            return Tile.Empty();
         }
 
         public void Print()
@@ -151,12 +150,12 @@ namespace Cygni.Snake.Client
                 {
                     int index = ToIndex(x, y);
                     var tile = GetTileAt(index);
-                    tile.Print();
+                    Console.ForegroundColor = tile.PrintColor;
+                    Console.Write(tile.PrintCharacter);
                 }
 
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("| ");
-                _snakeInfos.ElementAtOrDefault(y)?.Print();
                 Console.Write("\n"); // end line
             }
             Console.WriteLine(new string('-', Width + 2));

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Cygni.Snake.Client.Communication;
 
 namespace Cygni.Snake.Client
 {
-    public class SnakeInfo : Colored, IPrintable
+    public class SnakeInfo
     {
         public string Id { get; }
 
@@ -13,7 +12,7 @@ namespace Cygni.Snake.Client
 
         public int Points { get; }
 
-        public SnakeInfo(string id, string name, int points, IEnumerable<int> positions) : base(id)
+        public SnakeInfo(string id, string name, int points, IEnumerable<int> positions)
         {
             Id = id;
             Name = name;
@@ -31,12 +30,6 @@ namespace Cygni.Snake.Client
         public override string ToString()
         {
             return Name + " - " + Points + " pts";
-        }
-
-        public void Print()
-        {
-            Console.ForegroundColor = Color;
-            Console.Write(this);
         }
     }
 }
