@@ -1,5 +1,4 @@
-﻿using System;
-using Cygni.Snake.Client.Communication.Messages;
+﻿using Cygni.Snake.Client.Communication.Messages;
 
 namespace Cygni.Snake.Client.Events
 {
