@@ -28,7 +28,7 @@ namespace Cygni.Snake.Client
 
         public int GetManhattanDistanceTo(int x, int y)
         {
-            return Math.Abs(X - x) + Math.Abs(Y - y);
+            return GetManhattanDistanceTo(new MapCoordinate(x, y));
         }
 
         /// <summary>
