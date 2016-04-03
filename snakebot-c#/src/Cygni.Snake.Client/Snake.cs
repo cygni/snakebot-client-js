@@ -99,7 +99,16 @@ namespace Cygni.Snake.Client
 
         public void Dispose()
         {
-            Printer?.Close();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Printer?.Close();
+            }
         }
     }
 }
