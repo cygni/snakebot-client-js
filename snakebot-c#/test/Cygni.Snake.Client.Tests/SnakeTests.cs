@@ -32,7 +32,7 @@ namespace Cygni.Snake.Client.Tests
 
             var sc = new SnakeClient("localhost", 1, "tournament", new GameSettings(), clientMock.Object,
                 new JsonConverter());
-            new FakeSnake(sc);
+            new FakeSnakeBot(sc);
 
             sc.Connect();
 
@@ -60,7 +60,7 @@ namespace Cygni.Snake.Client.Tests
 
             var sc = new SnakeClient("localhost", 1, "training", new GameSettings(), clientMock.Object,
                 new JsonConverter());
-            new FakeSnake(sc);
+            new FakeSnakeBot(sc);
 
             sc.Connect();
 
@@ -84,7 +84,7 @@ namespace Cygni.Snake.Client.Tests
 
             var sc = new SnakeClient("localhost", 1, "training", new GameSettings(), clientMock.Object,
                 new JsonConverter());
-            new FakeSnake(sc);
+            new FakeSnakeBot(sc);
 
             sc.Connect();
 

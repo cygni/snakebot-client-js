@@ -12,7 +12,7 @@ namespace Cygni.Snake.SampleBot
             var settings = new GameSettings();
 
             var client = new SnakeClient("snake.cygni.se", 80, "training", settings);
-            var snake = new MySnake("dotnetSnake", "green", client);
+            var snake = new MySnakeBot("dotnetSnake", "green", client);
 
             client.Connect();
 
