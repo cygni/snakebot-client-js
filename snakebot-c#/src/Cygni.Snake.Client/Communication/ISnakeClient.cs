@@ -15,9 +15,9 @@ namespace Cygni.Snake.Client.Communication
         void OnSessionClosed(Action onSessionClosed);
 
         string GameMode { get; }
-        void StartGame(string gameId, string playerId);
+        void StartGame();
         void IssueMovementCommand(Direction direction, long gameTick);
-        void RegisterPlayer(string playerName, string playerColor);
+        void RegisterPlayer(string playerName);
         void Connect();
     }
 }

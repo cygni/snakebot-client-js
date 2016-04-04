@@ -63,7 +63,6 @@ namespace Cygni.Snake.Client.Tests
             Assert.Equal(eventArgs.Name, "#emil");
             Assert.Equal(eventArgs.GameMode, "training");
             Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
-            Assert.Equal(eventArgs.Color, "black");
 
             client.Dispose();
         }

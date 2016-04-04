@@ -46,7 +46,7 @@ namespace Cygni.Snake.Client
 
         protected virtual void OnClientConnected()
         {
-            _client.RegisterPlayer(Name, Color);
+            _client.RegisterPlayer(Name);
         }
 
         protected virtual void OnSessionClosed()
@@ -79,7 +79,7 @@ namespace Cygni.Snake.Client
             IsPlaying = true;
 
             if (_client.GameMode == "training")
-                _client.StartGame(playerRegistered.GameId, playerRegistered.ReceivingPlayerId);
+                _client.StartGame();
         }
 
         protected virtual void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)

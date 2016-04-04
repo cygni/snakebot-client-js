@@ -1,8 +1,6 @@
-﻿using Cygni.Snake.Client.Communication.Messages;
-
-namespace Cygni.Snake.Client.Events
+﻿namespace Cygni.Snake.Client.Events
 {
-    public abstract class GameEvent : IGameMessage
+    public abstract class GameEvent
     {
         public string GameId { get; }
 

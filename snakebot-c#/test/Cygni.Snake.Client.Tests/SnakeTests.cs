@@ -26,7 +26,7 @@ namespace Cygni.Snake.Client.Tests
                 return
                     Task.Factory.StartNew(
                         () =>
-                            new JsonConverter().Serialize(new PlayerRegistered("supersnake", "black", new GameSettings(),
+                            new JsonConverter().Serialize(new PlayerRegistered("supersnake", new GameSettings(),
                                 "tournament", "", "")));
             });
 
@@ -54,7 +54,7 @@ namespace Cygni.Snake.Client.Tests
                 return
                     Task.Factory.StartNew(
                         () =>
-                            new JsonConverter().Serialize(new PlayerRegistered("supersnake", "black", new GameSettings(),
+                            new JsonConverter().Serialize(new PlayerRegistered("supersnake", new GameSettings(),
                                 "tournament", "", "")));
             });
 

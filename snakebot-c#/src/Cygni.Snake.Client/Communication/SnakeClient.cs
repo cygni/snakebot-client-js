@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Cygni.Snake.Client.Communication.Messages;
 using Cygni.Snake.Client.Communication.Serialization;
 using Cygni.Snake.Client.Events;
+using Newtonsoft.Json.Linq;
+using JsonConverter = Cygni.Snake.Client.Communication.Serialization.JsonConverter;
 
 namespace Cygni.Snake.Client.Communication
 {
@@ -13,7 +16,6 @@ namespace Cygni.Snake.Client.Communication
         private readonly string _serverHost;
         private readonly int _serverPort;
         private readonly GameSettings _gameSettings;
-        private string _playerId;
 
         private readonly IClientWebSocket _socket;
         private readonly IConverter _converter;
@@ -26,7 +28,7 @@ namespace Cygni.Snake.Client.Communication
         private Action<InvalidPlayerName> _onInvalidPlayerName;
         private Action _onConnected;
         private Action _onSessionClosed;
-        
+
         public SnakeClient(string serverHost, int serverPort, string gameMode, GameSettings gameSettings)
             : this(serverHost, serverPort, gameMode, gameSettings, new ClientWebSocket(), new JsonConverter())
         {
@@ -114,6 +116,7 @@ namespace Cygni.Snake.Client.Communication
                     break;
 
                 case MessageType.MapUpdated:
+                    File.AppendAllText("C:\\Users\\Daniel\\Workspace\\tmp\\map.json", jsonString + "\n\n");
                     _onMapUpdate?.Invoke(_converter.Deserialize<MapUpdate>(jsonString));
                     break;
 
@@ -138,26 +141,38 @@ namespace Cygni.Snake.Client.Communication
             }
         }
 
-        private void SendMessage(object msg)
+        private Task SendMessage(object msg)
         {
-            _socket.SendAsync(_converter.Serialize(msg));
-        }
-        
-        public void StartGame(string gameId, string playerId)
-        {
-            _playerId = playerId;
-
-            SendMessage(new StartGameMessage(_playerId));
+            return _socket.SendAsync(_converter.Serialize(msg));
         }
 
-        public void RegisterPlayer(string playerName, string playerColor)
+        public void StartGame()
         {
-            SendMessage(new PlayerRegistrationMessage(playerName, playerColor, _gameSettings, _playerId));
+            var msg = CreateMessageJson(MessageType.StartGame);
+            SendMessage(msg);
+        }
+
+        public void RegisterPlayer(string playerName)
+        {
+            var msg = CreateMessageJson(MessageType.RegisterPlayer);
+            msg["playerName"] = playerName;
+            msg["gameSettings"] = JObject.FromObject(_gameSettings);
+            SendMessage(msg);
         }
 
         public void IssueMovementCommand(Direction direction, long gameTick)
         {
-            SendMessage(new RegisterMoveMessage(direction, gameTick, _playerId));
+            var msg = CreateMessageJson(MessageType.RegisterMove);
+            msg["direction"] = direction.ToString().ToUpperInvariant();
+            msg["gameTick"] = gameTick;
+            SendMessage(msg);
+        }
+        
+        private JObject CreateMessageJson(string type)
+        {
+            var msg = new JObject();
+            msg["type"] = type;
+            return msg;
         }
 
         public void Dispose()
