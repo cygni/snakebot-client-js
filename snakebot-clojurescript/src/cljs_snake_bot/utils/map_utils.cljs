@@ -1,13 +1,15 @@
 (ns cljs-snake-bot.utils.map-utils)
 
-(def action-templates
-  [{:x-d 1 :y-d 0 :dir "RIGHT"}
-   {:x-d 0 :y-d -1 :dir "UP"}
-   {:x-d -1 :y-d 0 :dir "LEFT"}
-   {:x-d 0 :y-d 1 :dir "DOWN"}])
+(def reference-map (atom {}))
 
-(defn translate-position[{x :x y :y} map]
-  (+ x (* y (:width map))))
+(def action-templates
+  {:RIGHT {:x 1 :y 0}
+   :UP {:x 0 :y -1}
+   :LEFT {:x -1 :y 0}
+   :DOWN {:x 0 :y 1}})
+
+(defn translate-position [{x :x y :y} map-width]
+  (+ x (* y map-width)))
 
 (defn convert-map-position[pos map]
   (let [y (Math.floor (/ pos (:width map)))
@@ -18,7 +20,7 @@
   (mapv #(convert-map-position % map) positions))
 
 (defn contains-point [point position-list]
-  (some #(= point %) position-list))
+  (contains? (set position-list) point))
 
 (defn get-point-in-snake [point snake]
   (let [head (first (:positions snake))
@@ -31,35 +33,51 @@
       :else nil)))
 
 (defn snake-contains-point [point snake-infos]
- (let [points (mapv #(get-point-in-snake point %) snake-infos)
-       point (some #(when (some? %) %) points)]
-   point))
+ (some #(let [p (get-point-in-snake point %)]
+          (when (some? p) p)) snake-infos))
 
 (defn inside-of-map [{x :x y :y} map]
   (and (>= x 0) (< x (:width map)) (>= y 0) (< y (:height map))))
 
+(defn create-content-map [width height positions]
+ (let [absolute-positions (into #{} (mapv #(translate-position % width) positions))]
+   (map-indexed #(contains? absolute-positions %) (repeat (* width height) false))))
+
+(defn setup-map-buffer! [map]
+  (when (not= (:worldTick @reference-map)
+              (:worldTick map))
+    (let [positions (apply concat
+                      (:foodPositions map)
+                      (:obstaclePositions map)
+                      (mapv :positions (:snakeInfos map)))
+          content-map (into [] (create-content-map (:width map) (:height map) positions))]
+      (reset! reference-map (assoc map :content-reference content-map)))))
+
 (defn content-at [point map]
-   (when (inside-of-map point map)
-    (let [sp (snake-contains-point point (:snakeInfos map))]
-      (cond
-        (some? sp) sp
-        (contains-point point (:foodPositions map)) (assoc point :content "food")
-        (contains-point point (:obstaclePositions map)) (assoc point :content "obstacle")
-        :default (assoc point :content "empty")))))
+  (setup-map-buffer! map)
+  (when (inside-of-map point map)
+    (case (get (:content-reference @reference-map) (translate-position point (:width map)))
+      true (let [sp (snake-contains-point point (:snakeInfos map))]
+             (cond
+               (some? sp) sp
+               (contains-point point (:foodPositions map)) (assoc point :content "food")
+               (contains-point point (:obstaclePositions map)) (assoc point :content "obstacle")
+               :else (assoc point :content "empty")))
+      false (assoc point :content "empty")
+      :else nil)))
 
 (defn get-head-of-snake [id snake-infos]
- (let [snake (some #(if (= (:id %) id) %) snake-infos)]
-   (first (:positions snake))))
+  (let [snake (some #(when (= (:id %) id) %) snake-infos)]
+    (first (:positions snake))))
 
 ;Function used to evaluate the result of an action
 ;Takes a direction as a string, an id of a snake, and the tiles from a map update event
 ;Returns a string indicating the result of said action
 (defn get-result-of-dir [dir id map]
   (let [my-head (get-head-of-snake id (:snakeInfos map))
-        action-template (some #(when (= (:dir %) dir) %) action-templates)
-        target-x (+ (:x my-head) (:x-d action-template))
-        target-y (+ (:y my-head) (:y-d action-template))
-        content (content-at {:x target-x :y target-y} map)]
+        action-template ((keyword dir) action-templates)
+        target-point (merge-with + my-head action-template)
+        content (content-at target-point map)]
    (when (and (some? my-head) (some? action-template))
      (condp = (:content content)
        "empty" "empty"
@@ -76,5 +94,5 @@
 
 ;Calculates the manhattan distanccec from a start point; x,y to a target point; target-x, target-y
 (defn manhattan-distance
-  ([{x1 :x y1 :y} {x2 :x y2 :y}] (+ (Math.abs (- x1 x2)) (Math.abs (- y1 y2))))
-  ([x y target-x target-y] (+ (Math.abs (- x target-x)) (Math.abs (- y target-y)))))
+  ([x y target-x target-y] (+ (Math.abs (- x target-x)) (Math.abs (- y target-y))))
+  ([{x1 :x y1 :y} {x2 :x y2 :y}] (manhattan-distance x1 y1 x2 y2)))

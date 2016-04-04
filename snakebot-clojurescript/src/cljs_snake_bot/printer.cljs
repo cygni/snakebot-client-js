@@ -5,7 +5,8 @@
               [cljs-snake-bot.constants :as c]
               [cljs.core.async :as async :refer [<! timeout]]
               [cljs-snake-bot.utils.map-utils :as mu]
-              [cljs-snake-bot.utils.message-utils :as msg-utils]))
+              [cljs-snake-bot.utils.message-utils :as msg-utils]
+              [goog.Timer :as timer]))
 
 (def colors (nodejs/require "colors"))
 
@@ -36,7 +37,7 @@
 (defn format-tile [tile]
   (condp = (:content tile)
     "empty" " "
-    "snakehead" "$"
+    "snakehead" (if (= (:id tile) (:player-id @s/game-state)) "$" "@")
     "snakebody" "#"
     "snaketail" "^"
     "obstacle" "0"
@@ -49,13 +50,15 @@
   (colors.stylize (str (:name snake) (if (not (:alive snake)) "- [RIP]" "") "-" (:points snake) "pts" "-" (:id snake)) (get-color (:id snake))))
 
 (defn print-pretty-map [map]
-  (let [snakeInfos (:snakeInfos map)]
+  (let [startTime (goog.now)
+        snakeInfos (:snakeInfos map)]
    (doseq [y (range (:height map))]
      (println (mapv #(let [tile (mu/content-at {:x % :y y} map)
                            formatted (format-tile tile)
                            color (get-tile-color tile)]
                        (colors.stylize formatted color)) (range (:width map)))
-              (if (< y (count snakeInfos)) (get-printable-snake-info (get snakeInfos y)) "")))))
+              (if (< y (count snakeInfos)) (get-printable-snake-info (get snakeInfos y)) "")))
+    (println "t: " (- (goog.now) startTime))))
 
 (defn print-registration-message [msg]
  (when (:pretty-print-player-registration s/printer-settings)
