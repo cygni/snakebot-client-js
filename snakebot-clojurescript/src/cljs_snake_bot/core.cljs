@@ -4,6 +4,7 @@
             [cljs-snake-bot.messagehandler :as mh]
             [cljs-snake-bot.constants :as c]
             [cljs-snake-bot.settings :as s]
+            [cljs-snake-bot.messages :as m]
             [cljs-snake-bot.printer :as p]
             [cljs.core.async :as async :refer [<! timeout]]))
 
@@ -36,10 +37,7 @@
 (defn setup-socket []
   (.on socket "open"
        #(do (println "socket opened")
-            (.send socket (json-str {:type c/register-player-message
-                                     :playerName "emil"
-                                     :gameSettings s/default-map
-                                     :color "yellow"}))
+            (.send socket (json-str (m/get-player-registration-message "emi")))
           (setup-listener))))
 
 (defn -main []
