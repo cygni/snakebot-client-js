@@ -57,13 +57,13 @@ The only two files you should need to modify is MySnake.cs and Program.cs. These
 
 Here is where you should put your awesome strategy for winning in this game and life in general. Only make sure that by the end of OnGameTurn you return whatever movement action you would like to perform. All the information avaliable to you about the world is contained within the passed map object.
 
-If the printer line is not commented out a ANSI printer will print the current map state to the console. Your snake will have a different color than the rest of the snakes (Hopefully ^^ ). 
+If the printer line is not commented out a ANSI printer will print the current map state to the console.
 
 ```csharp
     public class DemoSnake : Snake
     {
-        public DemoSnake(string name, string color, ISnakeClient snakeClient)
-            : base(name, color, snakeClient)
+        public DemoSnake(string name, ISnakeClient snakeClient)
+            : base(name, snakeClient)
         {
         }
         
@@ -91,7 +91,7 @@ Change these two objects if you want different settings on the map or if you wan
             var settings = new GameSettings();
 
             var client = new SnakeClient("snake.cygni.se", 80, "training", settings);
-            var snake = new MySnake("dotnetSnake", "green", client);
+            var snake = new MySnake("dotnetSnake", client);
 
             client.Connect();
 

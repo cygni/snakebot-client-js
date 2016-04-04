@@ -6,7 +6,7 @@ namespace Cygni.Snake.SampleBot
     public class MySnakeBot : Client.SnakeBot
     {
         public MySnakeBot(string name, string color, ISnakeClient snakeClient)
-            : base(name, color, snakeClient)
+            : base(name, snakeClient)
         {
         }
         

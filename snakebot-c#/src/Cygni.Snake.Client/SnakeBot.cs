@@ -10,7 +10,6 @@ namespace Cygni.Snake.Client
     public abstract class SnakeBot : IDisposable
     {
         public string Name { get; }
-        public string Color { get; }
         public bool IsPlaying { get; private set; }
         public string PlayerId { get; private set; }
         public bool GameRunning { get; set; } = true;
@@ -18,10 +17,9 @@ namespace Cygni.Snake.Client
         private readonly ISnakeClient _client;
         protected readonly ConsoleMapPrinter Printer;
 
-        protected SnakeBot(string name, string color, ISnakeClient client)
+        protected SnakeBot(string name, ISnakeClient client)
         {
             Name = name;
-            Color = color;
             _client = client;
             Printer = new ConsoleMapPrinter();
             Printer.Start();
