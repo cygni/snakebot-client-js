@@ -22,7 +22,7 @@ var gameInfo = null;
  * Update your username below...
  */
 function prepareNewGame(){
-  client.prepareNewGame('Phat3lfstone', 'red', GameSettings.create());
+  client.prepareNewGame('Phat3lfstone', GameSettings.create());
 }
 
 /**

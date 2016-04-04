@@ -1,19 +1,17 @@
-function RegisterPlayer(name, color, settings) {
+function RegisterPlayer(name, settings) {
 
-  var type        = "se.cygni.snake.api.request.RegisterPlayer";
+  var type        = 'se.cygni.snake.api.request.RegisterPlayer';
   var playerName  = name || 'Viper-' + new Date().getMilliseconds();
-  var color       = color || 'red';
   var settings    = settings || {};
 
   var toString = function(){
-       return "<Type:" + type + ", playerName:" + playerName + ", color:" + color + ", settings:" + settings.toString() + ">";
+       return '<Type:' + type + ', playerName:' + playerName + ', settings:' + settings.toString() + '>';
   };
 
   var marshall = function(){
      return {
        type : type,
        playerName : playerName,
-       color: color,
        gameSettings : settings.marshall()
      };
   };

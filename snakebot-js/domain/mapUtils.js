@@ -40,14 +40,19 @@ function getEuclidianDistance(startCoord, goalCoord){
 }
 
 /**
- * Find where the head of the snake is on the map
+ * Find where the head of the snake is on the map.
  * @param playerId the snakes player id
  * @param map the map
- * @returns {{x: (Number), y: (Number)}}
+ * @returns {{x: (Number), y: (Number), alive: (Boolean)}}
+ *          If the snake is dead, then x and y is coerced to 0.
  */
 function whereIsSnake(playerId, map){
   var snake = map.getSnakeInfoForId(playerId);
-  return {x: snake.x, y: snake.y};
+  if(snake.isAlive()){
+    var pos = translatePosition(snake.getPositions()[0], map.getWidth());
+    return {x: pos.x, y: pos.y, alive: snake.isAlive()};
+  }
+  return {x: 0, y:0, alive: false};
 }
 
 /**
@@ -79,8 +84,33 @@ function sortByClosestTo(items, coords){
   return orderedResult;
 }
 
+/**
+ * Converts a position in the flattened single array representation
+ * of the Map to a MapCoordinate.
+ *
+ * @param position
+ * @return
+ */
+function translatePosition(position, mapWidth) {
+  var y = Math.floor(position / mapWidth);
+  var x = Math.abs(position - y * mapWidth);
+  return {x: x, y: y}
+}
+
+/**
+ * Converts a MapCoordinate to the same position in the flattened
+ * single array representation of the Map.
+ *
+ * @param coordinate
+ * @return
+ */
+function translateCoordinate(coordinate, mapWidth) {
+  return coordinate.x + coordinate.y * mapWidth;
+}
+
 exports.sortByClosestTo       = sortByClosestTo;
 exports.getManhattanDistance  = getManhattanDistance;
 exports.getEuclidianDistance  = getEuclidianDistance;
 exports.whereIsSnake          = whereIsSnake;
+exports.translatePosition     = translatePosition;
 exports.findPathAS            = findPathAS;

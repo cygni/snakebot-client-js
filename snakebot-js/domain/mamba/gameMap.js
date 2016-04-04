@@ -1,17 +1,18 @@
-var Food = require('./food.js');
+var SnakeInfos = require('./snakeInfos.js');
 
-function GameMap(width, height, worldTick, tiles, snakeInfos) {
+function GameMap(width, height, worldTick, foodPositions, obstaclePositions, snakeInfos) {
 
-  var type        = 'Map';
-  var width       = width;
-  var height      = height;
-  var worldTick   = worldTick;
-  var tiles       = tiles;
-  var snakeInfos  = snakeInfos;
+  var type              = 'Map';
+  var width             = width;
+  var height            = height;
+  var worldTick         = worldTick;
+  var foodPositions     = foodPositions;
+  var obstaclePositions = obstaclePositions;
+  var snakeInfos        = snakeInfos;
 
   var toString = function(){
-    return '<Type:' + type + ', width:' + width +
-      ', height:' + height + 'worldTick:' + worldTick + ', tiles:' + tiles + ', snakeInfos:' + snakeInfos + '>';
+    return '<Type:' + type + ', width:' + width + ', height:' + height + 'worldTick:' + worldTick +
+      ', foodPositions:' + foodPositions + ', obstaclePositions:' + obstaclePositions + ', snakeInfos:' + snakeInfos + '>';
   };
 
   function getWidth(){
@@ -26,24 +27,12 @@ function GameMap(width, height, worldTick, tiles, snakeInfos) {
    return worldTick;
   }
 
-  function getTiles(){
-   return tiles;
+  function getFoodPositions(){
+    return foodPositions;
   }
 
-  function getTile(x, y){
-    return tiles[x][y];
-  }
-
-  function findFood(){
-    var food = [];
-    for(var x = 0; x < width; x++){
-      for(var y = 0; y < height; y++){
-         if(getTile(x,y).content === 'food'){
-           food.push(Food.new(x, y));
-        }
-      }
-    }
-    return food;
+  function getObstaclePositions(){
+    return obstaclePositions;
   }
 
   function getSnakeInfos(){
@@ -52,7 +41,7 @@ function GameMap(width, height, worldTick, tiles, snakeInfos) {
 
   function getSnakeInfoForId(playerId){
     for(var i = 0; i < snakeInfos.length; i++){
-      if (snakeInfos[i].id === playerId){
+      if (snakeInfos[i].getId() === playerId){
         return snakeInfos[i];
       }
     }
@@ -64,23 +53,23 @@ function GameMap(width, height, worldTick, tiles, snakeInfos) {
       width : width,
       height : height,
       worldTick : worldTick,
-      tiles : JSON.stringify(tiles),
-      snakeInfos : JSON.stringify(snakeInfos)
+      foodPositions : JSON.stringify(foodPositions),
+      obstaclePositions : JSON.stringify(obstaclePositions),
+      snakeInfos : SnakeInfos.create(snakeInfos)
     };
   };
 
   return Object.freeze({
-    getWidth          : getWidth,
-    getHeight         : getHeight,
-    getWorldTick      : getWorldTick,
-    getTiles          : getTiles,
-    getTile           : getTile,
-    getSnakeInfos     : getSnakeInfos,
-    getSnakeInfoForId : getSnakeInfoForId,
-    findFood          : findFood,
-    marshall          : marshall,
-    toString          : toString,
-    type              : type
+    getWidth              : getWidth,
+    getHeight             : getHeight,
+    getWorldTick          : getWorldTick,
+    getSnakeInfos         : getSnakeInfos,
+    getSnakeInfoForId     : getSnakeInfoForId,
+    getFoodPositions      : getFoodPositions,
+    getObstaclePositions  : getObstaclePositions,
+    marshall              : marshall,
+    toString              : toString,
+    type                  : type
   });
 
 };
@@ -90,8 +79,9 @@ function create(data){
     data.width,
     data.height,
     data.worldTick,
-    data.tiles,
-    data.snakeInfos);
+    data.foodPositions,
+    data.obstaclePositions,
+    data.snakeInfos.map(SnakeInfos.create));
 };
 
 exports.new = GameMap;

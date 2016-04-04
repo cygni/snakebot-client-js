@@ -2,6 +2,7 @@
  * The MapRenderer prints game information to the terminal.
  */
 
+var MapUtils  = require('./mapUtils.js');
 var MapUpdateEvent  = require('./mamba/mapUpdateEvent.js');
 var GameEndedEvent  = require('./mamba/gameEndedEvent.js');
 var SnakeDeadEvent  = require('./mamba/snakeDeadEvent.js');
@@ -94,10 +95,20 @@ function MapRenderer(width, height){
     var snakeCounter = 1;
     mapState.getMap().getSnakeInfos().forEach(function(snake){
       if(isNewGame){
-        gameSnakes[snake.id] = {name:snake.name, label: snakeCounter, length: snake.length, highlight: followPid && followPid == snake.id, isDead: false, tickOfDeath: null, termColor: COLORS[snakeCounter - 1]};
+        gameSnakes[snake.getId()] = {
+          name:snake.getName(),
+          label: snakeCounter,
+          length: snake.getLength(),
+          highlight: followPid && followPid == snake.getId(),
+          isDead: !snake.isAlive(),
+          tickOfDeath: null,
+          points: snake.getPoints(),
+          termColor: COLORS[snakeCounter - 1]
+        };
         snakeCounter++;
       } else {
-        gameSnakes[snake.id].length = snake.length;
+        gameSnakes[snake.getId()].length = snake.getLength();
+        gameSnakes[snake.getId()].points = snake.getPoints();
       }
     });
 
@@ -127,9 +138,37 @@ function MapRenderer(width, height){
     renderMap(mapState);
   }
 
+  function getMergedTiles(map){
+
+    var tiles = new Array(map.getWidth());
+    for (var i = 0; i < map.getWidth(); i++) {
+      tiles[i] = new Array(map.getHeight());
+    }
+
+    map.getFoodPositions().forEach(function(position){
+      var tilePos = MapUtils.translatePosition(position, map.getWidth());
+      tiles[tilePos.x][tilePos.y] = {content: 'food'}
+    });
+
+    map.getObstaclePositions().forEach(function(position){
+      var tilePos = MapUtils.translatePosition(position, map.getWidth());
+      tiles[tilePos.x][tilePos.y] = {content: 'obstacle'}
+    });
+
+    map.getSnakeInfos().forEach(function(snakeInfo){
+      if(snakeInfo.isAlive()){
+        for(var i = 0; i < snakeInfo.getPositions().length; i++){
+          var tilePos = MapUtils.translatePosition(snakeInfo.getPositions()[i], map.getWidth());
+          tiles[tilePos.x][tilePos.y] = {content: i != 0 ? 'snakebody' : 'snakehead', playerId: snakeInfo.getId()};
+        }
+      }
+    });
+    return tiles;
+  }
+
   function renderMap(mapState){
     var _PIPE   = '|';
-    var tiles   = mapState.getMap().getTiles();
+    var tiles   = getMergedTiles(mapState.getMap());
     var topLine = '\n' + mapWidth + _PIPE;
 
     var xLabel = 0;
@@ -143,21 +182,25 @@ function MapRenderer(width, height){
       var lineTxt = "";
       for(var x = 0; x < mapWidth ; x++) {
         var tile = tiles[x][y];
-        switch(tile.content){
-          case 'snakebody':
-            lineTxt += gameSnakes[tile.playerId].termColor + '▓' + COLOR_RESET;
-            break;
-          case 'snakehead':
-            lineTxt += gameSnakes[tile.playerId].label;
-            break;
-          case 'food':
-            lineTxt += '\x1b[41m\x1b[1m\x1b[37m' + '@' + COLOR_RESET;
-            break;
-          case 'obstacle':
-            lineTxt += '\x1b[41m\x1b[1m\x1b[37m' + '!' + COLOR_RESET;
-            break;
-          default:
-            lineTxt += '░';
+        if(tile){
+          switch(tile.content){
+            case 'snakebody':
+              lineTxt += gameSnakes[tile.playerId].termColor + '▓' + COLOR_RESET;
+              break;
+            case 'snakehead':
+              lineTxt += gameSnakes[tile.playerId].label;
+              break;
+            case 'food':
+              lineTxt += '\x1b[41m\x1b[1m\x1b[37m' + '@' + COLOR_RESET;
+              break;
+            case 'obstacle':
+              lineTxt += '\x1b[41m\x1b[1m\x1b[37m' + '!' + COLOR_RESET;
+              break;
+            default:
+              lineTxt += '?';
+          }
+        } else {
+          lineTxt += '░';
         }
       }
       print('' + y + (y > 9 ? '' : ' ') + _PIPE + lineTxt + _PIPE);
@@ -176,7 +219,7 @@ function MapRenderer(width, height){
     for (var playerId in gameSnakes) {
       var snake       = gameSnakes[playerId];
       var snakeName   = getHighLightToken(snake) + snake.label + '->' + snake.name;
-      var snakeLength = '[' + snake.length + ']';
+      var snakeLength = '[' + snake.length + '] (' + snake.points + 'p)';
       var snakeDead   = (snake.isDead ? ' ' + COLOR_BG_RED + '┼' +  ' ' + snake.tickOfDeath  + COLOR_RESET: '');
       snakesTxt += snakeName + snakeLength + snakeDead + ', ';
     }
@@ -194,22 +237,23 @@ function MapRenderer(width, height){
       snake.isDead ? deadSnakes.push(snake) : livingSnakes.push(snake);
     }
 
-    livingSnakes.sort(compareLength);
+    livingSnakes.sort(comparePoints);
     deadSnakes.sort(compareTickOfDeath);
 
     var winnerSnake = gameSnakes[endState.getPlayerWinnerId()];
-    print(NEW_LINE + 'Winner: ' + (winnerSnake ? getHighLightToken(snake) + winnerSnake.label + '->' + snake.name + '[' + winnerSnake.length + ']' : '<none>'));
+    print(NEW_LINE + 'Winner: ' + (winnerSnake ? getHighLightToken(snake) + winnerSnake.label + '->' + winnerSnake.name + '[' + winnerSnake.length + '], ' + winnerSnake.points + 'p.' : '<none>'));
 
     print(NEW_LINE + 'Heroes:');
     var place = 1;
+    livingSnakes.sort(function(){});
     livingSnakes.forEach(function(snake){
-      print('' + place + '. ' + snake.label + '->' + snake.name + '[' + snake.length + ']');
+      print('' + place + '. ' + snake.label + '->' + snake.name + '[' + snake.length + '], ' + snake.points + 'p.');
       place++;
     });
 
     print(NEW_LINE + 'Killed-in-action: ' + (deadSnakes.length == 0 ? '<none>' : ''));
     deadSnakes.forEach(function(snake){
-      print('┼' + snake.tickOfDeath + '. ' + getHighLightToken(snake) + snake.label + '->' + snake.name + ' (' + snake.deathReason + ')');
+      print('┼' + snake.tickOfDeath + '. ' + getHighLightToken(snake) + snake.label + '->' + snake.name + ' (' + snake.deathReason + '), ' + snake.points + 'p.');
     });
 
     print("-------------------------------------------------\n");
@@ -221,6 +265,15 @@ function MapRenderer(width, height){
         return 1;
       else
         return 0;
+    }
+
+    function comparePoints(a,b) {
+      if (a.points < b.points)
+        return 1;
+      else if (a.points > b.points)
+        return 0;
+      else
+        return 1;
     }
 
     function compareTickOfDeath(a,b) {

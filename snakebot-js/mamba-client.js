@@ -12,6 +12,9 @@ function Mamba(host, port, eventListener, verboseLogging) {
   var MapUpdateEvent      = require('./domain/mamba/mapUpdateEvent.js');
   var RegisterMove        = require('./domain/mamba/registerMove.js');
 
+  // Log json dumps etc.
+  var veryVerboseLogging  = false;
+
   // States
   var STATE_INIT          = 'app_init';
   var STATE_REGISTER      = 'game_register';
@@ -88,9 +91,9 @@ function Mamba(host, port, eventListener, verboseLogging) {
     eventBus.publish({type: 'ERROR', payload: 'WS connection error'});
   }
 
-  function registerPlayer(userName, snakeColor, gameSettings) {
+  function registerPlayer(userName, gameSettings) {
     checkState(STATE_REGISTER);
-    var regPlayer = RegisterPlayer.new(userName, snakeColor, gameSettings);
+    var regPlayer = RegisterPlayer.new(userName, gameSettings);
     sendSocket(regPlayer.marshall());
   }
 
@@ -109,30 +112,33 @@ function Mamba(host, port, eventListener, verboseLogging) {
     player = PlayerRegistered.create(decodeJson(data));
     log('Registration complete - ' + player.getPlayerName() + ' (id:' + player.getPlayerId() + ') is now registered on ' + player.getGameId());
     nextState();
-    eventBus.publish({type: "REGISTERED", payload: player});
+    eventBus.publish({type: 'REGISTERED', payload: player});
   }
 
   function handleGameStart(data) {
     var gameStart = GameStartingEvent.create(decodeJson(data));
-    log("Game starting: " + gameStart.toString());
+    log('Game starting: ' + gameStart.toString());
     nextState();
   }
 
   function handleGameEvent(data) {
     var json = decodeJson(data);
+    var event = null;
     if(json.type === MapUpdateEvent.type){
-      eventBus.publish({type: "GAME_MAP_UPDATED", payload: MapUpdateEvent.create(json)});
+      event = {type: 'GAME_MAP_UPDATED', payload: MapUpdateEvent.create(json)};
     } else if(json.type === GameEndedEvent.type){
-      eventBus.publish({type: "GAME_ENDED", payload: GameEndedEvent.create(json)});
+      event = {type: 'GAME_ENDED', payload: GameEndedEvent.create(json)};
     } else if(json.type === SnakeDeadEvent.type){
-      eventBus.publish({type: "GAME_SNAKE_DEAD", payload: SnakeDeadEvent.create(json)});
+      event = {type: 'GAME_SNAKE_DEAD', payload: SnakeDeadEvent.create(json)};
     } else {
-      eventBus.publish({type: "ERROR", payload: 'Unknown game event'});
+      event = {type: 'ERROR', payload: 'Unknown game event'};
     }
+    log(event.payload.toString());
+    eventBus.publish(event);
   }
 
   function getCurrentState() {
-    log("Current state: " + currentState);
+    log('Current state: ' + currentState);
     return currentState;
   }
 
@@ -159,7 +165,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   function decodeJson(payload) {
     var json = JSON.parse(decoder.write(payload.buffer));
-    log(json);
+    logDump(json);
     return json;
   }
 
@@ -177,6 +183,12 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   function logError(message){
     console.log(new Date() + ' - MAMBA ERROR - ' + message);
+  }
+
+  function logDump(obj){
+    if(veryVerboseLogging){
+      console.log(new Date() + ' - MAMBA INFO - ', obj);
+    }
   }
 
   return {
