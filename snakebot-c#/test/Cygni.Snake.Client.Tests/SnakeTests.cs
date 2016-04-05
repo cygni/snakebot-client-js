@@ -17,7 +17,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void SnakeShouldNotStartGameIfGameModeIsNotTraining()
         {
-            var clientMock = new Mock<IClientWebSocket>();
+            var clientMock = new Mock<ITextClientWebSocket>();
             clientMock.Setup(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).Returns(Task.Factory.StartNew(() => { }));
             clientMock.Setup(m => m.State).Returns(WebSocketState.Open);
             clientMock.Setup(m => m.ReceiveAsync()).Returns(() =>
@@ -45,7 +45,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void SnakeShouldStartGameIfGameModeIsTraining()
         {
-            var clientMock = new Mock<IClientWebSocket>();
+            var clientMock = new Mock<ITextClientWebSocket>();
             clientMock.Setup(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).Returns(Task.Factory.StartNew(() => { }));
             clientMock.Setup(m => m.State).Returns(WebSocketState.Open);
             clientMock.Setup(m => m.ReceiveAsync()).Returns(() =>
@@ -72,7 +72,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void SnakeShouldRespondWithNewMovementDirectionWhenMapIsUpdated()
         {
-            var clientMock = new Mock<IClientWebSocket>();
+            var clientMock = new Mock<ITextClientWebSocket>();
             clientMock.Setup(m => m.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>())).Returns(Task.Factory.StartNew(() => { }));
             clientMock.Setup(m => m.State).Returns(WebSocketState.Open);
 

@@ -14,13 +14,13 @@ namespace Cygni.Snake.Client.Tests
 {
     public class ClientTests
     {
-        private Mock<IClientWebSocket> _socketMock;
+        private Mock<ITextClientWebSocket> _socketMock;
 
         // TODO: Unreliable tests. Fails when doing "Run all tests".
         [Fact]
         public void ClientShouldInvokeOnGameTurnEventWhenMessageIsReceived()
         {
-            _socketMock = new Mock<IClientWebSocket>();
+            _socketMock = new Mock<ITextClientWebSocket>();
             string jsonString = TestResources.GetResourceText("map-update.json", Encoding.UTF8);
             MapUpdate eventArgs = null;
 
@@ -44,7 +44,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void ClientShouldInvokePlayerRegisteredWhenMessageIsReceived()
         {
-            _socketMock = new Mock<IClientWebSocket>();
+            _socketMock = new Mock<ITextClientWebSocket>();
             string jsonString = TestResources.GetResourceText("player-registered.json", Encoding.UTF8);
             PlayerRegistered eventArgs = null;
 
@@ -70,7 +70,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void ClientShouldInvokeGameStartingEvent()
         {
-            _socketMock = new Mock<IClientWebSocket>();
+            _socketMock = new Mock<ITextClientWebSocket>();
             string jsonString = TestResources.GetResourceText("game-starting.json", Encoding.UTF8);
             GameStarting eventArgs = null;
 
@@ -94,7 +94,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void ClientShouldInvokeGameEndedEvent()
         {
-            _socketMock = new Mock<IClientWebSocket>();
+            _socketMock = new Mock<ITextClientWebSocket>();
             string jsonString = TestResources.GetResourceText("game-ended.json", Encoding.UTF8);
             GameEnded eventArgs = null;
 
@@ -119,7 +119,7 @@ namespace Cygni.Snake.Client.Tests
         [Fact]
         public void ClientShouldInvokeOnSnakeDeadEvent()
         {
-            _socketMock = new Mock<IClientWebSocket>();
+            _socketMock = new Mock<ITextClientWebSocket>();
             string jsonString = TestResources.GetResourceText("snake-dead.json", Encoding.UTF8);
             SnakeDead eventArgs = null;
 

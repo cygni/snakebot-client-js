@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Cygni.Snake.Client.Communication
 {
-    public interface IClientWebSocket
+    public interface ITextClientWebSocket
     {
         WebSocketState State { get; }
 
