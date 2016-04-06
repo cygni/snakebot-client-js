@@ -56,6 +56,41 @@ function whereIsSnake(playerId, map){
 }
 
 /**
+ * Get the tile content at the given coordinate [food | obstacle | snakehead | snakebody].
+ * @param coords the coordinate
+ * @param map the map
+ * @returns {{content: String}} or null
+ */
+function peekAt(coords, map){
+  var point = translateCoordinate(coords, map.getWidth());
+  return getOccupiedMapTiles(map)[point];
+}
+
+/**
+ * Get all occupied map tiles and the content [food | obstacle | snakehead | snakebody]
+ * @param map the map
+ * @returns {{content: String}}
+ */
+function getOccupiedMapTiles(map){
+  var tiles = {};
+  map.getFoodPositions().map(function(pos){tiles[pos] = {content: 'food'}});
+  map.getObstaclePositions().map(function(pos){tiles[pos] = {content: 'obstacle'}});
+  map.getSnakeInfos().map(function(snakeInfo){snakeInfo.getPositions().map(function(pos, index){tiles[pos] = {content: 0 == index ? 'snakehead' : 'snakebody'}})});
+  return tiles;
+}
+
+/**
+ * Get all food on the map sorted by distance to the coordinate.
+ * @param coords the coordinate
+ * @param map the map
+ * @returns {Array} of food coordinates
+ */
+function findFood(coords, map){
+  return sortByClosestTo(
+    positionsToCoords(map.getFoodPositions(), map.getWidth()), coords);
+}
+
+/**
  * Sorts the items in the array from closest to farthest
  * in relation to the given coordinate using Manhattan distance.
  * @param items the items (must expose ::getX() and ::getY();
@@ -66,7 +101,7 @@ function sortByClosestTo(items, coords){
   var distanceItem = [];
   items.forEach(function(item){
     distanceItem.push({
-      d: getManhattanDistance(coords, {x: item.getX(), y: item.getY()}),
+      d: getManhattanDistance(coords, {x: item.x, y: item.y}),
       item: item
     });
   });
@@ -82,6 +117,16 @@ function sortByClosestTo(items, coords){
   var orderedResult = [];
   distanceItem.forEach(function(di){orderedResult.push(di.item);});
   return orderedResult;
+}
+
+/**
+ * Converts an array of positions to an array of coordinates.
+ * @param points the positions to convert
+ * @param mapWidth the width of the map
+ * @returns {[{x: (Number), y: (Number)}]}
+ */
+function positionsToCoords(positions, mapWidth){
+  return positions.map(function(pos){return translatePosition(pos, mapWidth)});
 }
 
 /**
@@ -104,8 +149,8 @@ function translatePosition(position, mapWidth) {
  * @param coordinate
  * @return
  */
-function translateCoordinate(coordinate, mapWidth) {
-  return coordinate.x + coordinate.y * mapWidth;
+function translateCoordinate(coords, mapWidth) {
+  return coords.x + coords.y * mapWidth;
 }
 
 exports.sortByClosestTo       = sortByClosestTo;
@@ -114,3 +159,6 @@ exports.getEuclidianDistance  = getEuclidianDistance;
 exports.whereIsSnake          = whereIsSnake;
 exports.translatePosition     = translatePosition;
 exports.findPathAS            = findPathAS;
+exports.peekAt                = peekAt;
+exports.positionsToCoords     = positionsToCoords;
+exports.findFood              = findFood;
