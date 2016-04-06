@@ -28,7 +28,9 @@ C. Execute: `npm install`
 Open `snake-cli.js` in your favourite editor.
 
 Edit the server connection parameters.   
-See *var client = Mamba('snake.cygni.se', 80, onEvent, false).connect("training")*
+```js
+var client = Mamba('snake.cygni.se', 80, onEvent, false).connect("training")
+```
 
 Change your player name...  
 See *::prepareNewGame(){...}*
@@ -41,12 +43,10 @@ Your default snake is now ready to be unleashed!
 
 You have already experienced an important lesson; "if I go all the way to the right it will hurt".  
 Well, actually it will hurt your snake the most. Don't hurt your snake. 
-To improve the snake you need to do some serious thinking.  
-Right now your snakes brain is as small as a shopping list. It's entire mind resides in the method named *::handleGameUpdate(mapState)*.
+To improve the snake you need to do some serious thinking. Right now your snakes brain is as small as a shopping list. It's entire mind resides in the method named *::handleGameUpdate(mapState)*.
 
 This method takes just one teeny weeny, er I mean mighty, parameter named *mapState* (see domain/mamba/MapUpdateEvent.js).     
-This mapState parameter represents the world state at a given game tick. All snakes sees the same world at the same game tick    
-(yes, even snakes must obey the arrow of time and anyways the theory of relativity has not yet been formalised  
+This mapState parameter represents the world state at a given game tick. All snakes sees the same world at the same game tick (yes, even snakes must obey the arrow of time and anyways the theory of relativity has not yet been formalised  
 by Snakebert Snakestein). The world changes state every 250 millisecond in the standard snake Universe.   
 You, being a God in the snake Universe, can tweak this and other worldly parameters with the *game settings*   
 (see domain/mamba/gameSettings.js) and *::prepareNewGame*.
@@ -97,7 +97,7 @@ Don't forget to raid the Cygni fridge before you get started, it's free after al
 /Snake McWriggles
 
 
-#### PS. Need a nudge in some direction? Here's a snippet for a snake that eats and tries to keep itself out of trouble. DS.
+#### PS. Need a nudge in some direction? Here's a snippet for a snake that eats and tries to keep itself out of trouble.
 
 ```js
 var food = MapUtils.findFood(myCoords, map);
@@ -111,6 +111,8 @@ var food = MapUtils.findFood(myCoords, map);
     snakeBrainDump = {foodCoord: foodCoord, path: path};
   }
 ```
+
+DS.
  
 
 
