@@ -102,6 +102,11 @@ namespace Cygni.Snake.Client
             return GetResultOfDirection(playerId, dir).Equals(DirectionalResult.Death) == false;
         }
 
+        public Tile GetTileAt(int x, int y)
+        {
+            return GetTileAt(ToIndex(x, y));
+        }
+
         private Tile GetTileAt(int index)
         {
             foreach (var snake in _snakeInfos)
