@@ -61,7 +61,7 @@ function whereIsSnake(playerId, map){
  * @param map the map
  * @returns {{content: String}} or null
  */
-function peekAt(coords, map){
+function getAt(coords, map){
   var point = translateCoordinate(coords, map.getWidth());
   return getOccupiedMapTiles(map)[point];
 }
@@ -159,6 +159,6 @@ exports.getEuclidianDistance  = getEuclidianDistance;
 exports.whereIsSnake          = whereIsSnake;
 exports.translatePosition     = translatePosition;
 exports.findPathAS            = findPathAS;
-exports.peekAt                = peekAt;
+exports.getAt                 = getAt;
 exports.positionsToCoords     = positionsToCoords;
 exports.findFood              = findFood;

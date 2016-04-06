@@ -2,15 +2,15 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   var WebSocket           = require('ws');
   var StringDecoder       = require('string_decoder').StringDecoder;
-  var EventBus            = require('./domain/mamba/eventBus.js');
-  var RegisterPlayer      = require('./domain/mamba/registerPlayer.js');
-  var PlayerRegistered    = require('./domain/mamba/playerRegistered.js');
-  var StartGame           = require('./domain/mamba/startGame.js');
-  var GameStartingEvent   = require('./domain/mamba/gameStartingEvent.js');
-  var GameEndedEvent      = require('./domain/mamba/gameEndedEvent.js');
-  var SnakeDeadEvent      = require('./domain/mamba/snakeDeadEvent.js');
-  var MapUpdateEvent      = require('./domain/mamba/mapUpdateEvent.js');
-  var RegisterMove        = require('./domain/mamba/registerMove.js');
+  var EventBus            = require('./mamba/eventBus.js');
+  var RegisterPlayer      = require('./mamba/registerPlayer.js');
+  var PlayerRegistered    = require('./mamba/playerRegistered.js');
+  var StartGame           = require('./mamba/startGame.js');
+  var GameStartingEvent   = require('./mamba/gameStartingEvent.js');
+  var GameEndedEvent      = require('./mamba/gameEndedEvent.js');
+  var SnakeDeadEvent      = require('./mamba/snakeDeadEvent.js');
+  var MapUpdateEvent      = require('./mamba/mapUpdateEvent.js');
+  var RegisterMove        = require('./mamba/registerMove.js');
 
   // Log json dumps etc.
   var veryVerboseLogging  = false;
