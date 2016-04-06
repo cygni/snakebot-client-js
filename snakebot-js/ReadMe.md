@@ -79,9 +79,15 @@ Oh and by the way, you need to issue your move before the next game tick. Otherw
 
 ## Analysing the game 
  
-The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal.  
-It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you.  
-Code examples are available in ´snake-cli.js´.
+The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal. It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you. Code examples are available in ´snake-cli.js´.
+
+```js
+ // Frame by frame render
+ renderer.render(function(){process.exit()}, {followPid : gameInfo.getPlayerId()});
+ 
+ // Animated
+ renderer.render(function(){process.exit()}, {animate: true, delay: 500, followPid : gameInfo.getPlayerId()});
+```
 
 # Happy snaking!
 
