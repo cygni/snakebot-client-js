@@ -93,17 +93,18 @@ Don't forget to raid the Cygni fridge before you get started, it's free after al
 
 #### PS. Need a nudge in some direction? Here's a snippet for a snake that eats and tries to keep itself out of trouble. DS.
 
-var food = MapUtils.sortByClosestTo(map.findFood(), myCoords);  
-  if(food.length){  
-   var foodCoord = food.pop().getCoords();  
-   var path = MapUtils.findPathAS(myCoords, foodCoord, map.getWidth(), map.getHeight(), function(coord, goalCoord){  
-     var tile = map.getTile(coord.x, coord.y);  
-     return MapUtils.getManhattanDistance(coord, goalCoord) + (tile.content === 'snakebody' ? 1000 : 0);  
-   });  
-   direction = path[0].direction;  
-   snakeBrainDump = {foodCoord: foodCoord, path: path};  
-} 
- 
+´´´JavaScript
+var food = MapUtils.findFood(myCoords, map);
+  if(food.length){
+    var foodCoord = food.pop();
+    var path = MapUtils.findPathAS(myCoords, foodCoord, map.getWidth(), map.getHeight(), function(coord, goalCoord){
+      var tile = MapUtils.peekAt(myCoords, map);
+      return MapUtils.getManhattanDistance(coord, goalCoord) + (tile.content === 'snakebody' ? 1000 : 0);
+    });
+    direction = path[0].direction;
+    snakeBrainDump = {foodCoord: foodCoord, path: path};
+  }
+´´´ 
  
 
 
