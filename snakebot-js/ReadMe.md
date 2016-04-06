@@ -104,7 +104,7 @@ var food = MapUtils.findFood(myCoords, map);
   if(food.length){
     var foodCoord = food.pop();
     var path = MapUtils.findPathAS(myCoords, foodCoord, map.getWidth(), map.getHeight(), function(coord, goalCoord){
-      var tile = MapUtils.peekAt(myCoords, map);
+      var tile = MapUtils.getAt(myCoords, map);
       return MapUtils.getManhattanDistance(coord, goalCoord) + (tile.content === 'snakebody' ? 1000 : 0);
     });
     direction = path[0].direction;
