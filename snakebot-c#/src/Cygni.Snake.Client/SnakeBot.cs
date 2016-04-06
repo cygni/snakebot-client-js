@@ -24,7 +24,6 @@ namespace Cygni.Snake.Client
             Printer = new ConsoleMapPrinter();
             Printer.Start();
 
-            _client.OnConnected(OnClientConnected);
             _client.OnSessionClosed(OnSessionClosed);
             _client.OnPlayerRegistered(OnPlayerRegistered);
             _client.OnInvalidPlayerName(OnInvalidPlayerName);
@@ -42,7 +41,7 @@ namespace Cygni.Snake.Client
             Printer.Enque(snakeDead);
         }
 
-        protected virtual void OnClientConnected()
+        public void Start()
         {
             _client.RegisterPlayer(Name);
         }
@@ -75,9 +74,7 @@ namespace Cygni.Snake.Client
         {
             PlayerId = playerRegistered.ReceivingPlayerId;
             IsPlaying = true;
-
-            if (_client.GameMode == "training")
-                _client.StartGame();
+            _client.StartGame();
         }
 
         protected virtual void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
