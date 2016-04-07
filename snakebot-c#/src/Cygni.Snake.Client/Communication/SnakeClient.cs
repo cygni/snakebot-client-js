@@ -2,91 +2,79 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Cygni.Snake.Client.Communication.Messages;
-using Cygni.Snake.Client.Communication.Serialization;
 using Cygni.Snake.Client.Events;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using JsonConverter = Cygni.Snake.Client.Communication.Serialization.JsonConverter;
 
 namespace Cygni.Snake.Client.Communication
 {
-    public class SnakeClient : ISnakeClient
+    public class SnakeClient
     {
         private readonly GameSettings _gameSettings;
-        private readonly IConverter _converter;
         private readonly WebSocket _webSocket;
-        private SnakeBot _snake;
 
         public SnakeClient(WebSocket webSocket)
         {
             _webSocket = webSocket;
-            _converter = new JsonConverter();
             _gameSettings = new GameSettings();
         }
 
-        private async Task Receive()
+        public void Start(SnakeBot snake)
         {
+            SendRegisterPlayerRequest(snake.Name);
+
             while (_webSocket.State == WebSocketState.Open)
             {
-                OnMessageReceived(await ReceiveStringAsync());
+                var message = ReceiveString();
+                OnMessageReceived(snake, message);
             }
         }
 
-        private void OnMessageReceived(string jsonString)
+        private void OnMessageReceived(SnakeBot snake, string jsonString)
         {
-            if (_snake == null)
-            {
-                return;
-            }
-            var messageType = _converter.GetMessageType(jsonString);
+            var json = JObject.Parse(jsonString);
+            string messageType = (string)json?["type"] ?? String.Empty;
 
             switch (messageType)
             {
                 case MessageType.GameEnded:
-                    _snake.OnGameEnded(_converter.Deserialize<GameEnded>(jsonString));
+                    snake.OnGameEnded(JsonConvert.DeserializeObject<GameEnded>(jsonString));
                     break;
 
                 case MessageType.MapUpdated:
-                    var update = _converter.Deserialize<MapUpdate>(jsonString);
-                    var direction = _snake.OnMapUpdate(update);
-                    IssueMovementCommand(direction, update.GameTick);
+                    var update = JsonConvert.DeserializeObject<MapUpdate>(jsonString);
+                    var direction = snake.OnMapUpdate(update);
+                    SendRegisterMoveRequest(direction, update.GameTick);
                     break;
 
                 case MessageType.SnakeDead:
-                    _snake.OnSnakeDead(_converter.Deserialize<SnakeDead>(jsonString));
+                    snake.OnSnakeDead(JsonConvert.DeserializeObject<SnakeDead>(jsonString));
                     break;
 
                 case MessageType.GameStarting:
-                    _snake.OnGameStarting(_converter.Deserialize<GameStarting>(jsonString));
+                    snake.OnGameStarting(JsonConvert.DeserializeObject<GameStarting>(jsonString));
                     break;
 
                 case MessageType.PlayerRegistered:
-                    _snake.OnPlayerRegistered(_converter.Deserialize<PlayerRegistered>(jsonString));
-                    StartGame();
+                    snake.OnPlayerRegistered(JsonConvert.DeserializeObject<PlayerRegistered>(jsonString));
+                    SendStartGameRequest();
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    _snake.OnInvalidPlayerName(_converter.Deserialize<InvalidPlayerName>(jsonString));
+                    snake.OnInvalidPlayerName(JsonConvert.DeserializeObject<InvalidPlayerName>(jsonString));
                     break;
             }
         }
 
-        private async Task SendStringAsync(string msg)
-        {
-            var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
-            await _webSocket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None)
-                .ConfigureAwait(false);
-        }
-
-        private async Task<string> ReceiveStringAsync()
+        private string ReceiveString()
         {
             var sb = new StringBuilder();
-
+            
             while (true)
             {
                 var buffer = new byte[1024];
-                var result = await _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                var result = _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
 
                 sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
 
@@ -97,43 +85,41 @@ namespace Cygni.Snake.Client.Communication
             }
         }
 
-        public void StartGame()
+        private void SendStartGameRequest()
         {
-            var msg = CreateMessageJson(MessageType.StartGame);
-            SendStringAsync(_converter.Serialize(msg)).ConfigureAwait(false);
+            var msg = new JObject { ["type"] = MessageType.StartGame };
+            SendString(JsonConvert.SerializeObject(msg));
         }
 
-        public void Start(SnakeBot snake)
+        private void SendRegisterPlayerRequest(string playerName)
         {
-            _snake = snake;
-            RegisterPlayer(snake.Name);
-
-            Receive().ConfigureAwait(false);
-        }
-
-        public void RegisterPlayer(string playerName)
-        {
-            var msg = CreateMessageJson(MessageType.RegisterPlayer);
-            msg["playerName"] = playerName;
+            var msg = new JObject
+            {
+                ["type"] = MessageType.RegisterPlayer,
+                ["playerName"] = playerName
+            };
             if (_gameSettings != null)
             {
                 msg["gameSettings"] = JObject.FromObject(_gameSettings);
             }
-            SendStringAsync(_converter.Serialize(msg)).Wait(CancellationToken.None);
+            SendString(JsonConvert.SerializeObject(msg));
         }
 
-        public void IssueMovementCommand(Direction direction, long gameTick)
+        private void SendRegisterMoveRequest(Direction direction, long gameTick)
         {
-            var msg = CreateMessageJson(MessageType.RegisterMove);
-            msg["direction"] = direction.ToString().ToUpperInvariant();
-            msg["gameTick"] = gameTick;
-            SendStringAsync(_converter.Serialize(msg)).Wait(CancellationToken.None);
+            var msg = new JObject
+            {
+                ["type"] = MessageType.RegisterMove,
+                ["direction"] = direction.ToString().ToUpperInvariant(),
+                ["gameTick"] = gameTick
+            };
+            SendString(JsonConvert.SerializeObject(msg));
         }
-        
-        private JObject CreateMessageJson(string type)
+
+        private void SendString(string msg)
         {
-            var msg = new JObject {["type"] = type};
-            return msg;
+            var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
+            _webSocket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

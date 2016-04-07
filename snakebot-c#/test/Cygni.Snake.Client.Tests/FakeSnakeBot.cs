@@ -4,14 +4,21 @@ namespace Cygni.Snake.Client.Tests
 {
     public class FakeSnakeBot :SnakeBot
     {
-        public FakeSnakeBot() 
+        private readonly Direction _direction;
+
+        public FakeSnakeBot() : this(Direction.Down)
+        {
+        }
+
+        public FakeSnakeBot(Direction direction) 
             : base("fake")
         {
+            _direction = direction;
         }
 
         protected override Direction OnGameTurn(Map map, long gameTick)
         {
-            return Direction.Down;
+            return _direction;
         }
     }
 }

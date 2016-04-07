@@ -18,6 +18,7 @@ namespace Cygni.Snake.Client.Tests
         public StubWebSocket(WebSocketState state)
         {
             this._state = state;
+            CloseWhenNoMoreMessages = true;
         }
 
         public bool CloseWhenNoMoreMessages { get; set; }

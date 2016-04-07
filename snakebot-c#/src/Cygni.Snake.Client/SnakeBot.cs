@@ -14,21 +14,25 @@ namespace Cygni.Snake.Client
         public string PlayerId { get; private set; }
         public bool GameRunning { get; set; } = true;
 
-        //protected readonly ConsoleMapPrinter Printer;
+        protected readonly ConsoleMapPrinter Printer;
 
-        protected SnakeBot(string name)
+        protected SnakeBot(string name, bool print)
         {
             Name = name;
-            //Printer = new ConsoleMapPrinter();
-            //Printer.Start();
+            if (print)
+            {
+                Printer = new ConsoleMapPrinter();
+                Printer.Start();
+            }
         }
+
+        protected SnakeBot(string name) : this(name, false) { }
 
         public virtual void OnSnakeDead(SnakeDead snakeDead)
         {
             if (PlayerId == snakeDead.PlayerId)
                 IsPlaying = false;
-
-            //Printer.Enque(snakeDead);
+            Printer?.Enque(snakeDead);
         }
 
         public virtual void OnSessionClosed()
@@ -43,7 +47,7 @@ namespace Cygni.Snake.Client
 
         public virtual void OnGameEnded(GameEnded gameEnded)
         {
-            //Printer.Enque(gameEnded);
+            Printer?.Enque(gameEnded);
             GameRunning = false;
         }
 
@@ -61,7 +65,7 @@ namespace Cygni.Snake.Client
 
         public virtual void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
         {
-            var reason = Enum.GetName(typeof (PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
+            var reason = Enum.GetName(typeof(PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
 
             throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
         }
