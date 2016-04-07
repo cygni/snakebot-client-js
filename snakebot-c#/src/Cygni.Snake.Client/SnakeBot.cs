@@ -22,7 +22,6 @@ namespace Cygni.Snake.Client
             if (print)
             {
                 Printer = new ConsoleMapPrinter();
-                Printer.Start();
             }
         }
 
@@ -33,11 +32,6 @@ namespace Cygni.Snake.Client
             if (PlayerId == snakeDead.PlayerId)
                 IsPlaying = false;
             Printer?.Enque(snakeDead);
-        }
-
-        public virtual void OnSessionClosed()
-        {
-            IsPlaying = false;
         }
 
         public virtual void OnGameStarting(GameStarting gameStarting)
