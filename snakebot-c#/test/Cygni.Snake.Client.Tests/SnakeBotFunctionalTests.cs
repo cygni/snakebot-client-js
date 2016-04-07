@@ -22,10 +22,10 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("game-ended.json", Encoding.UTF8)));
 
             var sc = new SnakeClient(socket);
-            var snake = new FakeSnakeBot(sc);
-
+            var snake = new FakeSnakeBot();
+            
             // Run all tasks in sequence so that we do not assert before all calls have finished.
-            SynchronousTaskScheduler.Run(() => snake.Start());
+            SynchronousTaskScheduler.Run(() => sc.Start(snake));
 
             // Assert correct sequence of messages back to the socket.
             Assert.Equal(MessageType.RegisterPlayer, socket.OutgoingJson[0]["type"]);

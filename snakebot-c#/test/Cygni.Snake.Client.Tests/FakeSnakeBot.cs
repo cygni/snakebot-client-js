@@ -4,8 +4,8 @@ namespace Cygni.Snake.Client.Tests
 {
     public class FakeSnakeBot :SnakeBot
     {
-        public FakeSnakeBot(ISnakeClient client) 
-            : base("fake", client)
+        public FakeSnakeBot() 
+            : base("fake")
         {
         }
 

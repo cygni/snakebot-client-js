@@ -1,18 +1,17 @@
 ﻿using Cygni.Snake.Client;
-using Cygni.Snake.Client.Communication;
 
 namespace Cygni.Snake.SampleBot
 {
-    public class MySnakeBot : Client.SnakeBot
+    public class MySnakeBot : SnakeBot
     {
-        public MySnakeBot(string name, string color, ISnakeClient snakeClient)
-            : base(name, snakeClient)
+        public MySnakeBot(string name)
+            : base(name)
         {
         }
         
         protected override Direction OnGameTurn(Map map, long gameTick)
         {
-            Printer.Enque(map);
+            //Printer.Enque(map);
             // figure out a good move
 
             // do calculated move

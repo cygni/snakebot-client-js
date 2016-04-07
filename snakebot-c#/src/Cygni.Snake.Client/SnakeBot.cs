@@ -14,70 +14,52 @@ namespace Cygni.Snake.Client
         public string PlayerId { get; private set; }
         public bool GameRunning { get; set; } = true;
 
-        private readonly ISnakeClient _client;
-        protected readonly ConsoleMapPrinter Printer;
+        //protected readonly ConsoleMapPrinter Printer;
 
-        protected SnakeBot(string name, ISnakeClient client)
+        protected SnakeBot(string name)
         {
             Name = name;
-            _client = client;
-            Printer = new ConsoleMapPrinter();
-            Printer.Start();
-
-            _client.OnSessionClosed(OnSessionClosed);
-            _client.OnPlayerRegistered(OnPlayerRegistered);
-            _client.OnInvalidPlayerName(OnInvalidPlayerName);
-            _client.OnGameStarting(OnGameStarting);
-            _client.OnGameEnded(OnGameEnded);
-            _client.OnMapUpdate(OnMapUpdate);
-            _client.OnSnakeDead(OnSnakeDead);
+            //Printer = new ConsoleMapPrinter();
+            //Printer.Start();
         }
 
-        private void OnSnakeDead(SnakeDead snakeDead)
+        public virtual void OnSnakeDead(SnakeDead snakeDead)
         {
             if (PlayerId == snakeDead.PlayerId)
                 IsPlaying = false;
 
-            Printer.Enque(snakeDead);
+            //Printer.Enque(snakeDead);
         }
 
-        public void Start()
-        {
-            _client.RegisterPlayer(Name);
-        }
-
-        protected virtual void OnSessionClosed()
+        public virtual void OnSessionClosed()
         {
             IsPlaying = false;
         }
 
-        protected virtual void OnGameStarting(GameStarting gameStarting)
+        public virtual void OnGameStarting(GameStarting gameStarting)
         {
             GameRunning = true;
         }
 
-        protected virtual void OnGameEnded(GameEnded gameEnded)
+        public virtual void OnGameEnded(GameEnded gameEnded)
         {
-            Printer.Enque(gameEnded);
+            //Printer.Enque(gameEnded);
             GameRunning = false;
         }
 
-        private void OnMapUpdate(MapUpdate mapUpdate)
+        public virtual Direction OnMapUpdate(MapUpdate mapUpdate)
         {
             long gameTick = mapUpdate.GameTick;
-            var direction = OnGameTurn(mapUpdate.Map, gameTick);
-
-            _client.IssueMovementCommand(direction, gameTick);
+            return OnGameTurn(mapUpdate.Map, gameTick);
         }
 
-        protected virtual void OnPlayerRegistered(PlayerRegistered playerRegistered)
+        public virtual void OnPlayerRegistered(PlayerRegistered playerRegistered)
         {
             PlayerId = playerRegistered.ReceivingPlayerId;
             IsPlaying = true;
-            _client.StartGame();
         }
 
-        protected virtual void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
+        public virtual void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
         {
             var reason = Enum.GetName(typeof (PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
 
@@ -96,7 +78,7 @@ namespace Cygni.Snake.Client
         {
             if (disposing)
             {
-                Printer?.Close();
+                //Printer?.Close();
             }
         }
     }

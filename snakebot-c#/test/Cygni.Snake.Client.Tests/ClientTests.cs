@@ -2,6 +2,7 @@
 using System.Text;
 using Cygni.Snake.Client.Communication;
 using Cygni.Snake.Client.Events;
+using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -16,28 +17,25 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("map-update.json", Encoding.UTF8)));
 
             var client = new SnakeClient(socket);
-            MapUpdate eventArgs = null;
-            client.OnMapUpdate(args => { eventArgs = args; });
+            var mockSnake = new Mock<FakeSnakeBot>();
+            mockSnake.Setup(s => s.OnMapUpdate(It.IsAny<MapUpdate>()));
+            SynchronousTaskScheduler.Run(() => client.Start(mockSnake.Object));
 
-            SynchronousTaskScheduler.Run(() => client.StartReceiving());
-
-            Assert.Equal(eventArgs.GameTick, 0);
-            Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
-
+            mockSnake.Verify(s => s.OnMapUpdate(It.Is<MapUpdate>(m => m.GameTick == 0 && m.GameId == "1a3d727e-40cb-4982-ba75-9cd67c0cf896")));
         }
 
         [Fact]
         public void ClientShouldInvokePlayerRegisteredWhenMessageIsReceived()
         {
-            var socket = new StubWebSocket(WebSocketState.Open) {CloseWhenNoMoreMessages = true};
+            var socket = new StubWebSocket(WebSocketState.Open) { CloseWhenNoMoreMessages = true };
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("player-registered.json", Encoding.UTF8)));
             PlayerRegistered eventArgs = null;
 
             var client = new SnakeClient(socket);
-            client.OnPlayerRegistered(args => { eventArgs = args; });
+            var mockSnake = new Mock<FakeSnakeBot>();
+            mockSnake.Setup(s => s.OnPlayerRegistered(It.IsAny<PlayerRegistered>())).Callback<PlayerRegistered>(p => eventArgs = p);
+            SynchronousTaskScheduler.Run(() => client.Start(mockSnake.Object));
 
-            SynchronousTaskScheduler.Run(() => client.StartReceiving());
-            
             Assert.Equal(eventArgs.Name, "#emil");
             Assert.Equal(eventArgs.GameMode, "training");
             Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
@@ -50,10 +48,11 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("game-starting.json", Encoding.UTF8)));
             GameStarting eventArgs = null;
 
-            var client = new SnakeClient(socket);
-            client.OnGameStarting(args => { eventArgs = args; });
+            var mockSnake = new Mock<FakeSnakeBot>();
+            mockSnake.Setup(s => s.OnGameStarting(It.IsAny<GameStarting>())).Callback<GameStarting>(p => eventArgs = p);
 
-            SynchronousTaskScheduler.Run(() => client.StartReceiving());
+            var client = new SnakeClient(socket);
+            SynchronousTaskScheduler.Run(() => client.Start(mockSnake.Object));
 
             Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
             Assert.Equal(eventArgs.NoofPlayers, 5);
@@ -66,11 +65,12 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("game-ended.json", Encoding.UTF8)));
 
             GameEnded eventArgs = null;
+            var mockSnake = new Mock<FakeSnakeBot>();
+            mockSnake.Setup(s => s.OnGameEnded(It.IsAny<GameEnded>())).Callback<GameEnded>(p => eventArgs = p);
 
             var client = new SnakeClient(socket);
-            client.OnGameEnded(args => { eventArgs = args; });
+            SynchronousTaskScheduler.Run(() => client.Start(mockSnake.Object));
 
-            SynchronousTaskScheduler.Run(() => client.StartReceiving());
 
             Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
             Assert.Equal(eventArgs.PlayerWinnerId, "bestWinner");
@@ -81,12 +81,13 @@ namespace Cygni.Snake.Client.Tests
         {
             var socket = new StubWebSocket(WebSocketState.Open) { CloseWhenNoMoreMessages = true };
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("snake-dead.json", Encoding.UTF8)));
+
             SnakeDead eventArgs = null;
+            var mockSnake = new Mock<FakeSnakeBot>();
+            mockSnake.Setup(s => s.OnSnakeDead(It.IsAny<SnakeDead>())).Callback<SnakeDead>(p => eventArgs = p);
 
             var client = new SnakeClient(socket);
-            client.OnSnakeDead(args => { eventArgs = args; });
-
-            SynchronousTaskScheduler.Run(() => client.StartReceiving());
+            SynchronousTaskScheduler.Run(() => client.Start(mockSnake.Object));
 
             Assert.Equal(eventArgs.GameId, "1a3d727e-40cb-4982-ba75-9cd67c0cf896");
             Assert.Equal(eventArgs.DeathReason, DeathReason.CollisionWithWall);

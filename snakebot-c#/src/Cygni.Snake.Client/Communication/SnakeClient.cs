@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -17,14 +16,7 @@ namespace Cygni.Snake.Client.Communication
         private readonly GameSettings _gameSettings;
         private readonly IConverter _converter;
         private readonly WebSocket _webSocket;
-        private Task _receiveTask;
-        private Action<MapUpdate> _onMapUpdate;
-        private Action<SnakeDead> _onSnakeDead;
-        private Action<GameEnded> _onGameEnded;
-        private Action<GameStarting> _onGameStarting;
-        private Action<PlayerRegistered> _onPlayerRegistered;
-        private Action<InvalidPlayerName> _onInvalidPlayerName;
-        private Action _onSessionClosed;
+        private SnakeBot _snake;
 
         public SnakeClient(WebSocket webSocket)
         {
@@ -33,81 +25,53 @@ namespace Cygni.Snake.Client.Communication
             _gameSettings = new GameSettings();
         }
 
-        public void OnSnakeDead(Action<SnakeDead> onSnakeDead)
-        {
-            _onSnakeDead = onSnakeDead;
-        }
-
-        public void OnGameEnded(Action<GameEnded> onGameEnded)
-        {
-            _onGameEnded = onGameEnded;
-        }
-
-        public void OnGameStarting(Action<GameStarting> onGameStaring)
-        {
-            _onGameStarting = onGameStaring;
-        }
-
-        public void OnPlayerRegistered(Action<PlayerRegistered> onPlayerRegistered)
-        {
-            _onPlayerRegistered = onPlayerRegistered;
-        }
-
-        public void OnInvalidPlayerName(Action<InvalidPlayerName> onInvalidPlayerName)
-        {
-            _onInvalidPlayerName = onInvalidPlayerName;
-        }
-
-        public void OnMapUpdate(Action<MapUpdate> onMapUpdate)
-        {
-            _onMapUpdate = onMapUpdate;
-        }
-
-        public void OnSessionClosed(Action onSessionClosed)
-        {
-            _onSessionClosed = onSessionClosed;
-        }
-
-        private async void Receive()
+        private async Task Receive()
         {
             while (_webSocket.State == WebSocketState.Open)
             {
-                ActOnMessage(await ReceiveStringAsync());
+                OnMessageReceived(await ReceiveStringAsync());
             }
         }
-        
 
-        private void ActOnMessage(string jsonString)
+        private void OnMessageReceived(string jsonString)
         {
+            if (_snake == null)
+            {
+                return;
+            }
             var messageType = _converter.GetMessageType(jsonString);
 
             switch (messageType)
             {
                 case MessageType.GameEnded:
-                    _onGameEnded?.Invoke(_converter.Deserialize<GameEnded>(jsonString));
+                    _snake.OnGameEnded(_converter.Deserialize<GameEnded>(jsonString));
                     break;
 
                 case MessageType.MapUpdated:
-                    _onMapUpdate?.Invoke(_converter.Deserialize<MapUpdate>(jsonString));
+                    var update = _converter.Deserialize<MapUpdate>(jsonString);
+                    var direction = _snake.OnMapUpdate(update);
+                    IssueMovementCommand(direction, update.GameTick);
                     break;
 
                 case MessageType.SnakeDead:
-                    _onSnakeDead?.Invoke(_converter.Deserialize<SnakeDead>(jsonString));
+                    _snake.OnSnakeDead(_converter.Deserialize<SnakeDead>(jsonString));
                     break;
 
                 case MessageType.GameStarting:
-                    _onGameStarting?.Invoke(_converter.Deserialize<GameStarting>(jsonString));
+                    _snake.OnGameStarting(_converter.Deserialize<GameStarting>(jsonString));
                     break;
 
                 case MessageType.PlayerRegistered:
-                    _onPlayerRegistered?.Invoke(_converter.Deserialize<PlayerRegistered>(jsonString));
+                    _snake.OnPlayerRegistered(_converter.Deserialize<PlayerRegistered>(jsonString));
+                    StartGame();
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    _onInvalidPlayerName?.Invoke(_converter.Deserialize<InvalidPlayerName>(jsonString));
+                    _snake.OnInvalidPlayerName(_converter.Deserialize<InvalidPlayerName>(jsonString));
                     break;
             }
         }
+
         private async Task SendStringAsync(string msg)
         {
             var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
@@ -139,10 +103,12 @@ namespace Cygni.Snake.Client.Communication
             SendStringAsync(_converter.Serialize(msg)).ConfigureAwait(false);
         }
 
-        public void StartReceiving()
+        public void Start(SnakeBot snake)
         {
-            _receiveTask = new Task(Receive);
-            _receiveTask.Start();
+            _snake = snake;
+            RegisterPlayer(snake.Name);
+
+            Receive().ConfigureAwait(false);
         }
 
         public void RegisterPlayer(string playerName)
@@ -153,8 +119,7 @@ namespace Cygni.Snake.Client.Communication
             {
                 msg["gameSettings"] = JObject.FromObject(_gameSettings);
             }
-            SendStringAsync(_converter.Serialize(msg)).Wait();
-            StartReceiving();
+            SendStringAsync(_converter.Serialize(msg)).Wait(CancellationToken.None);
         }
 
         public void IssueMovementCommand(Direction direction, long gameTick)
@@ -162,13 +127,12 @@ namespace Cygni.Snake.Client.Communication
             var msg = CreateMessageJson(MessageType.RegisterMove);
             msg["direction"] = direction.ToString().ToUpperInvariant();
             msg["gameTick"] = gameTick;
-            SendStringAsync(_converter.Serialize(msg)).Wait();
+            SendStringAsync(_converter.Serialize(msg)).Wait(CancellationToken.None);
         }
         
         private JObject CreateMessageJson(string type)
         {
-            var msg = new JObject();
-            msg["type"] = type;
+            var msg = new JObject {["type"] = type};
             return msg;
         }
     }

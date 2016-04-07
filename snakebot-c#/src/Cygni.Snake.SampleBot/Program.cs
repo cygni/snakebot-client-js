@@ -13,10 +13,10 @@ namespace Cygni.Snake.SampleBot
         {
             var ws = new ClientWebSocket();
             var client = new SnakeClient(ws);
-            var snake = new MySnakeBot("dotnetSnake", "green", client);
-
+            var snake = new MySnakeBot("dotnetSnake");
+            
             ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
-            snake.Start();
+            client.Start(snake);
 
             // this is just here to keep the console from closing on us.
             do
