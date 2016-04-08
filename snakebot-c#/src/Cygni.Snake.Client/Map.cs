@@ -1,72 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Cygni.Snake.Client
 {
     public class Map : IPrintable
     {
-        private readonly IReadOnlyList<int> _foodPositions;
-        private readonly IReadOnlyList<int> _obstaclePositions;
         private readonly IReadOnlyList<SnakeInfo> _snakeInfos;
 
         public int Width { get; }
 
         public int Height { get; }
 
-        public Map(int width, int height, IEnumerable<SnakeInfo> snakeInfos, IEnumerable<int> foodPositions, IEnumerable<int> obstaclePositions)
+        public int Tick { get; }
+
+        public Map(int width, int height, int worldTick, IEnumerable<SnakeInfo> snakeInfos, IEnumerable<MapCoordinate> foodPositions, IEnumerable<MapCoordinate> obstaclePositions)
         {
-            // TODO: Consider enumerating to list of MapCoordinate instances. How to do this for snake-infos? Needs map width.
-            _foodPositions = foodPositions.ToList();
-            _obstaclePositions = obstaclePositions.ToList();
+            Tick = worldTick;
+            FoodPositions = foodPositions.ToList();
+            ObstaclePositions = obstaclePositions.ToList();
             _snakeInfos = snakeInfos.ToList();
 
             Width = width;
             Height = height;
         }
 
+        public IReadOnlyList<SnakeInfo> Players => _snakeInfos;
+
         public SnakeInfo GetSnake(string id)
         {
             return _snakeInfos.FirstOrDefault(s => s.Id.Equals(id, StringComparison.Ordinal));
         }
 
-        public IEnumerable<MapCoordinate> GetFoods()
-        {
-            return _foodPositions.Select(p => MapCoordinate.FromIndex(p, Width));
-        }
+        public IReadOnlyList<MapCoordinate> FoodPositions { get; }
 
-        public IEnumerable<MapCoordinate> GetObstacles()
-        {
-            return _obstaclePositions.Select(p => MapCoordinate.FromIndex(p, Width));
-        }
+        public IReadOnlyList<MapCoordinate> ObstaclePositions { get; }
 
-        public IEnumerable<MapCoordinate> GetSnakeHeads()
+        public IEnumerable<MapCoordinate> SnakeHeads
         {
-            return _snakeInfos.Where(snake => snake.Positions.Any())
-                .Select(snake => MapCoordinate.FromIndex(snake.HeadPosition, Width));
-        }
-
-        public IEnumerable<MapCoordinate> GetSnakeBodies()
-        {
-            return _snakeInfos.Where(s => s.Positions.Any())
-                .SelectMany(s => s.Positions.Skip(1))
-                .Select(p => MapCoordinate.FromIndex(p, Width));
-        }
-
-        public IEnumerable<MapCoordinate> GetSnakeParts()
-        {
-            return _snakeInfos.SelectMany(s => s.Positions).Select(p => MapCoordinate.FromIndex(p, Width));
-        }
-
-        public IEnumerable<MapCoordinate> GetSnakeSpread(string playerId)
-        {
-            var snake = GetSnake(playerId);
-            if (snake == null)
+            get
             {
-                throw new ArgumentException($"No snake with id: {playerId}");
+                return _snakeInfos.Where(snake => snake.Positions.Any())
+                    .Select(snake => snake.Positions.First());
             }
+        }
 
-            return snake.Positions.Select(index => MapCoordinate.FromIndex(index, Width));
+        public IEnumerable<MapCoordinate> SnakeBodies
+        {
+            get
+            {
+                return _snakeInfos.Where(s => s.Positions.Any())
+                    .SelectMany(s => s.Positions.Skip(1));
+            }
+        }
+
+        public IEnumerable<MapCoordinate> SnakeParts
+        {
+            get
+            {
+                return _snakeInfos.SelectMany(s => s.Positions);
+            }
         }
 
         public DirectionalResult GetResultOfDirection(string playerId, Direction dir)
@@ -77,10 +71,10 @@ namespace Cygni.Snake.Client
                 throw new ArgumentException($"No snake with id: {playerId}");
             }
 
-            var myHead = MapCoordinate.FromIndex(mySnake.HeadPosition, Width);
+            var myHead = mySnake.Positions.First();
             var target = myHead.GetDestination(dir);
 
-            var targetTile = GetTileAt(ToIndex(target.X, target.Y));
+            var targetTile = GetTileAt(target);
             switch (targetTile.Type)
             {
                 case TileType.SnakeHead:
@@ -103,32 +97,38 @@ namespace Cygni.Snake.Client
 
         public Tile GetTileAt(int x, int y)
         {
-            return GetTileAt(ToIndex(x, y));
+            return GetTileAt(new MapCoordinate(x, y));
         }
 
-        private Tile GetTileAt(int index)
+        private Tile GetTileAt(MapCoordinate coordinate)
         {
+            if(!coordinate.IsInsideMap(Width, Height))
+            {
+                return Tile.Obstacle();
+            }
+
             foreach (var snake in _snakeInfos)
             {
-                if (index == snake.HeadPosition)
+                if (Equals(coordinate, snake.Positions.FirstOrDefault()))
                 {
                     return Tile.SnakeHead(snake.Id);
                 }
-                if (snake.Positions.Any() && snake.Positions.Contains(index))
+                if (snake.Positions.Any() && snake.Positions.Contains(coordinate))
                 {
                     return Tile.SnakeBody(snake.Id);
                 }
             }
 
-            if (_foodPositions.Contains(index))
+            if (FoodPositions.Contains(coordinate))
             {
                 return Tile.Food();
             }
 
-            if (_obstaclePositions.Contains(index) || index < 0 || index >= Width * Height)
+            if (ObstaclePositions.Contains(coordinate))
             {
                 return Tile.Obstacle();
             }
+
             return Tile.Empty();
         }
 
@@ -142,8 +142,7 @@ namespace Cygni.Snake.Client
 
                 for (var x = 0; x < Width; ++x)
                 {
-                    int index = ToIndex(x, y);
-                    var tile = GetTileAt(index);
+                    var tile = GetTileAt(x, y);
                     Console.ForegroundColor = tile.PrintColor;
                     Console.Write(tile.PrintCharacter);
                 }
@@ -155,9 +154,29 @@ namespace Cygni.Snake.Client
             Console.WriteLine(new string('-', Width + 2));
         }
 
-        private int ToIndex(int x, int y)
+        public static Map FromJson(string json)
         {
-            return x + y * Width;
+            return FromJson(JObject.Parse(json));
+        }
+
+        public static Map FromJson(JObject json)
+        {
+            int width = (int)json["width"];
+            int height = (int)json["height"];
+            int tick = (int)json["worldTick"];
+
+            var snakes = json["snakeInfos"].Select(token =>
+            {
+                string name = (string) token["name"];
+                string id = (string) token["id"];
+                int points = (int) token["points"];
+                var positions = token["positions"].Select(i => MapCoordinate.FromIndex((int) i, width));
+                return new SnakeInfo(id, name, points, positions);
+            });
+
+            var foods = json["foodPositions"]?.Select(i => MapCoordinate.FromIndex((int) i, width));
+            var obstacles = json["foodPositions"]?.Select(i => MapCoordinate.FromIndex((int) i, width));
+            return new Map(width, height, tick, snakes, foods, obstacles);
         }
     }
 }

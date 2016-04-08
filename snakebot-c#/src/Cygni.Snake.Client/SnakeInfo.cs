@@ -5,12 +5,12 @@ namespace Cygni.Snake.Client
 {
     public class SnakeInfo
     {
-        public SnakeInfo(string id, string name, int points, IEnumerable<int> positions)
+        public SnakeInfo(string id, string name, int points, IEnumerable<MapCoordinate> positions)
         {
             Id = id;
             Name = name;
             Points = points;
-            Positions = positions?.ToList() ?? new List<int>();
+            Positions = positions.ToList();
         }
 
         public string Id { get; }
@@ -19,12 +19,7 @@ namespace Cygni.Snake.Client
 
         public int Points { get; }
 
-        public IReadOnlyList<int> Positions { get; }
-
-        /// <summary>
-        /// Gets the position of this snakes head. Or -1 if this snake is dead.
-        /// </summary>
-        public int HeadPosition => Positions.Any() ? Positions.First() : -1;
+        public IReadOnlyList<MapCoordinate> Positions { get; }
 
         public override string ToString()
         {

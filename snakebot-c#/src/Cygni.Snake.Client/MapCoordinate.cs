@@ -31,6 +31,32 @@ namespace Cygni.Snake.Client
             return GetManhattanDistanceTo(new MapCoordinate(x, y));
         }
 
+        public bool IsInsideMap(int width, int height)
+        {
+            return X >= 0 && Y >= 0 && X < width && Y < height;
+        }
+
+        protected bool Equals(MapCoordinate other)
+        {
+            return X == other.X && Y == other.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((MapCoordinate) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (X*397) ^ Y;
+            }
+        }
+
         /// <summary>
         /// Calculates the destination coordinate when moving to the specified
         /// <see cref="Direction"/>.

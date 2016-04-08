@@ -30,27 +30,27 @@ namespace Cygni.Snake.Client
             while (_socket.State == WebSocketState.Open)
             {
                 var message = ReceiveString();
-                OnMessageReceived(snake, message);
+                var json = JObject.Parse(message);
+                OnMessageReceived(snake, json);
             }
         }
 
-        private void OnMessageReceived(SnakeBot snake, string jsonString)
+        private void OnMessageReceived(SnakeBot snake, JObject json)
         {
-            var json = JObject.Parse(jsonString);
             string messageType = (string)json?["type"] ?? String.Empty;
 
             switch (messageType)
             {
                 case MessageType.GameEnded:
-                    OnGameEnded(JsonConvert.DeserializeObject<GameEnded>(jsonString));
+                    OnGameEnded(json);
                     break;
 
                 case MessageType.MapUpdated:
-                    OnMapUpdated(snake, JsonConvert.DeserializeObject<MapUpdate>(jsonString));
+                    OnMapUpdated(snake, json);
                     break;
 
                 case MessageType.SnakeDead:
-                    OnSnakeDead(JsonConvert.DeserializeObject<SnakeDead>(jsonString));
+                    OnSnakeDead(json);
                     break;
 
                 case MessageType.PlayerRegistered:
@@ -58,20 +58,9 @@ namespace Cygni.Snake.Client
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    OnInvalidPlayerName(JsonConvert.DeserializeObject<InvalidPlayerName>(jsonString));
+                    OnInvalidPlayerName(json);
                     break;
             }
-        }
-
-        private void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
-        {
-            var reason = Enum.GetName(typeof(PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
-            throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
-        }
-
-        private void OnSnakeDead(SnakeDead e)
-        {
-            _printer.Print(e);
         }
 
         private string ReceiveString()
@@ -92,21 +81,41 @@ namespace Cygni.Snake.Client
             }
         }
 
-        private void OnGameEnded(GameEnded gameEnded)
+        private void OnInvalidPlayerName(JObject json)
         {
-            _printer.Print(gameEnded);
+            var reason = (string) json["reasonCode"];
+            throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
         }
 
-        private void OnMapUpdated(SnakeBot snake, MapUpdate mapUpdate)
+        private void OnSnakeDead(JObject json)
         {
-            _printer.Print(mapUpdate.Map);
-            var direction = snake.OnMapUpdate(mapUpdate.Map);
-            SendRegisterMoveRequest(direction, mapUpdate.GameTick);
+            string deathReason = (string)json["deathReason"];
+            string id = (string) json["playerId"];
+            string receivingPlayerId = (string) json["receivingPlayerId"];
+            _printer.SnakeDied(deathReason, id, id.Equals(receivingPlayerId, StringComparison.Ordinal));
+        }
+
+        private void OnGameEnded(JObject json)
+        {
+            var map = Map.FromJson((JObject)json["map"]);
+            _printer.Print("Game ended dude");
+            _printer.Print(map);
+        }
+
+        private void OnMapUpdated(SnakeBot snake, JObject json)
+        {
+            var map = Map.FromJson((JObject)json["map"]);
+            _printer.Print(map);
+            var direction = snake.OnMapUpdate(map);
+            SendRegisterMoveRequest(direction, map.Tick);
         }
 
         private void SendStartGameRequest()
         {
-            var msg = new JObject { ["type"] = MessageType.StartGame };
+            var msg = new JObject
+            {
+                ["type"] = MessageType.StartGame
+            };
             SendString(JsonConvert.SerializeObject(msg));
         }
 

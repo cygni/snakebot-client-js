@@ -1,166 +1,81 @@
 ﻿using System;
-using System.Linq;
+using System.Text;
 using Xunit;
 
 namespace Cygni.Snake.Client.Tests
 {
     public class MapTests
     {
-        [Fact]
-        public void AllFoodTilesShouldBeReturnedWhenCallingUtilsFunction()
+        [Theory]
+        [InlineData(Direction.Up, DirectionalResult.Death)]
+        [InlineData(Direction.Right, DirectionalResult.Points)]
+        [InlineData(Direction.Left, DirectionalResult.Death)]
+        [InlineData(Direction.Down, DirectionalResult.Death)]
+        public void GetResultOfDirection_ReturnsExpectedResult(Direction direction, DirectionalResult result)
         {
-            var map = new Map(5, 5, new SnakeInfo[0], new[] {0, 2, 11, 23, 24}, new int[0]);
-
-            var foodTiles = map.GetFoods().ToList();
-
-            Assert.Equal(foodTiles.Count, 5);
-            Assert.Equal(foodTiles.Count(t => t.Y == 0 && t.X == 0), 1);
-            Assert.Equal(foodTiles.Count(t => t.Y == 0 && t.X == 2), 1);
-            Assert.Equal(foodTiles.Count(t => t.Y == 2 && t.X == 1), 1);
-            Assert.Equal(foodTiles.Count(t => t.Y == 4 && t.X == 3), 1);
-            Assert.Equal(foodTiles.Count(t => t.Y == 4 && t.X == 4), 1);
-        }
-
-        [Fact]
-        public void AllObstacleTilesShouldBeReturnedWhenCallingUtilsFunction()
-        {
-            var map = new Map(5, 5, new SnakeInfo[0], new int[0], new[] {0, 2, 11, 23, 24});
-
-            var obstacleTiles = map.GetObstacles().ToList();
-
-            Assert.Equal(obstacleTiles.Count, 5);
-            Assert.Equal(obstacleTiles.Count(t => t.Y == 0 && t.X == 0), 1);
-            Assert.Equal(obstacleTiles.Count(t => t.Y == 0 && t.X == 2), 1);
-            Assert.Equal(obstacleTiles.Count(t => t.Y == 2 && t.X == 1), 1);
-            Assert.Equal(obstacleTiles.Count(t => t.Y == 4 && t.X == 3), 1);
-            Assert.Equal(obstacleTiles.Count(t => t.Y == 4 && t.X == 4), 1);
-        }
-
-        [Fact]
-        public void AllHeadTilesShouldBeReturnedWhenCallingUtilsFunction()
-        {
-            var map = new Map(5, 5, new[]
+            var map = new Map(5, 5, 1, new[]
             {
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {6}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {15}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {24}),
-            }, new int[0], new int[0]);
+                new SnakeInfo("bestsnake", String.Empty, 0, new[]
+                {
+                    new MapCoordinate(0, 0),
+                    new MapCoordinate(0, 1),
+                    new MapCoordinate(1, 1),
+                    new MapCoordinate(1, 2)
+                })
+            }, new[] {new MapCoordinate(1, 0)}, new[] {new MapCoordinate(0, 0)});
 
-            var headTiles = map.GetSnakeHeads().ToList();
+            Assert.Equal(result, map.GetResultOfDirection("bestsnake", direction));
+        }
 
-            Assert.Equal(headTiles.Count, 3);
-            Assert.Equal(headTiles.Count(t => t.Y == 1 && t.X == 1), 1);
-            Assert.Equal(headTiles.Count(t => t.Y == 3 && t.X == 0), 1);
-            Assert.Equal(headTiles.Count(t => t.Y == 4 && t.X == 4), 1);
+        [Theory]
+        [InlineData(Direction.Up, false)]
+        [InlineData(Direction.Right, true)]
+        [InlineData(Direction.Left, false)]
+        [InlineData(Direction.Down, false)]
+        public void AbleToUseDirectionReturnsValidResult(Direction direction, bool expectedResult)
+        {
+            var map = new Map(5, 5, 1, new[]
+            {
+                new SnakeInfo("bestsnake", String.Empty, 0, new[]
+                {
+                    new MapCoordinate(0, 0),
+                    new MapCoordinate(0, 1),
+                    new MapCoordinate(1, 1),
+                    new MapCoordinate(1, 2)
+                })
+            }, new[] { new MapCoordinate(1, 0) }, new[] { new MapCoordinate(0, 0) });
+
+            Assert.Equal(expectedResult, map.AbleToUseDirection("bestsnake", direction));
+        }
+        
+        [Fact]
+        public void FromJson_ReturnsMapWithCorrectNumberOfPlayers()
+        {
+            var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
+
+            var map = Map.FromJson(json);
+
+            Assert.Equal(2, map.Players.Count);
         }
 
         [Fact]
-        public void AllBodyTilesShouldBeReturnedWhenCallingUtilsFunction()
+        public void FromJson_ReturnsMapWithCorrectSnakePositions()
         {
-            var map = new Map(5, 5, new []
-            {
-                new SnakeInfo(String.Empty, String.Empty, 0, new []{6,5,4}), 
-                new SnakeInfo(String.Empty, String.Empty, 0, new []{15,22}), 
-                new SnakeInfo(String.Empty, String.Empty, 0, new []{24}),
-            }, new int[0], new int[0]);
+            var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var bodyTiles = map.GetSnakeBodies().ToList();
+            var map = Map.FromJson(json);
 
-            Assert.Equal(bodyTiles.Count, 3);
-            Assert.Equal(bodyTiles.Count(t => t.Y == 0 && t.X == 4), 1);
-            Assert.Equal(bodyTiles.Count(t => t.Y == 1 && t.X == 0), 1);
-            Assert.Equal(bodyTiles.Count(t => t.Y == 4 && t.X == 2), 1);
-        }
+            Assert.Equal(2, map.Players[0].Positions.Count);
+            Assert.Equal(1, map.Players[0].Positions[0].X);
+            Assert.Equal(0, map.Players[0].Positions[0].Y);
+            Assert.Equal(0, map.Players[0].Positions[1].X);
+            Assert.Equal(0, map.Players[0].Positions[1].Y);
 
-        [Fact]
-        public void AllSnakePartTilesShouldBeReturnedWhenCallingUtilsFunction()
-        {
-            var map = new Map(5, 5, new[]
-            {
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {4}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {6, 5}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {15}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {22}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {24}),
-            }, new[] {0, 2}, new int[0]);
-
-            var snakeTiles = map.GetSnakeParts().ToList();
-
-            Assert.Equal(snakeTiles.Count, 6);
-            Assert.Equal(snakeTiles.Count(t => t.Y == 0 && t.X == 4), 1);
-            Assert.Equal(snakeTiles.Count(t => t.Y == 1 && t.X == 0), 1);
-            Assert.Equal(snakeTiles.Count(t => t.Y == 4 && t.X == 2), 1);
-            Assert.Equal(snakeTiles.Count(t => t.Y == 1 && t.X == 1), 1);
-            Assert.Equal(snakeTiles.Count(t => t.Y == 3 && t.X == 0), 1);
-            Assert.Equal(snakeTiles.Count(t => t.Y == 4 && t.X == 4), 1);
-        }
-
-        [Fact]
-        public void SnakeSpreadReturnsCorrectSpread()
-        {
-            var map = new Map(5, 5, new[]
-            {
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {0, 5, 6, 11}),
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {4}),
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {15}),
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {22}),
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {24}),
-            }, new int[0], new int[0]); 
-
-            var spreadTiles = map.GetSnakeSpread("bestsnake").ToList();
-
-            Assert.Equal(spreadTiles.Count, 4);
-            var head = spreadTiles.ElementAt(0);
-            Assert.Equal(head.X, 0);
-            Assert.Equal(head.Y, 0);
-
-            var body1 = spreadTiles.ElementAt(1);
-            Assert.Equal(body1.Y, 1);
-            Assert.Equal(body1.X, 0);
-
-            var body2 = spreadTiles.ElementAt(2);
-            Assert.Equal(body2.Y, 1);
-            Assert.Equal(body2.X, 1);
-
-            var body3 = spreadTiles.ElementAt(3);
-            Assert.Equal(body3.Y, 2);
-            Assert.Equal(body3.X, 1);
-        }
-
-        [Fact]
-        public void ResultOfDirectionIsCorrectWhenCallingUtilFunction()
-        {
-            var map = new Map(5, 5, new[]
-            {
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {0, 5, 6, 11}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {4}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {15}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {22}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {24}),
-            }, new[] {1, 2, 23}, new int[0]);
-
-            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Up), DirectionalResult.Death);
-            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Right), DirectionalResult.Points);
-            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Left), DirectionalResult.Death);
-            Assert.Equal(map.GetResultOfDirection("bestsnake", Direction.Down), DirectionalResult.Death);
-        }
-
-        [Fact]
-        public void AbleToUseDirectionReturnsValidResult()
-        {
-            var map = new Map(5, 5, new[]
-            {
-                new SnakeInfo("bestsnake", String.Empty, 0, new[] {0, 5, 6, 11}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {4}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {15}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {22}),
-                new SnakeInfo(String.Empty, String.Empty, 0, new[] {24}),
-            }, new[] { 1, 2, 23 }, new int[0]);
-
-            Assert.False(map.AbleToUseDirection("bestsnake", Direction.Up));
-            Assert.True(map.AbleToUseDirection("bestsnake", Direction.Right));
-            Assert.False(map.AbleToUseDirection("bestsnake", Direction.Left));
-            Assert.False(map.AbleToUseDirection("bestsnake", Direction.Down));
+            Assert.Equal(2, map.Players[1].Positions.Count);
+            Assert.Equal(0, map.Players[1].Positions[0].X);
+            Assert.Equal(1, map.Players[1].Positions[0].Y);
+            Assert.Equal(0, map.Players[1].Positions[1].X);
+            Assert.Equal(2, map.Players[1].Positions[1].Y);
         }
     }
 }
