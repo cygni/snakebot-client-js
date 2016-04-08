@@ -1,14 +1,14 @@
 ﻿namespace Cygni.Snake.Client.Tests
 {
-    public class FakeSnakeBot :SnakeBot
+    public class StubSnakeBot : SnakeBot
     {
         private readonly Direction _direction;
 
-        public FakeSnakeBot() : this(Direction.Down)
+        public StubSnakeBot() : this(Direction.Down)
         {
         }
 
-        public FakeSnakeBot(Direction direction) 
+        public StubSnakeBot(Direction direction) 
             : base("fake")
         {
             _direction = direction;

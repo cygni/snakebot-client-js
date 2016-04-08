@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Cygni.Snake.Client.Tests
 {
-    public class MapUtilsTests
+    public class MapTests
     {
         [Fact]
         public void AllFoodTilesShouldBeReturnedWhenCallingUtilsFunction()

@@ -10,15 +10,15 @@ namespace Cygni.Snake.Client
     public class SnakeClient
     {
         private readonly GameSettings _gameSettings;
-        private readonly WebSocket _webSocket;
+        private readonly WebSocket _socket;
         private readonly IPrinter _printer;
 
-        public SnakeClient(WebSocket webSocket) : this(webSocket, new ConsoleMapPrinter())
+        public SnakeClient(WebSocket socket) : this(socket, new ConsoleMapPrinter())
         {}
 
-        public SnakeClient(WebSocket webSocket, IPrinter printer)
+        public SnakeClient(WebSocket socket, IPrinter printer)
         {
-            _webSocket = webSocket;
+            _socket = socket;
             _gameSettings = new GameSettings();
             _printer = printer;
         }
@@ -27,7 +27,7 @@ namespace Cygni.Snake.Client
         {
             SendRegisterPlayerRequest(snake.Name);
 
-            while (_webSocket.State == WebSocketState.Open)
+            while (_socket.State == WebSocketState.Open)
             {
                 var message = ReceiveString();
                 OnMessageReceived(snake, message);
@@ -81,7 +81,7 @@ namespace Cygni.Snake.Client
             while (true)
             {
                 var buffer = new byte[1024];
-                var result = _webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
+                var result = _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
 
                 sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
 
@@ -138,7 +138,7 @@ namespace Cygni.Snake.Client
         private void SendString(string msg)
         {
             var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
-            _webSocket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+            _socket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
         }
     }
 }

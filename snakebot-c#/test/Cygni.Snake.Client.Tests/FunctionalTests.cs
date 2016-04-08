@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Cygni.Snake.Client.Tests
 {
-    public class SnakeBotFunctionalTests
+    public class FunctionalTests
     {
         [Fact]
         public void RegisterPlayer_StartGame_RegisterMove()
@@ -19,11 +19,9 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("map-update.json", Encoding.UTF8)));
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("game-ended.json", Encoding.UTF8)));
 
-            var sc = new SnakeClient(socket);
-            var snake = new FakeSnakeBot();
+            var client = new SnakeClient(socket);
             
-            // Run all tasks in sequence so that we do not assert before all calls have finished.
-            SynchronousTaskScheduler.Run(() => sc.Start(snake));
+            client.Start(new StubSnakeBot(Direction.Left));
 
             // Assert correct sequence of messages back to the socket.
             Assert.Equal(MessageType.RegisterPlayer, socket.OutgoingJson[0]["type"]);
