@@ -21,6 +21,8 @@ namespace Cygni.Snake.Client
 
         public IReadOnlyList<MapCoordinate> Positions { get; }
 
+        public bool IsAlive => Positions.Any();
+
         public override string ToString()
         {
             return Name + " - " + Points + " pts";

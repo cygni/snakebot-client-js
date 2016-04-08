@@ -80,5 +80,10 @@ namespace Cygni.Snake.Client
                         nameof(direction));
             }
         }
+
+        public int ToIndex(int width)
+        {
+            return X + Y*width;
+        }
     }
 }

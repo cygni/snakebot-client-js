@@ -99,13 +99,13 @@ namespace Cygni.Snake.Client
         {
             var map = Map.FromJson((JObject)json["map"]);
             _printer.Print("Game ended dude");
-            _printer.Print(map);
+            _printer.PrintMap(map);
         }
 
         private void OnMapUpdated(SnakeBot snake, JObject json)
         {
             var map = Map.FromJson((JObject)json["map"]);
-            _printer.Print(map);
+            _printer.PrintMap(map);
             var direction = snake.OnMapUpdate(map);
             SendRegisterMoveRequest(direction, map.Tick);
         }
