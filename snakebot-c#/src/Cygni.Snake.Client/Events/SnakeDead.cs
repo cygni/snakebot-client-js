@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using Cygni.Snake.Client.Communication;
 using Cygni.Snake.Client.Communication.Messages;
 
@@ -17,6 +18,11 @@ namespace Cygni.Snake.Client.Events
         public override string Type => MessageType.SnakeDead;
         public string PlayerId { get; }
 
+        public bool IsThisSnake
+        {
+            get { return PlayerId.Equals(ReceivingPlayerId, StringComparison.Ordinal); }
+        }
+
         public SnakeDead(string gameId, string receivingPlayerId, long gameTick, DeathReason deathReason, int x, int y, string playerId)
             : base(gameId, receivingPlayerId)
         {
@@ -30,7 +36,7 @@ namespace Cygni.Snake.Client.Events
         public void Print()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(PlayerId == ReceivingPlayerId
+            Console.WriteLine(IsThisSnake
                 ? $"You died due to: {DeathReason}"
                 : $"Snake with id: {PlayerId} died due to: {DeathReason}");
         }

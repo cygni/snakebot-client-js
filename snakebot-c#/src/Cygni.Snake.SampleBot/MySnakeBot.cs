@@ -4,14 +4,12 @@ namespace Cygni.Snake.SampleBot
 {
     public class MySnakeBot : SnakeBot
     {
-        public MySnakeBot(string name)
-            : base(name, true)
+        public MySnakeBot(string name) : base(name)
         {
         }
         
-        protected override Direction OnGameTurn(Map map, long gameTick)
+        public override Direction OnMapUpdate(Map map)
         {
-            Printer.Enque(map);
             // figure out a good move
 
             // do calculated move

@@ -1,6 +1,4 @@
-﻿using Cygni.Snake.Client.Communication;
-
-namespace Cygni.Snake.Client.Tests
+﻿namespace Cygni.Snake.Client.Tests
 {
     public class FakeSnakeBot :SnakeBot
     {
@@ -16,7 +14,7 @@ namespace Cygni.Snake.Client.Tests
             _direction = direction;
         }
 
-        protected override Direction OnGameTurn(Map map, long gameTick)
+        public override Direction OnMapUpdate(Map map)
         {
             return _direction;
         }

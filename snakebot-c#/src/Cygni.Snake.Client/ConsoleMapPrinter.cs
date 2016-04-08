@@ -4,9 +4,9 @@ using Cygni.Snake.Client.Communication;
 
 namespace Cygni.Snake.Client
 {
-    public class ConsoleMapPrinter
+    public class ConsoleMapPrinter : IPrinter
     {
-        public void Enque(IPrintable printable)
+        public void Print(IPrintable printable)
         {
             Task.Run(() =>
             {

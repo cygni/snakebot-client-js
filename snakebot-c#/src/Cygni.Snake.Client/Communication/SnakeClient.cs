@@ -13,11 +13,16 @@ namespace Cygni.Snake.Client.Communication
     {
         private readonly GameSettings _gameSettings;
         private readonly WebSocket _webSocket;
+        private readonly IPrinter _printer;
 
-        public SnakeClient(WebSocket webSocket)
+        public SnakeClient(WebSocket webSocket) : this(webSocket, new ConsoleMapPrinter())
+        {}
+
+        public SnakeClient(WebSocket webSocket, IPrinter printer)
         {
             _webSocket = webSocket;
             _gameSettings = new GameSettings();
+            _printer = printer;
         }
 
         public void Start(SnakeBot snake)
@@ -39,32 +44,36 @@ namespace Cygni.Snake.Client.Communication
             switch (messageType)
             {
                 case MessageType.GameEnded:
-                    snake.OnGameEnded(JsonConvert.DeserializeObject<GameEnded>(jsonString));
+                    OnGameEnded(JsonConvert.DeserializeObject<GameEnded>(jsonString));
                     break;
 
                 case MessageType.MapUpdated:
-                    var update = JsonConvert.DeserializeObject<MapUpdate>(jsonString);
-                    var direction = snake.OnMapUpdate(update);
-                    SendRegisterMoveRequest(direction, update.GameTick);
+                    OnMapUpdated(snake, JsonConvert.DeserializeObject<MapUpdate>(jsonString));
                     break;
 
                 case MessageType.SnakeDead:
-                    snake.OnSnakeDead(JsonConvert.DeserializeObject<SnakeDead>(jsonString));
-                    break;
-
-                case MessageType.GameStarting:
-                    snake.OnGameStarting(JsonConvert.DeserializeObject<GameStarting>(jsonString));
+                    OnSnakeDead(JsonConvert.DeserializeObject<SnakeDead>(jsonString));
                     break;
 
                 case MessageType.PlayerRegistered:
-                    snake.OnPlayerRegistered(JsonConvert.DeserializeObject<PlayerRegistered>(jsonString));
                     SendStartGameRequest();
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    snake.OnInvalidPlayerName(JsonConvert.DeserializeObject<InvalidPlayerName>(jsonString));
+                    OnInvalidPlayerName(JsonConvert.DeserializeObject<InvalidPlayerName>(jsonString));
                     break;
             }
+        }
+
+        private void OnInvalidPlayerName(InvalidPlayerName invalidPlayerName)
+        {
+            var reason = Enum.GetName(typeof(PlayerNameInvalidReason), invalidPlayerName.ReasonCode);
+            throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
+        }
+
+        private void OnSnakeDead(SnakeDead e)
+        {
+            _printer.Print(e);
         }
 
         private string ReceiveString()
@@ -83,6 +92,18 @@ namespace Cygni.Snake.Client.Communication
                     return sb.ToString();
                 }
             }
+        }
+
+        private void OnGameEnded(GameEnded gameEnded)
+        {
+            _printer.Print(gameEnded);
+        }
+
+        private void OnMapUpdated(SnakeBot snake, MapUpdate mapUpdate)
+        {
+            _printer.Print(mapUpdate.Map);
+            var direction = snake.OnMapUpdate(mapUpdate.Map);
+            SendRegisterMoveRequest(direction, mapUpdate.GameTick);
         }
 
         private void SendStartGameRequest()

@@ -18,13 +18,6 @@ namespace Cygni.Snake.SampleBot
             ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
             client.Start(snake);
 
-            // this is just here to keep the console from closing on us.
-            do
-            {
-                Task.Delay(TimeSpan.FromSeconds(1)).Wait();
-
-            } while (snake.GameRunning);
-            // don't close the console because the game is over.
             Console.ReadLine();
         }
     }
