@@ -2,8 +2,6 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Cygni.Snake.Client.Communication;
-using Cygni.Snake.Client.Communication.Messages;
 using Newtonsoft.Json.Linq;
 using Xunit;
 

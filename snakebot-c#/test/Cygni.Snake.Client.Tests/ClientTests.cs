@@ -1,6 +1,5 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
-using Cygni.Snake.Client.Communication;
 using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;

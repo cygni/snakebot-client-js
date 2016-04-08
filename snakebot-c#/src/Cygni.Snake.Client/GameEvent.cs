@@ -1,4 +1,4 @@
-﻿namespace Cygni.Snake.Client.Events
+﻿namespace Cygni.Snake.Client
 {
     public abstract class GameEvent
     {

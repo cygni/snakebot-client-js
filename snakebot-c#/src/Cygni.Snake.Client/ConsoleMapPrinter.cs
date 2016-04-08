@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Cygni.Snake.Client.Communication;
 
 namespace Cygni.Snake.Client
 {

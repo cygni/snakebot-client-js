@@ -2,12 +2,10 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
-using Cygni.Snake.Client.Communication.Messages;
-using Cygni.Snake.Client.Events;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Cygni.Snake.Client.Communication
+namespace Cygni.Snake.Client
 {
     public class SnakeClient
     {

@@ -1,7 +1,4 @@
-﻿using Cygni.Snake.Client.Communication;
-using Cygni.Snake.Client.Communication.Messages;
-
-namespace Cygni.Snake.Client.Events
+﻿namespace Cygni.Snake.Client
 {
     public class InvalidPlayerName : GameEvent
     {

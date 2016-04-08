@@ -1,4 +1,4 @@
-﻿namespace Cygni.Snake.Client.Communication
+﻿namespace Cygni.Snake.Client
 {
     public enum PlayerNameInvalidReason
     {

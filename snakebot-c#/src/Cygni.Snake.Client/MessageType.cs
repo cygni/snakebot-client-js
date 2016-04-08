@@ -1,4 +1,4 @@
-﻿namespace Cygni.Snake.Client.Communication.Messages
+﻿namespace Cygni.Snake.Client
 {
     public static class MessageType
     {

@@ -1,6 +1,4 @@
 ﻿using System.Net.WebSockets;
-using Cygni.Snake.Client.Communication;
-using Cygni.Snake.Client.Communication.Messages;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
