@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
@@ -19,7 +20,7 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("map-update.json", Encoding.UTF8)));
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("game-ended.json", Encoding.UTF8)));
 
-            var client = new SnakeClient(socket);
+            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
             
             client.Start(new StubSnakeBot(Direction.Left));
 

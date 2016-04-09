@@ -120,8 +120,8 @@ namespace Cygni.Snake.Client
                 return new SnakeInfo(id, name, points, positions);
             });
 
-            var foods = json["foodPositions"]?.Select(i => MapCoordinate.FromIndex((int) i, width));
-            var obstacles = json["foodPositions"]?.Select(i => MapCoordinate.FromIndex((int) i, width));
+            var foods = json["foodPositions"].Select(i => MapCoordinate.FromIndex((int) i, width));
+            var obstacles = json["obstaclePositions"].Select(i => MapCoordinate.FromIndex((int) i, width));
             return new Map(width, height, tick, snakes, foods, obstacles);
         }
     }

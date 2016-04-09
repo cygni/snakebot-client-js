@@ -13,7 +13,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var socket = new StubWebSocket(WebSocketState.Open);
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered } });
-            var client = new SnakeClient(socket);
+            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
 
             client.Start(new StubSnakeBot());
 
@@ -27,7 +27,7 @@ namespace Cygni.Snake.Client.Tests
             var socket = new StubWebSocket(WebSocketState.Open);
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered } });
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.GameStarting } });
-            var client = new SnakeClient(socket);
+            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
 
             client.Start(new StubSnakeBot());
 
@@ -43,10 +43,10 @@ namespace Cygni.Snake.Client.Tests
         public void RegisterMove_SendsRegisterMoveCommandRequestWithDirectionAndGameTick(Direction direction, string expectedDirectionString)
         {
             var socket = new StubWebSocket(WebSocketState.Open);
-            socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered } });
+            socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered }});
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.GameStarting } });
-            socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.MapUpdated } });
-            var client = new SnakeClient(socket);
+            socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.MapUpdated }, { "map", new JObject() } });
+            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
 
             client.Start(new StubSnakeBot(direction));
             
@@ -63,7 +63,7 @@ namespace Cygni.Snake.Client.Tests
             var socket = new StubWebSocket(WebSocketState.Open) { CloseWhenNoMoreMessages = true };
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("map-update.json", Encoding.UTF8)));
 
-            var client = new SnakeClient(socket, Mock.Of<IPrinter>());
+            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
             var mockSnake = new Mock<StubSnakeBot>();
             mockSnake.Setup(s => s.OnMapUpdate(It.IsAny<Map>()));
             client.Start(mockSnake.Object);

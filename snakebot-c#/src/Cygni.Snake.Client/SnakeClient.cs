@@ -11,16 +11,13 @@ namespace Cygni.Snake.Client
     {
         private readonly GameSettings _gameSettings;
         private readonly WebSocket _socket;
-        private readonly IPrinter _printer;
+        private readonly IGameObserver _observer;
 
-        public SnakeClient(WebSocket socket) : this(socket, new ConsoleMapPrinter())
-        {}
-
-        public SnakeClient(WebSocket socket, IPrinter printer)
+        public SnakeClient(WebSocket socket, IGameObserver observer)
         {
             _socket = socket;
             _gameSettings = new GameSettings();
-            _printer = printer;
+            _observer = observer;
         }
 
         public void Start(SnakeBot snake)
@@ -91,21 +88,19 @@ namespace Cygni.Snake.Client
         {
             string deathReason = (string)json["deathReason"];
             string id = (string) json["playerId"];
-            string receivingPlayerId = (string) json["receivingPlayerId"];
-            _printer.SnakeDied(deathReason, id, id.Equals(receivingPlayerId, StringComparison.Ordinal));
+            _observer.OnSnakeDied(deathReason, id);
         }
 
         private void OnGameEnded(JObject json)
         {
             var map = Map.FromJson((JObject)json["map"]);
-            _printer.Print("Game ended dude");
-            _printer.PrintMap(map);
+            _observer.OnGameEnd(map);
         }
 
         private void OnMapUpdated(SnakeBot snake, JObject json)
         {
             var map = Map.FromJson((JObject)json["map"]);
-            _printer.PrintMap(map);
+            _observer.OnUpdate(map);
             var direction = snake.OnMapUpdate(map);
             SendRegisterMoveRequest(direction, map.Tick);
         }
