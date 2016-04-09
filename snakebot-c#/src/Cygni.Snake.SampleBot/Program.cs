@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.WebSockets;
 using System.Threading;
-using System.Threading.Tasks;
 using Cygni.Snake.Client;
 
 namespace Cygni.Snake.SampleBot

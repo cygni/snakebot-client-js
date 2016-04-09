@@ -7,23 +7,77 @@ using Newtonsoft.Json.Linq;
 
 namespace Cygni.Snake.Client
 {
+    /// <summary>
+    /// Provides a way to communicate with a CygniSnake server.
+    /// </summary>
     public class SnakeClient
     {
         private readonly GameSettings _gameSettings;
         private readonly WebSocket _socket;
         private readonly IGameObserver _observer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnakeClient"/> class that communicates
+        /// with a Snake server over the specified <see cref="WebSocket"/> instance. 
+        /// The specified <see cref="IGameObserver"/>  will receive notifications on applicable messages.
+        /// Note that the specified <see cref="WebSocket"/> does not need to be in an <see cref="WebSocketState.Open"/>
+        /// state in order to create this instance. However, it will need to be connected before starting a game.
+        /// </summary>
+        /// <param name="socket">The specified <see cref="WebSocket"/> instance.</param>
+        /// <param name="observer">The specified <see cref="IGameObserver"/> instance.</param>
         public SnakeClient(WebSocket socket, IGameObserver observer)
         {
+            if (socket == null)
+            {
+                throw new ArgumentNullException(nameof(socket));
+            }
+            if (observer == null)
+            {
+                throw new ArgumentNullException(nameof(observer));
+            }
+
             _socket = socket;
             _gameSettings = new GameSettings();
             _observer = observer;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnakeClient"/> class that communicates
+        /// with a Snake server over the specified <see cref="WebSocket"/> instance. 
+        /// The specified <see cref="IGameObserver"/>  will receive notifications on applicable messages.
+        /// Note that the specified <see cref="WebSocket"/> does not need to be in an <see cref="WebSocketState.Open"/>
+        /// state in order to create this instance. However, it will need to be connected before starting a game.
+        /// </summary>
+        /// <param name="socket">The specified <see cref="WebSocket"/> instance.</param>
+        public SnakeClient(WebSocket socket) : this(socket, new VoidObserver())
+        {}
+
+        /// <summary>
+        /// Registers the specified <see cref="SnakeBot"/> with the server and
+        /// tries to initiate a game. The specified <see cref="SnakeBot"/> instance
+        /// will receive calls to <see cref="SnakeBot.GetNextMove"/> when the server 
+        /// requests a new move from this client.
+        /// </summary>
+        /// <remarks>This method will throw an exception if the web socket is not open.</remarks>
+        /// <param name="snake"></param>
+        /// <exception cref="ArgumentNullException" />
+        /// <exception cref="InvalidOperationException">
+        /// If the socket is not opened, or if the specified <see cref="SnakeBot"/> has an invalid name.
+        /// </exception>
         public void Start(SnakeBot snake)
         {
-            SendRegisterPlayerRequest(snake.Name);
+            if (snake == null)
+            {
+                throw new ArgumentNullException(nameof(snake));
+            }
+            var state = _socket.State;
+            if (state != WebSocketState.Open)
+            {
+                throw new InvalidOperationException("Cannot start a new game without connecting the Snake server. " +
+                                                    $"The current state of the connection is {state}.");
+            }
 
+            SendRegisterPlayerRequest(snake.Name);
             while (_socket.State == WebSocketState.Open)
             {
                 var message = ReceiveString();
@@ -38,6 +92,10 @@ namespace Cygni.Snake.Client
 
             switch (messageType)
             {
+                case MessageType.GameStarting:
+                    OnGameStarting();
+                    break;
+
                 case MessageType.GameEnded:
                     OnGameEnded(json);
                     break;
@@ -55,7 +113,7 @@ namespace Cygni.Snake.Client
                     break;
 
                 case MessageType.InvalidPlayerName:
-                    OnInvalidPlayerName(json);
+                    OnInvalidPlayerName(snake, json);
                     break;
             }
         }
@@ -78,10 +136,15 @@ namespace Cygni.Snake.Client
             }
         }
 
-        private void OnInvalidPlayerName(JObject json)
+        private void OnInvalidPlayerName(SnakeBot snake, JObject json)
         {
             var reason = (string) json["reasonCode"];
-            throw new InvalidOperationException($"Player name is invalid (reason: {reason})");
+            throw new InvalidOperationException($"The given player name '{snake.Name}' is not valid because. Reason: {reason}");
+        }
+        
+        private void OnGameStarting()
+        {
+            _observer.OnGameStart();
         }
 
         private void OnSnakeDead(JObject json)
@@ -143,6 +206,14 @@ namespace Cygni.Snake.Client
         {
             var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
             _socket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private class VoidObserver : IGameObserver
+        {
+            public void OnSnakeDied(string reason, string snakeId) {}
+            public void OnGameStart() { }
+            public void OnGameEnd(Map map) { }
+            public void OnUpdate(Map map) { }
         }
     }
 }
