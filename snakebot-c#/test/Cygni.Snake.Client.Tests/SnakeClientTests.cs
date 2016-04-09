@@ -45,7 +45,11 @@ namespace Cygni.Snake.Client.Tests
             var socket = new StubWebSocket(WebSocketState.Open);
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered }});
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.GameStarting } });
-            socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.MapUpdated }, { "map", new JObject() } });
+            socket.IncomingJson.Enqueue(new JObject
+            {
+                { "type", MessageType.MapUpdated },
+                { "map", JObject.Parse(TestResources.GetResourceText("map.json", Encoding.UTF8)) }
+            });
             var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
 
             client.Start(new StubSnakeBot(direction));

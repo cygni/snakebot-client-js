@@ -60,7 +60,7 @@ namespace Cygni.Snake.SampleBot
         {
             var foodTiles = map.FoodPositions.Select(p => new PrintTile(p, "F", ConsoleColor.Red));
             var obstacleTiles = map.ObstaclePositions.Select(p => new PrintTile(p, "*", ConsoleColor.Yellow));
-            var playerTiles = map.Players.Where(p => p.IsAlive)
+            var playerTiles = map.Snakes.Where(p => p.IsAlive)
                 .SelectMany(p =>
                 {
                     var headPosition = p.Positions.First();
@@ -127,7 +127,6 @@ namespace Cygni.Snake.SampleBot
             public ConsoleColor Color { get; }
         }
         
-
         /// <summary>
         /// Helper class to keep track of colors assigned to different players in the game.
         /// </summary>

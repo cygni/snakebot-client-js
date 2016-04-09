@@ -7,12 +7,13 @@ namespace Cygni.Snake.Client
 {
     public class Map
     {
-        public Map(int width, int height, int worldTick, IEnumerable<SnakePlayer> snakeInfos, IEnumerable<MapCoordinate> foodPositions, IEnumerable<MapCoordinate> obstaclePositions)
+        public Map(int width, int height, int worldTick, SnakePlayer mySnake, IEnumerable<SnakePlayer> snakeInfos, IEnumerable<MapCoordinate> foodPositions, IEnumerable<MapCoordinate> obstaclePositions)
         {
             Tick = worldTick;
+            MySnake = mySnake;
             FoodPositions = foodPositions.ToList();
             ObstaclePositions = obstaclePositions.ToList();
-            Players = snakeInfos.ToList();
+            Snakes = snakeInfos.ToList();
 
             Width = width;
             Height = height;
@@ -24,11 +25,13 @@ namespace Cygni.Snake.Client
 
         public int Tick { get; }
 
-        public IReadOnlyList<SnakePlayer> Players { get; }
+        public IReadOnlyList<SnakePlayer> Snakes { get; }
+
+        public SnakePlayer MySnake { get; }
 
         public SnakePlayer GetSnake(string id)
         {
-            return Players.FirstOrDefault(s => s.Id.Equals(id, StringComparison.Ordinal));
+            return Snakes.FirstOrDefault(s => s.Id.Equals(id, StringComparison.Ordinal));
         }
 
         public IReadOnlyList<MapCoordinate> FoodPositions { get; }
@@ -39,7 +42,7 @@ namespace Cygni.Snake.Client
         {
             get
             {
-                return Players.Where(snake => snake.IsAlive)
+                return Snakes.Where(snake => snake.IsAlive)
                     .Select(snake => snake.HeadPosition);
             }
         }
@@ -48,7 +51,7 @@ namespace Cygni.Snake.Client
         {
             get
             {
-                return Players.Where(s => s.IsAlive).SelectMany(s => s.Body);
+                return Snakes.Where(s => s.IsAlive).SelectMany(s => s.Body);
             }
         }
 
@@ -56,7 +59,7 @@ namespace Cygni.Snake.Client
         {
             get
             {
-                return Players.SelectMany(s => s.Positions);
+                return Snakes.SelectMany(s => s.Positions);
             }
         }
 
@@ -109,6 +112,7 @@ namespace Cygni.Snake.Client
             int width = (int)json["width"];
             int height = (int)json["height"];
             int tick = (int)json["worldTick"];
+            string myId = (string) json["receivingPlayerId"];
 
             var snakes = json["snakeInfos"].Select(token =>
             {
@@ -117,11 +121,13 @@ namespace Cygni.Snake.Client
                 int points = (int) token["points"];
                 var positions = token["positions"].Select(i => MapCoordinate.FromIndex((int) i, width));
                 return new SnakePlayer(id, name, points, positions);
-            });
+            }).ToList();
+
+            var mySnake = snakes.FirstOrDefault(s => s.Id.Equals(myId));
 
             var foods = json["foodPositions"].Select(i => MapCoordinate.FromIndex((int) i, width));
             var obstacles = json["obstaclePositions"].Select(i => MapCoordinate.FromIndex((int) i, width));
-            return new Map(width, height, tick, snakes, foods, obstacles);
+            return new Map(width, height, tick, mySnake, snakes, foods, obstacles);
         }
     }
 }
