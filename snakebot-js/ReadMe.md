@@ -32,9 +32,7 @@ This file contains a fresh out of the nest snake bot.
 
 You unleash it by issuing the following command in your terminal:
 
-``bash
-node snake-cli ./snakepit/snakestein-bot.js --user slimey
-``
+`node snake-cli ./snakepit/snakestein-bot.js --user slimey`
 
 ***There's a problem though, your snake will always slam into the wall! Hisss!***
 
