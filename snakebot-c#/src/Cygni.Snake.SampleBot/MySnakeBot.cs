@@ -8,7 +8,7 @@ namespace Cygni.Snake.SampleBot
         {
         }
         
-        public override Direction OnMapUpdate(Map map)
+        public override Direction GetNextMove(Map map)
         {
             // figure out a good move
 

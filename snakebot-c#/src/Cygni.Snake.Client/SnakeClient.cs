@@ -68,7 +68,7 @@ namespace Cygni.Snake.Client
             {
                 var buffer = new byte[1024];
                 var result = _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
-
+                
                 sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
 
                 if (result.EndOfMessage)
@@ -101,7 +101,7 @@ namespace Cygni.Snake.Client
         {
             var map = Map.FromJson((JObject)json["map"]);
             _observer.OnUpdate(map);
-            var direction = snake.OnMapUpdate(map);
+            var direction = snake.GetNextMove(map);
             SendRegisterMoveRequest(direction, map.Tick);
         }
 

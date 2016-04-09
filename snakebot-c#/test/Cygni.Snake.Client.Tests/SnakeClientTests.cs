@@ -50,6 +50,7 @@ namespace Cygni.Snake.Client.Tests
                 { "type", MessageType.MapUpdated },
                 { "map", JObject.Parse(TestResources.GetResourceText("map.json", Encoding.UTF8)) }
             });
+
             var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
 
             client.Start(new StubSnakeBot(direction));
@@ -69,10 +70,10 @@ namespace Cygni.Snake.Client.Tests
 
             var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
             var mockSnake = new Mock<StubSnakeBot>();
-            mockSnake.Setup(s => s.OnMapUpdate(It.IsAny<Map>()));
+            mockSnake.Setup(s => s.GetNextMove(It.IsAny<Map>()));
             client.Start(mockSnake.Object);
 
-            mockSnake.Verify(s => s.OnMapUpdate(It.IsAny<Map>()), Times.Once());
+            mockSnake.Verify(s => s.GetNextMove(It.IsAny<Map>()), Times.Once());
         }
     }
 }

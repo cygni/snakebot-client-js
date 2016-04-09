@@ -14,7 +14,7 @@
             _direction = direction;
         }
 
-        public override Direction OnMapUpdate(Map map)
+        public override Direction GetNextMove(Map map)
         {
             return _direction;
         }
