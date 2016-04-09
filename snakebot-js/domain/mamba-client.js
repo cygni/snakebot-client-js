@@ -1,3 +1,13 @@
+/**
+ * The Mamba Client is a Javascript client for the Snake Server.
+ *
+ * @param host the host
+ * @param port the port
+ * @param eventListener listener for game events
+ * @param verboseLogging prints debug information
+ * @returns {{prepareNewGame: registerPlayer, startGame: startGame, moveSnake: moveSnake, connect: connect}}
+ * @constructor
+ */
 function Mamba(host, port, eventListener, verboseLogging) {
 
   var WebSocket           = require('ws');

@@ -1,60 +1,54 @@
 /**
  * A command line client for Snake written in Javascript 5.
+ * Uses the Mamba Client for server communication.
  */
 
 console.log('\n*** snake-cli by Cygni ***\n');
 
 var Mamba           = require('./domain/mamba-client.js');
 var GameSettings    = require('./domain/mamba/gameSettings.js');
-var MapUtils        = require('./domain/mapUtils.js');
 var MapRenderer     = require('./domain/mapRenderer.js');
 var DateFormat      = require('dateformat');
+var argv            = require('minimist')(process.argv.slice(2));
+var options         = parseOptions(argv);
+
+printUsage(options);
+
+var snakeBot        = setupSnake(options);
+var gameInfo        = null;
 var renderer        = null;
-var verboseLogging  = true;
-
-// Connect to the Snake servers training dojo, the client log is quiet.
-var client = Mamba('snake.cygni.se', 80, onEvent, false).connect("training");
-
-// The game info is available after server registration (@see registrationComplete()).
-var gameInfo = null;
+var client          = Mamba(options.host, options.port, onEvent, options.mambaDebug).connect(options.venue);
 
 /**
- * Update your username below...
+ * Prepares a new game on the server.
  */
 function prepareNewGame(){
-  client.prepareNewGame('Phat3lfstone', GameSettings.create());
+  client.prepareNewGame(options.user, GameSettings.create());
 }
 
 /**
- * This is where you go to work...or your snake really!
- * Analyze the current world state, make a plan and then execute your next move.
- * The function is called once per game tick.
- * @param mapState the world state (@see MapUpdateEvent).
+ * Notifies the the snake bot of a new game tick.
+ * @param mapUpdateEvent the world state (@see MapUpdateEvent).
  */
-function handleGameUpdate(mapState){
-  var map             =  mapState.getMap();
-  var direction       = 'RIGHT';  // <'UP' | 'DOWN' | 'LEFT' | 'RIGHT'>
-  var snakeBrainDump  = {}; // Optional debug information about the snakes current state of mind.
-
-  // 1. Where's what etc.
-  var myCoords = MapUtils.whereIsSnake(gameInfo.getPlayerId(), map);
-  log('I am here:', myCoords);
-  log("On my tile:", MapUtils.getAt(myCoords, map));
-  log("Food:", MapUtils.findFood(myCoords, map));
-
-  // 2. Do some nifty planning...
-  // (Tip: see MapUtils for some off-the-shelf navigation aid.
-
-  // 3. Then shake that snake!
-  client.moveSnake(direction, mapState.getGameTick());
-  return snakeBrainDump;
+function handleGameUpdate(mapUpdateEvent){
+  var response = snakeBot.update(mapUpdateEvent, gameInfo.getPlayerId());
+  client.moveSnake(response.direction, mapUpdateEvent.getGameTick());
+  return response.debugData;
 }
 
-//
-// ------ INTERNAL CLIENT STUFF -----
-//
+/**
+ * Called when the game ends.
+ */
+function endGame(){
+  snakeBot.gameEnded();
+  if(options.renderMode == 'animate'){
+    renderer.render(function(){process.exit()}, {animate: true, delay: 500, followPid : gameInfo.getPlayerId()});
+  } else {
+    renderer.render(function(){process.exit()}, {followPid : gameInfo.getPlayerId()});
+  }
+}
 
-// Client events are handled and responded to below.
+// Mamba client events are handled and responded to below.
 function onEvent(event){
 
   switch(event.type){
@@ -85,8 +79,7 @@ function onEvent(event){
     case 'GAME_ENDED':
       log('Game ended!');
       renderer.record(event.payload);
-      renderer.render(function(){process.exit()}, {followPid : gameInfo.getPlayerId()});
-      //renderer.render(function(){process.exit()}, {animate: true, delay: 500, followPid : gameInfo.getPlayerId()});
+      endGame();
       break;
 
     default:
@@ -96,13 +89,80 @@ function onEvent(event){
   }
 }
 
-function log(msg, data){
-  if(verboseLogging) {
-    var formattedMsg = DateFormat(new Date(), 'HH:MM:ss.l') + ' - ' + msg;
-    data ? console.log(formattedMsg, data) : console.log(formattedMsg);
+/**
+ * Sets up a new snake bot.
+ * @param options
+ * @returns the snake bot
+ */
+function setupSnake(options){
+  try {
+    var snake = require(options.snakeScript);
+    snake.bootStrap(logExt);
+    return snake;
+  } catch (e) {
+    logError("Could not find or init snake bot script at : "  + options.snakeScript, e);
+    throw "SnakeBotError";
   }
 }
 
-function logError(message){
-  console.log(DateFormat(new Date(), 'HH:MM:ss.l') + ' - ERROR - ' + message);
+/**
+ * Parses the command line options.
+ * @param argv minimist command line options
+ * @returns {{help: *, snakeScript: null, user: *, host: *, port: *, venue: string, renderMode: string, silentLog: *, mambaDebug: *}}
+ */
+function parseOptions(argv){
+  var opts = {
+    help        : argv.h || argv.help,
+    snakeScript : argv._ ? argv._[0] : null,
+    user        : argv.u || argv.user,
+    host        : argv.host ? argv.host : 'snake.cygni.se',
+    port        : argv.port ? argv.port : 80,
+    venue       : argv.venue ? argv.venue : 'training',
+    renderMode  : argv.animate ? 'animate' : 'default',
+    silentLog   : argv.silent,
+    mambaDebug  : argv.mambadbg
+  };
+  if(!opts.user){
+    log('WARN: Username not set, consider setting one `-u, --user <name>`')
+  }
+  return opts;
+}
+
+/**
+ * Prints usage information.
+ * @param options
+ */
+function printUsage(options){
+  if(options.help || !options.snakeScript){
+    console.log('Usage; node snake-cli <snake-bot.js>\n');
+    console.log(' -u, --user <username> : the username');
+    console.log(' --host <snake.cygni.se> : the host');
+    console.log(' --port <80> : the server port');
+    console.log(' --venue <training> : the game room');
+    console.log(' --animate : animated game replay');
+    console.log(' --silent : keep logs to minimum');
+    console.log(' --mambadbg : show all mamba logs');
+    console.log('\n');
+    process.exit();
+  }
+}
+
+function log(msg, data){
+ var formattedMsg = DateFormat(new Date(), 'HH:MM:ss.l') + ' - ' + msg;
+  data ? console.log(formattedMsg, data) : console.log(formattedMsg);
+}
+
+function logError(message, err){
+  console.log(DateFormat(new Date(), 'HH:MM:ss.l') + ' - ERROR - ' + message, err);
+}
+
+/**
+ * Logger function injected into the snake bot.
+ * @param msg the message
+ * @param data the data
+ */
+function logExt(msg, data){
+  if(!options.silentLog){
+    log(msg, data);
+  }
 }
