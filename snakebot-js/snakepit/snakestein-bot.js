@@ -4,9 +4,9 @@
 var MapUtils = require('./../domain/mapUtils.js');
 var log = null; // Injected logger
 
-function update(mapUpdateEvent, myUserId){
+function update(mapState, myUserId){
 
-  var map             =  mapUpdateEvent.getMap();
+  var map             =  mapState.getMap();
   var direction       = 'RIGHT';  // <'UP' | 'DOWN' | 'LEFT' | 'RIGHT'>
   var snakeBrainDump  = {}; // Optional debug information about the snakes current state of mind.
 

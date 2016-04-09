@@ -19,23 +19,22 @@ C. Execute: `npm install`
 
 ## Usage
 
-`node snake-cli`
+`node snake-cli -h`
+
+This will give you a nice print out of the available options.
 
 ## Your first game
 
 *Setting up and running your first game is straight forward.*  
 
-Open `snake-cli.js` in your favourite editor.
+First have a quick look at `./snakepit/snakestein-bot.js` in your favourite editor.
+This file contains a fresh out of the nest snake bot.
 
-Edit the server connection parameters.   
-```js
-var client = Mamba('snake.cygni.se', 80, onEvent, false).connect("training")
-```
+You unleash it by issuing the following command in your terminal:
 
-Change your player name...  
-See *::prepareNewGame(){...}*
-
-Your default snake is now ready to be unleashed!
+``bash
+node snake-cli ./snakepit/snakestein-bot.js --user slimey
+``
 
 ***There's a problem though, your snake will always slam into the wall! Hisss!***
 
@@ -43,18 +42,18 @@ Your default snake is now ready to be unleashed!
 
 You have already experienced an important lesson; "if I go all the way to the right it will hurt".  
 Well, actually it will hurt your snake the most. Don't hurt your snake. 
-To improve the snake you need to do some serious thinking. Right now your snakes brain is as small as a shopping list. It's entire mind resides in the method named *::handleGameUpdate(mapState)*.
+To improve the snake you need to do some serious thinking. Right now your snakes brain is as small as a shopping list. It's entire mind resides in the method named *::update(mapState)*.
 
 This method takes just one teeny weeny, er I mean mighty, parameter named *mapState* (see domain/mamba/MapUpdateEvent.js).     
 This mapState parameter represents the world state at a given game tick. All snakes sees the same world at the same game tick (yes, even snakes must obey the arrow of time and anyways the theory of relativity has not yet been formalised  
 by Snakebert Snakestein). The world changes state every 250 millisecond in the standard snake Universe.   
 You, being a God in the snake Universe, can tweak this and other worldly parameters with the *game settings*   
-(see domain/mamba/gameSettings.js) and *::prepareNewGame*.
+(see domain/mamba/gameSettings.js) and *snake-cli.js::prepareNewGame*.
 
 ### Lesson 1: Shake that snake!
 
 The first thing on your agenda should probably be to wriggle that slimy worm of yours in another direction.  
-You issue commands to you snake by calling *::moveSnake(direction, mapState.getGameTick())*.   
+You issue commands to you snake by returning a direction in *::update(mapState)*.   
 The *direction* is a string and can be one of < UP | DOWN | LEFT | RIGHT >. Remember that you can only  
 make one move per game tick, so no *bullet time* or any other Matrix tricks buddy! Yes, I'm talking to you. Or you. Or..yeah ok you got it. 
 
@@ -79,14 +78,10 @@ Oh and by the way, you need to issue your move before the next game tick. Otherw
 
 ## Analysing the game 
  
-The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal. It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you. Code examples are available in ´snake-cli.js´.
+The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal. It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you.
 
-```js
- // Frame by frame render
- renderer.render(function(){process.exit()}, {followPid : gameInfo.getPlayerId()});
- 
- // Animated
- renderer.render(function(){process.exit()}, {animate: true, delay: 500, followPid : gameInfo.getPlayerId()});
+```bash 
+ node snake-cli bot.js --animated
 ```
 
 # Happy snaking!
