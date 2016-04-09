@@ -137,7 +137,8 @@ namespace Cygni.Snake.SampleBot
                 new Dictionary<string, ConsoleColor>();
 
             private static readonly IReadOnlyList<ConsoleColor> AvailableColors =
-                Enum.GetValues(typeof(ConsoleColor)).OfType<ConsoleColor>().ToList();
+                Enum.GetValues(typeof(ConsoleColor)).OfType<ConsoleColor>()
+                .Where(c => c != ConsoleColor.Black).ToList();
 
             public static ConsoleColor GetColor(string id)
             {
