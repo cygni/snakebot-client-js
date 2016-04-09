@@ -7,7 +7,7 @@ namespace Cygni.Snake.Client
 {
     public class Map
     {
-        public Map(int width, int height, int worldTick, IEnumerable<SnakeInfo> snakeInfos, IEnumerable<MapCoordinate> foodPositions, IEnumerable<MapCoordinate> obstaclePositions)
+        public Map(int width, int height, int worldTick, IEnumerable<SnakePlayer> snakeInfos, IEnumerable<MapCoordinate> foodPositions, IEnumerable<MapCoordinate> obstaclePositions)
         {
             Tick = worldTick;
             FoodPositions = foodPositions.ToList();
@@ -24,9 +24,9 @@ namespace Cygni.Snake.Client
 
         public int Tick { get; }
 
-        public IReadOnlyList<SnakeInfo> Players { get; }
+        public IReadOnlyList<SnakePlayer> Players { get; }
 
-        public SnakeInfo GetSnake(string id)
+        public SnakePlayer GetSnake(string id)
         {
             return Players.FirstOrDefault(s => s.Id.Equals(id, StringComparison.Ordinal));
         }
@@ -39,8 +39,8 @@ namespace Cygni.Snake.Client
         {
             get
             {
-                return Players.Where(snake => snake.Positions.Any())
-                    .Select(snake => snake.Positions.First());
+                return Players.Where(snake => snake.IsAlive)
+                    .Select(snake => snake.HeadPosition);
             }
         }
 
@@ -48,8 +48,7 @@ namespace Cygni.Snake.Client
         {
             get
             {
-                return Players.Where(s => s.Positions.Any())
-                    .SelectMany(s => s.Positions.Skip(1));
+                return Players.Where(s => s.IsAlive).SelectMany(s => s.Body);
             }
         }
 
@@ -117,7 +116,7 @@ namespace Cygni.Snake.Client
                 string id = (string) token["id"];
                 int points = (int) token["points"];
                 var positions = token["positions"].Select(i => MapCoordinate.FromIndex((int) i, width));
-                return new SnakeInfo(id, name, points, positions);
+                return new SnakePlayer(id, name, points, positions);
             });
 
             var foods = json["foodPositions"].Select(i => MapCoordinate.FromIndex((int) i, width));

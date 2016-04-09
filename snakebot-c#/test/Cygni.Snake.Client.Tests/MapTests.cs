@@ -15,7 +15,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var map = new Map(5, 5, 1, new[]
             {
-                new SnakeInfo("bestsnake", String.Empty, 0, new[]
+                new SnakePlayer("bestsnake", String.Empty, 0, new[]
                 {
                     new MapCoordinate(0, 0),
                     new MapCoordinate(0, 1),
@@ -36,7 +36,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var map = new Map(5, 5, 1, new[]
             {
-                new SnakeInfo("bestsnake", String.Empty, 0, new[]
+                new SnakePlayer("bestsnake", String.Empty, 0, new[]
                 {
                     new MapCoordinate(0, 0),
                     new MapCoordinate(0, 1),

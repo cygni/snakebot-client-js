@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Cygni.Snake.Client
 {
-    public class SnakeInfo
+    public class SnakePlayer
     {
-        public SnakeInfo(string id, string name, int points, IEnumerable<MapCoordinate> positions)
+        public SnakePlayer(string id, string name, int points, IEnumerable<MapCoordinate> positions)
         {
             Id = id;
             Name = name;
@@ -22,6 +22,10 @@ namespace Cygni.Snake.Client
         public IReadOnlyList<MapCoordinate> Positions { get; }
 
         public bool IsAlive => Positions.Any();
+
+        public MapCoordinate HeadPosition => IsAlive ? Positions.First() : new MapCoordinate(-1, -1);
+
+        public IEnumerable<MapCoordinate> Body => IsAlive ? Positions.Skip(1) : Enumerable.Empty<MapCoordinate>();
 
         public override string ToString()
         {
