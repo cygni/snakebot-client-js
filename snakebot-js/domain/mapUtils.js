@@ -91,6 +91,24 @@ function findFood(coords, map){
 }
 
 /**
+ * Get the coordinates of all snakes.
+ * Note: You probably want to filter out your own snake.
+ * @param map
+ * @returns {Array}
+ */
+function getSnakeCoords(map, excludeIds){
+  var snakeInfos = map.getSnakeInfos();
+  var snakeCoords = [];
+  snakeInfos.forEach(function(snakeInfo){
+    if(!excludeIds || excludeIds.indexOf(snakeInfo.getId()) == -1){
+      var coords = positionsToCoords(snakeInfo.getPositions(), map.getWidth());
+      snakeCoords[snakeInfo.getId()] = coords;
+    }
+  });
+  return snakeCoords;
+}
+
+/**
  * Sorts the items in the array from closest to farthest
  * in relation to the given coordinate using Manhattan distance.
  * @param items the items (must expose ::getX() and ::getY();
@@ -123,7 +141,7 @@ function sortByClosestTo(items, coords){
  * Converts an array of positions to an array of coordinates.
  * @param points the positions to convert
  * @param mapWidth the width of the map
- * @returns {[{x: (Number), y: (Number)}]}
+ * @returns {{x: (Number), y: (Number)}}
  */
 function positionsToCoords(positions, mapWidth){
   return positions.map(function(pos){return translatePosition(pos, mapWidth)});
@@ -162,3 +180,4 @@ exports.findPathAS            = findPathAS;
 exports.getAt                 = getAt;
 exports.positionsToCoords     = positionsToCoords;
 exports.findFood              = findFood;
+exports.getSnakeCoords        = getSnakeCoords;
