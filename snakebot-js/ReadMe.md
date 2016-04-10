@@ -94,15 +94,13 @@ Don't forget to raid the Cygni fridge before you get started, it's free after al
 
 ```js
 var food = MapUtils.findFood(myCoords, map);
-  if(food.length){
-    var foodCoord = food.pop();
-    var path = MapUtils.findPathAS(myCoords, foodCoord, map.getWidth(), map.getHeight(), function(coord, goalCoord){
-      var tile = MapUtils.getAt(myCoords, map);
-      return MapUtils.getManhattanDistance(coord, goalCoord) + (tile.content === 'snakebody' ? 1000 : 0);
+if(food.length){
+var path = MapUtils.findPathAS(myCoords, food.pop(), map.getWidth(), map.getHeight(), function (coord, goalCoord) {
+      var tile = MapUtils.getAt(coord, map);
+      return MapUtils.getManhattanDistance(coord, goalCoord) + (tile && (tile.content === 'snakebody' || tile.content === 'snakehead') ? 1000 : 0);
     });
     direction = path[0].direction;
-    snakeBrainDump = {foodCoord: foodCoord, path: path};
-  }
+}
 ```
 
 DS.

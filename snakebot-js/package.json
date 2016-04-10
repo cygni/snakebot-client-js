@@ -10,6 +10,7 @@
     "minimist": "^1.2.0",
     "nan": "^2.2.0",
     "options": "0.0.6",
+    "performance-now": "^0.2.0",
     "string_decoder": "^0.10.31",
     "ultron": "^1.0.2",
     "utf-8-validate": "^1.2.1",

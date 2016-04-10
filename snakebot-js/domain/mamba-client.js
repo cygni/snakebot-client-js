@@ -12,6 +12,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   var WebSocket           = require('ws');
   var StringDecoder       = require('string_decoder').StringDecoder;
+  var DateFormat          = require('dateformat');
   var EventBus            = require('./mamba/eventBus.js');
   var RegisterPlayer      = require('./mamba/registerPlayer.js');
   var PlayerRegistered    = require('./mamba/playerRegistered.js');
@@ -187,18 +188,22 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   function log(message){
     if(verboseLogging){
-      console.log(new Date() + ' - MAMBA INFO - ' + message);
+      console.log(getFormattedTime(new Date()) + ' - MAMBA INFO - ' + message);
     }
   }
 
   function logError(message){
-    console.log(new Date() + ' - MAMBA ERROR - ' + message);
+    console.log(getFormattedTime(new Date())  + ' - MAMBA ERROR - ' + message);
   }
 
   function logDump(obj){
     if(veryVerboseLogging){
-      console.log(new Date() + ' - MAMBA INFO - ', obj);
+      console.log(getFormattedTime(new Date()) + ' - MAMBA INFO - ', obj);
     }
+  }
+
+  function getFormattedTime(date){
+    return DateFormat(date, 'HH:MM:ss.l')
   }
 
   return {
