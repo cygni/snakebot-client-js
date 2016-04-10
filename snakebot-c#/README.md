@@ -1,4 +1,4 @@
-# Cygni C# .Net Snake Bot Client
+# Cygni C# Snake Bot Client
 
 ## Baby, I'm just gonna snake, snake, snake, snake, snake. I snake it off, I snake it off
 
@@ -9,99 +9,87 @@ I would like to begin this section with some wise words from a great and wise ma
 Within this repository you can find the beginning of the same journey that Mr. Schwarzenegger walked so many years ago. 
 A journey that took him, an insignificant young boy from Steiermark in Austria, all the way to the podium at not one but **seven** Mr. Snake Olympia events.
 
-Here you can find a Snake Client written in the C# language for the .Net Core platform and ASP .Net 5.
+Here you can find a Snake Client written in the C# language for the .Net Core platform.
 
-I would also like to leave you with a qoute from the formentioned great man
+I would also like to leave you with a qoute from the aforementioned great man
 
 > Anything I’ve ever attempted, I was always willing to fail. So you can’t always win, but don’t be afraid of making decisions. You can’t be paralyzed by the fear of failure or you will never push yourself. You keep pushing because you believe in yourself and in your vision and you know that it is the right thing to do, and success will come. So don’t be afraid to fail. <br /> **Arnold Schwarzenegger**
 
+## System Requirements
 
-### Requirements
-
-- Windows 8 or higher (The current websocket implementation requires this.)
-- .Net Core version 1.0.0-rc1-update1. Follow the instructions at: http://docs.asp.net/en/latest/getting-started/index.html
+- Windows 8 or higher (required by System.Net.WebSocket.ClientWebSocket)
+- .Net Core version 1.0.0-rc2, see: http://docs.asp.net/en/latest/getting-started/index.html
 - ASP .Net 5 RC. Follow the instructions at: https://get.asp.net/
 - Visual Studio 2015
 
-### Get it running
+## Project structure
+The solution contains three projects
+- Cygni.Snake.Client
+- Cygni.Snake.Client.Tests
+- Cygni.Snake.SampleBot
+
+#### Cygni.Snake.Client
+This project contains, among other things, the SnakeClient, SnakeBot and Map classes.
+
+- SnakeClient: Provides the communication with the Cygni Snake server.
+- SnakeBot: Provides an abstract base class for snake bots. Should be extended when implementing your own bot.
+- Map: Provides an way to examine the state of the snake world.
+- IGameObserver: Interface for types that can observe games. Can be injected in SnakeClient.
+
+#### Cygni.Snake.Client.Tests
+Contains unit tests for the Cygni.Snake.Client library.
+
+#### Cygni.Snake.SampleBot
+Contains a sample console application. This projects illustrates how to connect to the Cygni Snake server using the SnakeClient bot in conjunction with a SnakeBot implementation.
+
+- Program: The main entry point. Connects to the server and requests a new game.
+- MySnakeBot: The sample SnakeBot implementation.
+- GamePrinter: An implementation of IGameObserver for printing snake updates to console.
+
+## Get started
 
 - Open the solution in Visual Studio 2015
 - Restore packages
+- Implement an awesome bot
 - Build
-- Run (Theres not much more to it)
+- Run
 
-### Structure
+### Implementing a SnakeBot
 
-#### Cygni.Snake.Client
-This is the main library that contains all the functionality needed to get everything running.
-It contains communication logic, event handling, helper classes for printing and all the neccessary DTOs.
-
-#### Cygni.Snake.Client.Tests
-
-This project, as the name entails, contains all the unit tests for the main library project.
-
-#### Cygni.Snake.SampleBot
-
-This project holds the file that you as a user might need to change.
-
-- MySnake.cs (Class that holds the current snake player logic) 
-- Program.cs (Main entry point)
-
-
-
-### What to change
-
-The only two files you should need to modify is MySnake.cs and Program.cs. These two files hold the main entry point of everything and the snake class that is currently playing and hopefully winning the snake tournament.
-
-#### MySnake.cs
-
-Here is where you should put your awesome strategy for winning in this game and life in general. Only make sure that by the end of OnGameTurn you return whatever movement action you would like to perform. All the information avaliable to you about the world is contained within the passed map object.
-
-If the printer line is not commented out a ANSI printer will print the current map state to the console.
+There is a skeleton for a bot SnakeBot implementation in the MySnakeBot.cs file:
 
 ```csharp
-    public class DemoSnake : Snake
+    public class MySnakeBot : SnakeBot
     {
-        public DemoSnake(string name, ISnakeClient snakeClient)
-            : base(name, snakeClient)
+        public MySnakeBot(string name) : base(name)
         {
         }
         
-        protected override MovementDirection OnGameTurn(Map map, long gameTick)
+        public override Direction GetNextMove(Map map)
         {
-            ConsoleMapPrinter.Printer(map, PlayerInfos);
             // figure out a good move
 
             // do calculated move
-            return MovementDirection.Down;
+            return Direction.Down;
         }
     }
 ```
 
-#### Program.cs
+All you need to do is to implement the GetNextMove()-method to return the direction of choice for your next move. The parameter map represents the current state of the world. It exposes a property called MySnake which represents your snake. Other than that, use the intellisense to examine its API.
 
-Here is the main entry point for everything. Here is where the settings for the game and the client is initialized.
-Change these two objects if you want different settings on the map or if you want to run the game against another host/port/gamemode.
+The Main()-method in Program.cs wires up the WebSocket connection with the SnakeClient and the SnakeBot of your choice. You can choose to omit the GamePrinter parameter in SnakeClient. Or, if you prefer, you can provide another implementation to log or do whatever cool stuff you like.
 
 ```csharp
-     public class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
-            var settings = new GameSettings();
+            var ws = new ClientWebSocket();
+            ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
 
-            var client = new SnakeClient("snake.cygni.se", 80, "training", settings);
-            var snake = new MySnake("dotnetSnake", client);
+            var client = new SnakeClient(ws, new GamePrinter());
+            client.Start(new MySnakeBot("dotnetSnake"));
 
-            client.Connect();
-
-            // this is just here to keep the console from closing on us.
-            do
-            {
-                Task.Delay(TimeSpan.FromSeconds(10)).Wait();
-
-            } while (snake.IsPlaying);
-            // don't close the console because the game is over.
             Console.ReadLine();
         }
     }
