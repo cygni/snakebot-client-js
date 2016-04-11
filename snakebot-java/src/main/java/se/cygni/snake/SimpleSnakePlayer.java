@@ -27,7 +27,6 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
     private AnsiPrinter ansiPrinter;
 
     public static void main(String[] args) {
-
         Runnable task = () -> {
 
             SimpleSnakePlayer sp = new SimpleSnakePlayer();

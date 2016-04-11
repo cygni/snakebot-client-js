@@ -8,9 +8,15 @@ repositories {
 
 apply plugin: 'java'
 
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.encoding = 'UTF-8'
+}
+
 dependencies {
-    compile 'se.cygni.snakebot:snakebot-client:0.0.5-SNAPSHOT'
-    compile 'se.cygni.snakebot:snakebot-client-util:0.0.5-SNAPSHOT'
+    compile 'se.cygni.snakebot:snakebot-client:0.0.6-SNAPSHOT'
+    compile 'se.cygni.snakebot:snakebot-client-util:0.0.6-SNAPSHOT'
 }
 
 task run(type:JavaExec) {
