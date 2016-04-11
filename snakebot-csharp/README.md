@@ -29,18 +29,18 @@ The solution contains three projects
 - Cygni.Snake.SampleBot
 
 #### Cygni.Snake.Client
-This project contains, among other things, the SnakeClient, SnakeBot and Map classes.
+This project contains among other things, the SnakeClient, SnakeBot and Map classes.
 
 - SnakeClient: Provides the communication with the Cygni Snake server.
-- SnakeBot: Provides an abstract base class for snake bots. Should be extended when implementing your own bot.
+- SnakeBot: Provides an abstract base class for snake bots.
 - Map: Provides an way to examine the state of the snake world.
-- IGameObserver: Interface for types that can observe games. Can be injected in SnakeClient.
+- IGameObserver: Interface for types that can observe games.
 
 #### Cygni.Snake.Client.Tests
 Contains unit tests for the Cygni.Snake.Client library.
 
 #### Cygni.Snake.SampleBot
-Contains a sample console application. This projects illustrates how to connect to the Cygni Snake server using the SnakeClient bot in conjunction with a SnakeBot implementation.
+This project illustrates how to connect to the Cygni Snake server using a SnakeBot implementation and the SnakeClient class.
 
 - Program: The main entry point. Connects to the server and requests a new game.
 - MySnakeBot: The sample SnakeBot implementation.
@@ -48,49 +48,47 @@ Contains a sample console application. This projects illustrates how to connect 
 
 ## Get started
 
-- Open the solution in Visual Studio 2015
-- Restore packages
-- Implement an awesome bot
-- Build
-- Run
+- Open the solution in Visual Studio 2015.
+- Restore packages.
+- Implement an awesome bot.
+- Build.
+- Run.
 
 ### Implementing a SnakeBot
 
-There is a skeleton for a bot SnakeBot implementation in the MySnakeBot.cs file:
+MySnakeBot.cs contains a skeleton SnakeBot implementation. All you need to do is to implement the GetNextMove()-method to return the direction of choice for your next move. The parameter map represents the current state of the world. It exposes a property called MySnake which represents your snake. Other than that, use the intellisense to examine its API.
 
 ```csharp
-    public class MySnakeBot : SnakeBot
+public class MySnakeBot : SnakeBot
+{
+    public MySnakeBot(string name) : base(name)
     {
-        public MySnakeBot(string name) : base(name)
-        {
-        }
+    }
+    
+    public override Direction GetNextMove(Map map)
+    {
+        // figure out a good move
         
-        public override Direction GetNextMove(Map map)
-        {
-            // figure out a good move
-
-            // do calculated move
-            return Direction.Down;
-        }
+        // do calculated move
+        return Direction.Down;
+    }
     }
 ```
-
-All you need to do is to implement the GetNextMove()-method to return the direction of choice for your next move. The parameter map represents the current state of the world. It exposes a property called MySnake which represents your snake. Other than that, use the intellisense to examine its API.
 
 The Main()-method in Program.cs wires up the WebSocket connection with the SnakeClient and the SnakeBot of your choice. You can choose to omit the GamePrinter parameter in SnakeClient. Or, if you prefer, you can provide another implementation to log or do whatever cool stuff you like.
 
 ```csharp
-    public class Program
+public class Program
+{
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var ws = new ClientWebSocket();
-            ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
+        var ws = new ClientWebSocket();
+        ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
 
-            var client = new SnakeClient(ws, new GamePrinter());
-            client.Start(new MySnakeBot("dotnetSnake"));
+        var client = new SnakeClient(ws, new GamePrinter());
 
-            Console.ReadLine();
-        }
+        client.Start(new MySnakeBot("dotnetSnake"));
+        Console.ReadLine();
     }
+}
 ```
