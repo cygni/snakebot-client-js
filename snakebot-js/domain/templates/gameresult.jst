@@ -1,0 +1,36 @@
+═══ End of game ═════════════════════════════════════<NEWLINE>
+Id: {{=it.gameId}}<NEWLINE>
+
+<NEWLINE>
+Winner:
+ {{=it.results.winnerByPoints.termColor}}█ {{=it.colors.reset}}
+{{=it.results.winnerByPoints.label}}->{{=it.results.winnerByPoints.name}}
+ [{{=it.results.winnerByPoints.length}}], {{=it.results.winnerByPoints.points}} p.
+<NEWLINE>
+
+<NEWLINE>
+Heroes:
+<NEWLINE>
+{{~it.results.livingSnakesByPoints :value:index}}
+{{=index + 1 }}.
+ {{=value.termColor}}█ {{=it.colors.reset}}
+{{=value.label}}->{{=value.name}}
+ [{{=value.length}}], {{=value.points}} p.
+<NEWLINE>
+{{~}}
+
+<NEWLINE>
+Killed-in-action, by game tick:
+<NEWLINE>
+{{~it.results.deadSnakesByTick :value:index}}
+{{=value.tickOfDeath}}.
+ {{=value.termColor}}█ {{=it.colors.reset}}
+{{? value.highlight }}{{=it.colors.bold}}{{?}}
+{{=value.label}}->{{=value.name}}
+{{? value.highlight }}{{=it.colors.reset}}{{?}}
+ [{{=value.length}}], ({{=value.deathReason}}) {{=value.points}} p.
+<NEWLINE>
+{{~}}
+<NEWLINE>
+═══ kthnxbai ════════════════════════════════════════
+<NEWLINE>
