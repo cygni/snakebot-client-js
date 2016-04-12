@@ -169,7 +169,7 @@ function MapRenderer(width, height){
   function renderMap(mapState){
     var _PIPE   = '|';
     var tiles   = getMergedTiles(mapState.getMap());
-    var topLine = '\n' + mapWidth + _PIPE;
+    var topLine = '\n' + mapWidth + ' x ' + mapHeight + _PIPE;
 
     var xLabel = 0;
     for(var i = 0; i < mapWidth; i++){

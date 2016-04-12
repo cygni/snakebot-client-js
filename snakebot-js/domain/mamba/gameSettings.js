@@ -1,11 +1,11 @@
 var GameSettings = function(settings) {
 
-  var width                     = settings && settings.width || 50;
-  var height                    = settings && settings.height || 25 ;
+  var width                     = settings && settings.width || 'MEDIUM';
+  var height                    = settings && settings.height || 'MEDIUM';
   var maxNoofPlayers            = settings && settings.maxNoofPlayers || 5;
   var startSnakeLength          = settings && settings.startSnakeLength || 1;
   var timeInMsPerTick           = settings && settings.timeInMsPerTick || 250;
-  var obstaclesEnabled          = settings &&  settings.obstaclesEnabled || false;
+  var obstaclesEnabled          = settings && settings.obstaclesEnabled || false;
   var foodEnabled               = settings && settings.foodEnabled || true;
   var edgeWrapsAround           = settings && settings.edgeWrapsAround || false;
   var headToTailConsumes        = settings && settings.headToTailConsumes || false;

@@ -1,5 +1,10 @@
+configurations.all {
+    // check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url "http://mavenrepo.snake.cygni.se"
@@ -15,8 +20,8 @@ compileJava {
 }
 
 dependencies {
-    compile 'se.cygni.snakebot:snakebot-client:0.0.6-SNAPSHOT'
-    compile 'se.cygni.snakebot:snakebot-client-util:0.0.6-SNAPSHOT'
+    compile group: 'se.cygni.snakebot', name: 'snakebot-client', version: '0.0.7-SNAPSHOT', changing: true
+    compile group: 'se.cygni.snakebot', name: 'snakebot-client-util', version: '0.0.7-SNAPSHOT', changing: true
 }
 
 task run(type:JavaExec) {

@@ -11,6 +11,7 @@ import se.cygni.snake.api.model.GameMode;
 import se.cygni.snake.api.model.GameSettings;
 import se.cygni.snake.api.model.SnakeDirection;
 import se.cygni.snake.api.response.PlayerRegistered;
+import se.cygni.snake.api.util.GameSettingsUtils;
 import se.cygni.snake.client.AnsiPrinter;
 import se.cygni.snake.client.BaseSnakeClient;
 import se.cygni.snake.client.MapUtil;
@@ -21,16 +22,23 @@ import java.util.Random;
 
 public class SimpleSnakePlayer extends BaseSnakeClient {
 
-    private static Logger log = LoggerFactory
-            .getLogger(SimpleSnakePlayer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSnakePlayer.class);
 
-    private AnsiPrinter ansiPrinter;
+    // Set to false if you want to start the game from a GUI
+    private static final boolean AUTO_START_GAME = true;
+
+    // Personalise your game ...
+    public static final String SERVER_NAME = "snake.cygni.se";
+    public static final int SERVER_PORT = 80;
+    public static final GameMode GAME_MODE = GameMode.training;
+    public static final String SNAKE_NAME = "The Simple Snake";
+
+    private AnsiPrinter ansiPrinter = new AnsiPrinter(true);
 
     public static void main(String[] args) {
         Runnable task = () -> {
-
-            SimpleSnakePlayer sp = new SimpleSnakePlayer();
-            sp.connect();
+            SimpleSnakePlayer simpleSnakePlayer = new SimpleSnakePlayer();
+            simpleSnakePlayer.connect();
 
             // Keep this process alive as long as the
             // Snake is connected and playing.
@@ -40,18 +48,13 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } while (sp.isPlaying());
+            } while (simpleSnakePlayer.isPlaying());
 
-            log.info("Shutting down");
+            LOGGER.info("Shutting down");
         };
-
 
         Thread thread = new Thread(task);
         thread.start();
-    }
-
-    public SimpleSnakePlayer() {
-        ansiPrinter = new AnsiPrinter(true);
     }
 
     @Override
@@ -60,7 +63,6 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
 
         // MapUtil contains lot's of useful methods for querying the map!
         MapUtil mapUtil = new MapUtil(mapUpdateEvent.getMap(), getPlayerId());
-
 
         List<SnakeDirection> directions = new ArrayList<>();
 
@@ -90,64 +92,59 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
 
     @Override
     public void onSnakeDead(SnakeDeadEvent snakeDeadEvent) {
-        log.info("A snake {} died by {}",
+        LOGGER.info("A snake {} died by {}",
                 snakeDeadEvent.getPlayerId(),
                 snakeDeadEvent.getDeathReason());
     }
 
     @Override
     public void onGameEnded(GameEndedEvent gameEndedEvent) {
-        log.debug("GameEndedEvent: " + gameEndedEvent);
+        LOGGER.debug("GameEndedEvent: " + gameEndedEvent);
     }
 
     @Override
     public void onGameStarting(GameStartingEvent gameStartingEvent) {
-        log.debug("GameStartingEvent: " + gameStartingEvent);
+        LOGGER.debug("GameStartingEvent: " + gameStartingEvent);
     }
 
     @Override
     public void onPlayerRegistered(PlayerRegistered playerRegistered) {
-        log.info("PlayerRegistered: " + playerRegistered);
+        LOGGER.info("PlayerRegistered: " + playerRegistered);
 
-        // Disable this if you want to start the game manually from
-        // the web GUI
-        startGame();
+        if (AUTO_START_GAME) {
+            startGame();
+        }
     }
 
     @Override
     public void onSessionClosed() {
-        log.info("Session closed");
+        LOGGER.info("Session closed");
     }
 
     @Override
     public void onConnected() {
-        log.info("Connected, registering for training...");
-        GameSettings gameSettings = new GameSettings.GameSettingsBuilder()
-                .withWidth(25)
-                .withHeight(25)
-                .withMaxNoofPlayers(5)
-                .build();
-
+        LOGGER.info("Connected, registering for training...");
+        GameSettings gameSettings = GameSettingsUtils.trainingWorld();
         registerForGame(gameSettings);
     }
 
     @Override
     public String getName() {
-        return "#emil";
+        return SNAKE_NAME;
     }
 
     @Override
     public String getServerHost() {
-        return "snake.cygni.se";
+        return SERVER_NAME;
     }
 
     @Override
     public int getServerPort() {
-        return 80;
+        return SERVER_PORT;
     }
 
     @Override
     public GameMode getGameMode() {
-        return GameMode.training;
+        return GAME_MODE;
     }
 }
