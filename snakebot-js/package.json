@@ -1,17 +1,21 @@
 {
   "name": "mamba-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Another snake client",
   "main": "bundle.js",
   "dependencies": {
     "bindings": "^1.2.1",
     "bufferutil": "^1.2.1",
+    "commander": "^2.9.0",
     "dateformat": "^1.0.12",
+    "dot": "^1.0.3",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "nan": "^2.2.0",
     "options": "0.0.6",
     "performance-now": "^0.2.0",
     "string_decoder": "^0.10.31",
+    "uglifyjs": "^2.4.10",
     "ultron": "^1.0.2",
     "utf-8-validate": "^1.2.1",
     "ws": "^1.0.1"

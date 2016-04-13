@@ -46,9 +46,9 @@ function handleGameUpdate(mapUpdateEvent){
 function endGame(){
   snakeBot.gameEnded();
   if(options.renderMode == 'animate'){
-    renderer.render(function(){process.exit()}, {animate: true, delay: 500, followPid : gameInfo.getPlayerId()});
+    renderer.render({animate: true, delay: 500, followPid : gameInfo.getPlayerId()}, function(){process.exit()});
   } else {
-    renderer.render(function(){process.exit()}, {followPid : gameInfo.getPlayerId()});
+    renderer.render({followPid : gameInfo.getPlayerId()}, function(){process.exit()});
   }
 }
 
