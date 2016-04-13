@@ -30,7 +30,7 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
     // Personalise your game ...
     public static final String SERVER_NAME = "snake.cygni.se";
     public static final int SERVER_PORT = 80;
-    public static final GameMode GAME_MODE = GameMode.training;
+    public static final GameMode GAME_MODE = GameMode.TRAINING;
     public static final String SNAKE_NAME = "The Simple Snake";
 
     private AnsiPrinter ansiPrinter = new AnsiPrinter(true);
