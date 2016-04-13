@@ -35,7 +35,7 @@ function handleGameUpdate(mapUpdateEvent){
   var start = now();
   var response = snakeBot.update(mapUpdateEvent, gameInfo.getPlayerId());
   var end = now();
-  logExt("User update took (ms.): ", (end-start).toFixed(3));
+  response.debugData.executionTime = (end-start).toFixed(3);
   client.moveSnake(response.direction, mapUpdateEvent.getGameTick());
   return response.debugData;
 }

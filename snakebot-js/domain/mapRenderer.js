@@ -117,13 +117,16 @@ function MapRendererDoT(){
     var height = gameState.getMap().getHeight();
     var width = gameState.getMap().getWidth();
     var renderedGameMap = renderMap(gameState, gameSnakes, height, width).join('');
+    var executionTime = debugData ? debugData.executionTime : 'n/a';
+    debugData ? delete debugData[executionTime] : 0;
     var templateData = {
       colors: COLORS,
       gameId: gameId,
       gameTick: gameTick,
       gameSnakes: gameSnakes,
       gameMap: renderedGameMap,
-      debugData: debugData ? JSON.stringify(debugData) : null
+      debugData: debugData ? JSON.stringify(debugData) : null,
+      executionTime: executionTime
     };
     print(gameStateTemplate(templateData));
   }

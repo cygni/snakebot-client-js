@@ -123,18 +123,8 @@ function sortByClosestTo(items, coords){
       item: item
     });
   });
-  distanceItem.sort(function(a,b) {
-    if (a.d < b.d){
-      return 1;
-    } else if (a.d > b.d){
-      return -1;
-    } else {
-      return 0;
-    }
-  });
-  var orderedResult = [];
-  distanceItem.forEach(function(di){orderedResult.push(di.item);});
-  return orderedResult;
+  distanceItem.sort(function(a,b) { return b.d - a.d; });
+  return distanceItem.map(function(di){return di.item});
 }
 
 /**
