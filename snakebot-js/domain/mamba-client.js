@@ -22,6 +22,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
   var SnakeDeadEvent      = require('./mamba/snakeDeadEvent.js');
   var MapUpdateEvent      = require('./mamba/mapUpdateEvent.js');
   var RegisterMove        = require('./mamba/registerMove.js');
+  var ClientInfo          = require('./mamba/clientInfo.js');
 
   // Log json dumps etc.
   var veryVerboseLogging  = false;
@@ -107,6 +108,12 @@ function Mamba(host, port, eventListener, verboseLogging) {
     checkState(STATE_REGISTER);
     var regPlayer = RegisterPlayer.new(userName, gameSettings);
     sendSocket(regPlayer.marshall());
+  }
+
+  function sendClientInfo() {
+    checkState(STATE_GAME_READY);
+    var clientInfo = ClientInfo.new();
+    sendSocket(clientInfo.marshall());
   }
 
   function startGame() {
@@ -212,7 +219,8 @@ function Mamba(host, port, eventListener, verboseLogging) {
     prepareNewGame : registerPlayer,
     startGame : startGame,
     moveSnake : moveSnake,
-    connect : connect
+    connect : connect,
+    sendClientInfo: sendClientInfo
   }
 
 }
