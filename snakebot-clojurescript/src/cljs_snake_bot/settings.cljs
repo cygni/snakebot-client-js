@@ -4,6 +4,7 @@
                  {:player-name ""
                   :player-color ""
                   :player-id ""
+                  :game-id ""
                   :game-height 0
                   :game-width 0
                   :number-of-players 0
@@ -11,9 +12,13 @@
                   :game-tick 0
                   :game-running true}))
 
+(def client-version "0.0.1")
+
 (def host-name "snake.cygni.se")
 (def host-port "80")
 (def game-mode "training")
+
+(def map-sizes {:small 0 :medium 1 :large 2})
 
 (def snake-colors (atom ["green" "blue" "cyan" "yellow" "gray"]))
 
@@ -37,8 +42,8 @@
     :pretty-print-player-registration true})
 
 (def default-map
-  {:width 10
-   :height 10
+  {:width (:small map-sizes)
+   :height (:small map-sizes)
    :maxNoofPlayers 5
    :startSnakeLength 1
    :timeInMsPerTick 250

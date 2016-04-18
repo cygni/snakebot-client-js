@@ -8,16 +8,17 @@
 (defn on-player-registered [msg]
   (s/state-set-many {:player-name (:name msg)
                      :player-id (:receivingPlayerId msg)
+                     :game-id (:gameId msg)
                      :player-color (:color msg)
                      :is-playing true})
   (if (= "training" s/game-mode)
-      (msgs/get-start-game-message (s/state-get :player-id))
+      (msgs/get-start-game-message)
       nil))
 
 
 (defn on-map-updated [msg]
   (s/state-set :game-tick (:gameTick msg))
-  (msgs/get-move-message (s/state-get :player-id) (s/state-get :game-tick) (es/get-next-movement msg)))
+  (msgs/get-move-message (es/get-next-movement msg)))
 
 (defn on-game-ended [msg]
   (s/state-set :game-running false?)

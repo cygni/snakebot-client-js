@@ -34,11 +34,20 @@
          (fn [msg] (let [response (mh/get-response-message (json-parse msg))]
                    (when (some? response) (.send socket (json-str response)))))))
 
+(defn setup-server-ping []
+ (go-loop []
+   (.send socket (json-str (m/get-ping-message)))
+   (async/<! (async/timeout 30000))
+   (if (s/state-get :game-running)
+     (recur))))
+
 (defn setup-socket []
   (.on socket "open"
        #(do (println "socket opened")
             (.send socket (json-str (m/get-player-registration-message "emi")))
-          (setup-listener))))
+            (.send socket (json-str (m/get-client-info-message)))
+            (setup-listener)
+            (setup-server-ping))))
 
 (defn -main []
   (println "Booting up")
