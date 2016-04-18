@@ -28,12 +28,15 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
     private static final boolean AUTO_START_GAME = true;
 
     // Personalise your game ...
-    public static final String SERVER_NAME = "snake.cygni.se";
-    public static final int SERVER_PORT = 80;
-    public static final GameMode GAME_MODE = GameMode.TRAINING;
-    public static final String SNAKE_NAME = "The Simple Snake";
+    private static final String SERVER_NAME = "snake.cygni.se";
+    private static final int SERVER_PORT = 80;
 
-    private AnsiPrinter ansiPrinter = new AnsiPrinter(true);
+    private static final GameMode GAME_MODE = GameMode.TRAINING;
+    private static final String SNAKE_NAME = "The Simple Snake";
+
+    // Set to false if you don't want the game world printed every game tick.
+    private static final boolean ANSI_PRINTER_ACTIVE = true;
+    private AnsiPrinter ansiPrinter = new AnsiPrinter(ANSI_PRINTER_ACTIVE, true);
 
     public static void main(String[] args) {
         Runnable task = () -> {
