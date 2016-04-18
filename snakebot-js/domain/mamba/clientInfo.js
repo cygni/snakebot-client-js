@@ -1,8 +1,14 @@
 function ClientInfo() {
 
+    var os = require('os');
+    var ifaces = os.networkInterfaces();
+
     var type = 'se.cygni.snake.api.request.ClientInfo';
+
     var language = 'JavaScript';
     var version = require('../../package.json').version || 'unkown';
+    var ipAddress = 'unkown';
+    var operatingSystem = os.type() + ' ' + os.release();
 
     var findIP = function () {
         Object.keys(ifaces).forEach(function (ifname) {
@@ -13,16 +19,12 @@ function ClientInfo() {
                     // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
                     return;
                 }
-                // TODO: this doesn't work, fix it!
-                return iface.address;
+                ipAddress = iface.address;
             });
         });
     };
 
-    var os = require('os');
-    var ifaces = os.networkInterfaces();
-    var ipAddress = findIP();
-    var operatingSystem = os.type() + ' ' + os.release();
+    findIP();
 
     var marshall = function () {
         return {
