@@ -37,6 +37,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
   var ws            = null;
   var player        = null;
   var currentState  = STATE_INIT;
+  var lastGameId    = null;
 
   if (!host){
     logError("No host you say? That's just plain rude you scurvy rebel!");
@@ -116,7 +117,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   function moveSnake(direction, gameTick){
     checkState(STATE_GAME_STARTED);
-    sendSocket(new RegisterMove(gameTick, direction, player.getPlayerId()).marshall());
+    sendSocket(new RegisterMove(gameTick, lastGameId, direction, player.getPlayerId()).marshall());
   }
 
   function handleRegistrationDone(data) {
@@ -136,6 +137,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
     var json = decodeJson(data);
     var event = null;
     if(json.type === MapUpdateEvent.type){
+      lastGameId = json.gameId;
       event = {type: 'GAME_MAP_UPDATED', payload: MapUpdateEvent.create(json)};
     } else if(json.type === GameEndedEvent.type){
       event = {type: 'GAME_ENDED', payload: GameEndedEvent.create(json)};
