@@ -13,7 +13,7 @@ namespace Cygni.Snake.SampleBot
             ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
 
             var client = new SnakeClient(ws, new GamePrinter());
-            client.Start(new MySnakeBot("dotnetSnake"));
+            client.Start(new MySnakeBot("dotnetSnake"), true);
 
             Console.ReadLine();
         }

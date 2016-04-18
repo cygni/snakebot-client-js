@@ -14,7 +14,7 @@
 (defn convert-map-position[pos map]
   (let [y (Math.floor (/ pos (:width map)))
         x (- pos (* y (:width map)))]
-  {:x x :y y}))
+    {:x x :y y}))
 
 (defn convert-map-positions[positions map]
   (mapv #(convert-map-position % map) positions))
