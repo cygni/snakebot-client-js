@@ -87,6 +87,12 @@ function onEvent(event){
       endGame();
       break;
 
+    case 'TOURNAMENT_ENDED':
+      log('Tournament ended!');
+      renderer.record(event.payload);
+      endGame();
+      break;
+
     default:
     case 'ERROR':
       logError('Error - ' + event.payload);

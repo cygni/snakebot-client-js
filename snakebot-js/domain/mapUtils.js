@@ -128,6 +128,17 @@ function sortByClosestTo(items, coords){
 }
 
 /**
+ * Check if the coordinate is within a square, ne.x|y, sw.x|y.
+ * @param coord     coordinate to check
+ * @param neCoords  north east coordinate
+ * @param swCoords  south west coordinate
+ * @returns {boolean} true if within
+ */
+function isWithinSquare(coord, neCoords, swCoords){
+  return coord.x < neCoords.x || coord.x > swCoords.x || coord.y < swCoords.y || coord.y > neCoords.y;
+}
+
+/**
  * Converts an array of positions to an array of coordinates.
  * @param points the positions to convert
  * @param mapWidth the width of the map
@@ -171,3 +182,4 @@ exports.getAt                 = getAt;
 exports.positionsToCoords     = positionsToCoords;
 exports.findFood              = findFood;
 exports.getSnakeCoords        = getSnakeCoords;
+exports.isWithinSquare        = isWithinSquare;

@@ -49,6 +49,9 @@ function SearchAStar(){
 
   function generateSuccessors(node, width, height){
     var successorList = [];
+    if(typeof node.coord.y === "undefined") {
+      console.log("DEBUG:", node);
+    }
     if(node.coord.y - 1 >= 0){
       successorList.push(new Node(node, {x:node.coord.x, y:node.coord.y - 1}, 'UP'));
     }

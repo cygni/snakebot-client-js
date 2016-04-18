@@ -10,22 +10,20 @@
  */
 function Mamba(host, port, eventListener, verboseLogging) {
 
-  var WebSocket           = require('ws');
-  var StringDecoder       = require('string_decoder').StringDecoder;
-  var DateFormat          = require('dateformat');
-  var EventBus            = require('./mamba/eventBus.js');
-  var RegisterPlayer      = require('./mamba/registerPlayer.js');
-  var PlayerRegistered    = require('./mamba/playerRegistered.js');
-  var StartGame           = require('./mamba/startGame.js');
-  var GameStartingEvent   = require('./mamba/gameStartingEvent.js');
-  var GameEndedEvent      = require('./mamba/gameEndedEvent.js');
-  var SnakeDeadEvent      = require('./mamba/snakeDeadEvent.js');
-  var MapUpdateEvent      = require('./mamba/mapUpdateEvent.js');
-  var RegisterMove        = require('./mamba/registerMove.js');
-  var ClientInfo          = require('./mamba/clientInfo.js');
-
-  // Log json dumps etc.
-  var veryVerboseLogging  = false;
+  var WebSocket             = require('ws');
+  var StringDecoder         = require('string_decoder').StringDecoder;
+  var DateFormat            = require('dateformat');
+  var EventBus              = require('./mamba/eventBus.js');
+  var RegisterPlayer        = require('./mamba/registerPlayer.js');
+  var PlayerRegistered      = require('./mamba/playerRegistered.js');
+  var StartGame             = require('./mamba/startGame.js');
+  var GameStartingEvent     = require('./mamba/gameStartingEvent.js');
+  var GameEndedEvent        = require('./mamba/gameEndedEvent.js');
+  var TournamentEndedEvent  = require('./mamba/tournamentEndedEvent.js');
+  var SnakeDeadEvent        = require('./mamba/snakeDeadEvent.js');
+  var MapUpdateEvent        = require('./mamba/mapUpdateEvent.js');
+  var RegisterMove          = require('./mamba/registerMove.js');
+  var ClientInfo            = require('./mamba/clientInfo.js');
 
   // States
   var STATE_INIT          = 'app_init';
@@ -124,7 +122,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   function moveSnake(direction, gameTick){
     checkState(STATE_GAME_STARTED);
-    sendSocket(new RegisterMove(gameTick, lastGameId, direction, player.getPlayerId()).marshall());
+    sendSocket(new RegisterMove(gameTick, direction, player.getPlayerId(), player.getGameId()).marshall());
   }
 
   function handleRegistrationDone(data) {
@@ -148,6 +146,8 @@ function Mamba(host, port, eventListener, verboseLogging) {
       event = {type: 'GAME_MAP_UPDATED', payload: MapUpdateEvent.create(json)};
     } else if(json.type === GameEndedEvent.type){
       event = {type: 'GAME_ENDED', payload: GameEndedEvent.create(json)};
+    } else if(json.type === TournamentEndedEvent.type){
+      event = {type: 'TOURNAMENT_ENDED', payload: TournamentEndedEvent.create(json)};
     } else if(json.type === SnakeDeadEvent.type){
       event = {type: 'GAME_SNAKE_DEAD', payload: SnakeDeadEvent.create(json)};
     } else {
@@ -206,7 +206,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
   }
 
   function logDump(obj){
-    if(veryVerboseLogging){
+    if(verboseLogging){
       console.log(getFormattedTime(new Date()) + ' - MAMBA INFO - ', obj);
     }
   }

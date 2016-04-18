@@ -1,13 +1,14 @@
-function RegisterMove(gameTick, gameId, direction, playerId) {
+function RegisterMove(gameTick, direction, playerId, gameId) {
 
   var type                = 'se.cygni.snake.api.request.RegisterMove';
   var gameTick            = gameTick;
-  var gameId              = gameId;
   var direction           = direction;
   var receivingPlayerId   = playerId;
+  var gameId              = gameId;
 
   var toString = function(){
-    return '<Type:' + type + ', gameId:'+ gameId + ', gameTick:' + gameTick + ', direction:' + direction + ', receivingPlayerId:' + receivingPlayerId + '>';
+    return '<Type:' + type + ', gameTick:' + gameTick + ', direction:' + direction +
+      ', receivingPlayerId:' + receivingPlayerId + ', gameId:' + gameId +'>';
   };
 
   var setPlayerId = function(playerId){
@@ -17,10 +18,10 @@ function RegisterMove(gameTick, gameId, direction, playerId) {
   var marshall = function(){
     return {
       type : type,
-      gameId : gameId,
       gameTick : gameTick,
       direction : direction,
-      receivingPlayerId : receivingPlayerId
+      receivingPlayerId : receivingPlayerId,
+      gameId : gameId
     };
   };
 
