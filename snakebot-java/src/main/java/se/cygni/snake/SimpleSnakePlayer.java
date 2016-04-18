@@ -4,13 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketSession;
-import se.cygni.snake.api.event.GameEndedEvent;
-import se.cygni.snake.api.event.GameStartingEvent;
-import se.cygni.snake.api.event.MapUpdateEvent;
-import se.cygni.snake.api.event.SnakeDeadEvent;
+import se.cygni.snake.api.event.*;
 import se.cygni.snake.api.exception.InvalidPlayerName;
 import se.cygni.snake.api.model.GameMode;
 import se.cygni.snake.api.model.GameSettings;
+import se.cygni.snake.api.model.PlayerPoints;
 import se.cygni.snake.api.model.SnakeDirection;
 import se.cygni.snake.api.response.PlayerRegistered;
 import se.cygni.snake.api.util.GameSettingsUtils;
@@ -131,6 +129,15 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
 
         if (AUTO_START_GAME) {
             startGame();
+        }
+    }
+
+    @Override
+    public void onTournamentEnded(TournamentEndedEvent tournamentEndedEvent) {
+        LOGGER.info("Tournament has ended, winner playerId: {}", tournamentEndedEvent.getPlayerWinnerId());
+        int c = 1;
+        for (PlayerPoints pp : tournamentEndedEvent.getGameResult()) {
+            LOGGER.info("{}. {} - {} points", c++, pp.getName(), pp.getPoints());
         }
     }
 

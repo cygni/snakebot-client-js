@@ -20,8 +20,8 @@ compileJava {
 }
 
 dependencies {
-    compile group: 'se.cygni.snakebot', name: 'snakebot-client', version: '0.1.4', changing: true
-    compile group: 'se.cygni.snakebot', name: 'snakebot-client-util', version: '0.1.4', changing: true
+    compile group: 'se.cygni.snakebot', name: 'snakebot-client', version: '0.1.5', changing: true
+    compile group: 'se.cygni.snakebot', name: 'snakebot-client-util', version: '0.1.5', changing: true
 }
 
 task run(type:JavaExec) {
