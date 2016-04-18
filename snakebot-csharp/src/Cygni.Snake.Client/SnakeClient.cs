@@ -2,6 +2,7 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -14,6 +15,8 @@ namespace Cygni.Snake.Client
     {
         private readonly WebSocket _socket;
         private readonly IGameObserver _observer;
+        private bool _isTrainingMode;
+        private const string ClientVersion = "0.0.1";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SnakeClient"/> class that communicates
@@ -57,15 +60,16 @@ namespace Cygni.Snake.Client
         /// </summary>
         /// <remarks>This method will throw an exception if the web socket is not open.</remarks>
         /// <param name="snake">The specified <see cref="SnakeBot"/></param>
+        /// <param name="isTrainingMode">Indicates if the game mode is training or not</param>
         /// <exception cref="ArgumentNullException" />
         /// <exception cref="InvalidOperationException">
         /// If the socket is not opened, or if the specified <see cref="SnakeBot"/> has an invalid name.
         /// </exception>
-        public void Start(SnakeBot snake)
+        public void Start(SnakeBot snake, bool isTrainingMode)
         {
-            Start(snake, null);
+            Start(snake, isTrainingMode, null);
         }
-        
+
         /// <summary>
         /// Registers the specified <see cref="SnakeBot"/> with the server and
         /// tries to initiate a new game using the specified <see cref="GameSettings"/>. 
@@ -75,13 +79,16 @@ namespace Cygni.Snake.Client
         /// </summary>
         /// <remarks>This method will throw an exception if the web socket is not open.</remarks>
         /// <param name="snake">The specified <see cref="SnakeBot"/></param>
+        /// <param name="isTrainingMode">Indicates if the game mode is training or not</param>
         /// <param name="settings">The specified <see cref="GameSettings"/>, can be null.</param>
         /// <exception cref="ArgumentNullException" />
         /// <exception cref="InvalidOperationException">
         /// If the socket is not opened, or if the specified <see cref="SnakeBot"/> has an invalid name.
         /// </exception>
-        public void Start(SnakeBot snake, GameSettings settings)
+        public void Start(SnakeBot snake, bool isTrainingMode, GameSettings settings)
         {
+            _isTrainingMode = isTrainingMode;
+
             if (snake == null)
             {
                 throw new ArgumentNullException(nameof(snake));
@@ -94,6 +101,17 @@ namespace Cygni.Snake.Client
             }
 
             SendRegisterPlayerRequest(snake.Name, settings);
+            SendClientInfoMessage();
+
+            Task.Run(() =>
+            {
+                while (_socket.State == WebSocketState.Open)
+                {
+                    SendPingMessage();
+                    Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+                }
+            });
+
             while (_socket.State == WebSocketState.Open)
             {
                 var message = ReceiveString();
@@ -125,15 +143,18 @@ namespace Cygni.Snake.Client
                     break;
 
                 case MessageType.PlayerRegistered:
-                    SendStartGameRequest();
+                    OnPlayerRegistered();
                     break;
 
                 case MessageType.InvalidPlayerName:
                     OnInvalidPlayerName(snake, json);
                     break;
+
+                case MessageType.HeartBeatResponse:
+                    break;
             }
         }
-
+        
         private string ReceiveString()
         {
             var sb = new StringBuilder();
@@ -150,6 +171,12 @@ namespace Cygni.Snake.Client
                     return sb.ToString();
                 }
             }
+        }
+
+        private void OnPlayerRegistered()
+        {
+            if(_isTrainingMode)
+                SendStartGameRequest();
         }
 
         private void OnInvalidPlayerName(SnakeBot snake, JObject json)
@@ -181,7 +208,7 @@ namespace Cygni.Snake.Client
             var map = Map.FromJson((JObject)json["map"]);
             _observer.OnUpdate(map);
             var direction = snake.GetNextMove(map);
-            SendRegisterMoveRequest(direction, map.Tick);
+            SendRegisterMoveRequest(direction, map.Tick, (string)json["gameId"]);
         }
 
         private void SendStartGameRequest()
@@ -207,13 +234,36 @@ namespace Cygni.Snake.Client
             SendString(JsonConvert.SerializeObject(msg));
         }
 
-        private void SendRegisterMoveRequest(Direction direction, long gameTick)
+        private void SendRegisterMoveRequest(Direction direction, long gameTick, string gameId)
         {
             var msg = new JObject
             {
                 ["type"] = MessageType.RegisterMove,
                 ["direction"] = direction.ToString().ToUpperInvariant(),
-                ["gameTick"] = gameTick
+                ["gameTick"] = gameTick,
+                ["gameId"] = gameId
+            };
+            SendString(JsonConvert.SerializeObject(msg));
+        }
+
+        private void SendClientInfoMessage()
+        {
+            var msg = new JObject
+            {
+                ["type"] = MessageType.ClientInfo,
+                ["language"] = "C#",
+                ["operatingSystem"] = "Windows",
+                ["ipAddress"] = "",
+                ["clientVersion"] = ClientVersion
+            };
+            SendString(JsonConvert.SerializeObject(msg));
+        }
+
+        private void SendPingMessage()
+        {
+            var msg = new JObject
+            {
+                ["type"] = MessageType.HeartBeatRequest
             };
             SendString(JsonConvert.SerializeObject(msg));
         }

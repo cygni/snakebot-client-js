@@ -1,17 +1,17 @@
-﻿{
+{
     "version": "1.0.0-*",
     "description": "Cygni.Snake.Client Class Library",
     "authors": [ "Daniel" ],
     "tags": [ "" ],
     "projectUrl": "",
     "licenseUrl": "",
-    "dependencies": {
-        "Microsoft.CSharp": "4.0.1-beta-*",
-        "Newtonsoft.Json": "8.0.2",
-        "System.Console": "4.0.0-beta-*",
-        "System.Net.WebSockets": "4.0.0-beta-*",
-        "System.Net.WebSockets.Client": "4.0.0-beta-*"
-    },
+  "dependencies": {
+    "Microsoft.CSharp": "4.0.1-beta-*",
+    "Newtonsoft.Json": "8.0.2",
+    "System.Console": "4.0.0-beta-*",
+    "System.Net.WebSockets": "4.0.0-beta-*",
+    "System.Net.WebSockets.Client": "4.0.0-beta-*",
+  },
 
     "frameworks": {
         "dnxcore50": { }

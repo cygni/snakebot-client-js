@@ -8,9 +8,12 @@
         public const string GameStarting = "se.cygni.snake.api.event.GameStartingEvent";
         public const string PlayerRegistered = "se.cygni.snake.api.response.PlayerRegistered";
         public const string InvalidPlayerName = "se.cygni.snake.api.exception.InvalidPlayerName";
+        public const string HeartBeatResponse = "se.cygni.snake.api.response.HeartBeatResponse";
 
         public const string RegisterPlayer = "se.cygni.snake.api.request.RegisterPlayer";
         public const string StartGame = "se.cygni.snake.api.request.StartGame";
         public const string RegisterMove = "se.cygni.snake.api.request.RegisterMove";
+        public const string HeartBeatRequest = "se.cygni.snake.api.request.HeartBeatRequest";
+        public const string ClientInfo = "se.cygni.snake.api.request.ClientInfo";
     }
 }
