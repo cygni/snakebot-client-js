@@ -2,6 +2,8 @@ package se.cygni.snake;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.web.socket.WebSocketSession;
 import se.cygni.snake.api.event.GameEndedEvent;
 import se.cygni.snake.api.event.GameStartingEvent;
 import se.cygni.snake.api.event.MapUpdateEvent;
@@ -39,12 +41,26 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
     private AnsiPrinter ansiPrinter = new AnsiPrinter(ANSI_PRINTER_ACTIVE, true);
 
     public static void main(String[] args) {
-        Runnable task = () -> {
-            SimpleSnakePlayer simpleSnakePlayer = new SimpleSnakePlayer();
-            simpleSnakePlayer.connect();
+        SimpleSnakePlayer simpleSnakePlayer = new SimpleSnakePlayer();
 
-            // Keep this process alive as long as the
-            // Snake is connected and playing.
+        try {
+            ListenableFuture<WebSocketSession> connect = simpleSnakePlayer.connect();
+            connect.get();
+        } catch (Exception e) {
+            LOGGER.error("Failed to connect to server", e);
+            System.exit(1);
+        }
+
+        startTheSnake(simpleSnakePlayer);
+    }
+
+    /**
+     * The Snake client will continue to run ...
+     * : in TRAINING mode, until the single game ends.
+     * : in TOURNAMENT mode, until the server tells us its all over.
+     */
+    private static void startTheSnake(final SimpleSnakePlayer simpleSnakePlayer) {
+        Runnable task = () -> {
             do {
                 try {
                     Thread.sleep(1000);
@@ -87,10 +103,9 @@ public class SimpleSnakePlayer extends BaseSnakeClient {
     }
 
 
-
     @Override
     public void onInvalidPlayerName(InvalidPlayerName invalidPlayerName) {
-
+        LOGGER.debug("InvalidPlayerNameEvent: " + invalidPlayerName);
     }
 
     @Override
