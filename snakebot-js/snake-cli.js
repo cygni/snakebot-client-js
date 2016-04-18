@@ -66,7 +66,6 @@ function onEvent(event){
       log('Ready to play!');
       gameInfo = event.payload;
       renderer = MapRenderer(gameInfo.getGameSettings().getWidth(), gameInfo.getGameSettings().getHeight());
-      client.sendClientInfo();
       client.startGame();
       break;
 

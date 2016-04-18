@@ -108,14 +108,10 @@ function Mamba(host, port, eventListener, verboseLogging) {
     sendSocket(regPlayer.marshall());
   }
 
-  function sendClientInfo() {
+  function startGame() {
     checkState(STATE_GAME_READY);
     var clientInfo = ClientInfo.new();
     sendSocket(clientInfo.marshall());
-  }
-
-  function startGame() {
-    checkState(STATE_GAME_READY);
     var starGameEvt = StartGame.new(player.getPlayerId());
     sendSocket(starGameEvt.marshall());
   }
@@ -219,8 +215,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
     prepareNewGame : registerPlayer,
     startGame : startGame,
     moveSnake : moveSnake,
-    connect : connect,
-    sendClientInfo: sendClientInfo
+    connect : connect
   }
 
 }
