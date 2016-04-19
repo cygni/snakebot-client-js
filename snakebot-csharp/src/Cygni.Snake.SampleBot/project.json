@@ -7,16 +7,12 @@
     },
 
     "dependencies": {
-        "Microsoft.CSharp": "4.0.1-beta-*",
-        "Newtonsoft.Json": "8.0.2",
-        "System.Console": "4.0.0-beta-*",
-        "System.Net.WebSockets": "4.0.0-beta-*",
-            "System.Net.WebSockets.Client": "4.0.0-beta-*",
-            "Cygni.Snake.Client": ""
+      "Newtonsoft.Json": "8.0.2",
+      "Cygni.Snake.Client": ""
     },
 
     "frameworks": {
-        "dnxcore50": { }
+        "dnx452": { }
     },
 
     "commands": {

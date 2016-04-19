@@ -1,5 +1,4 @@
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace Cygni.Snake.Client.Tests
@@ -8,7 +7,7 @@ namespace Cygni.Snake.Client.Tests
     {
         private static Stream GetResourceStream(string file)
         {
-            var assembly = typeof(TestResources).GetTypeInfo().Assembly;
+            var assembly = typeof(TestResources).Assembly;
             return assembly.GetManifestResourceStream($"Cygni.Snake.Client.Tests.compiler.resources.{file}");
         }
 
