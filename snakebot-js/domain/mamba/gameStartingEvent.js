@@ -12,6 +12,18 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
       ', noOfPlayers:' + noOfPlayers + 'width:' + width + ', height:' + height + ', receivingPlayerId:' + receivingPlayerId + '>';
   };
 
+  function getGameId(){
+    return gameId;
+  }
+
+  function getNoOfPlayers(){
+    return noOfPlayers;
+  }
+
+  function getReceivingPlayerId(){
+    return receivingPlayerId;
+  }
+
   var marshall = function(){
     return {
       type : type,
@@ -24,6 +36,9 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
   };
 
   return Object.freeze({
+    getGameId : getGameId,
+    getNoOfPlayers : getNoOfPlayers,
+    getReceivingPlayerId : getReceivingPlayerId,
     marshall : marshall,
     toString : toString,
     type: type

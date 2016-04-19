@@ -23,6 +23,10 @@ function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, color, sett
     return gameId;
   }
 
+  function updateGameId(theGameId){
+    gameId = theGameId;
+  }
+
   function getGameMode(){
     return gameMode;
   }
@@ -47,7 +51,8 @@ function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, color, sett
     getGameMode : getGameMode,
     getPlayerName: getPlayerName,
     getColor: getColor,
-    getGameSettings: getSettings
+    getGameSettings: getSettings,
+    updateGameId: updateGameId
   });
 
 };

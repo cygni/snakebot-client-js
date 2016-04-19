@@ -42,14 +42,18 @@ function handleGameUpdate(mapUpdateEvent){
 
 /**
  * Called when the game ends.
+ * @param exit true if process should exit.
  */
-function endGame(){
+function endGame(exit){
+  var fProcEnd = exit ? function(){process.exit()} : 0;
   snakeBot.gameEnded();
   if(options.renderMode == 'animate'){
-    renderer.render({animate: true, delay: 500, followPid : gameInfo.getPlayerId()}, function(){process.exit()});
+    renderer.render({animate: true, delay: 500, followPid : gameInfo.getPlayerId()}, fProcEnd);
   } else {
-    renderer.render({followPid : gameInfo.getPlayerId()}, function(){process.exit()});
+    renderer.render({followPid : gameInfo.getPlayerId()}, fProcEnd);
   }
+
+
 }
 
 // Mamba client events are handled and responded to below.
@@ -83,13 +87,15 @@ function onEvent(event){
     case 'GAME_ENDED':
       log('Game ended!');
       renderer.record(event.payload);
-      endGame();
+      if(!isTournament()){
+        endGame(true);
+      }
       break;
 
     case 'TOURNAMENT_ENDED':
       log('Tournament ended!');
       renderer.record(event.payload);
-      endGame();
+      endGame(true);
       break;
 
     default:
@@ -113,6 +119,10 @@ function setupSnake(options){
     logError("Could not find or init snake bot script at : "  + options.snakeScript, e);
     throw "SnakeBotError";
   }
+}
+
+function isTournament(){
+  return gameInfo.getGameMode() === 'TOURNAMENT';
 }
 
 /**

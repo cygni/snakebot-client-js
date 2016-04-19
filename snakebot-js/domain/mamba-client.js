@@ -130,6 +130,8 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
   function handleGameStart(data) {
     var gameStart = GameStartingEvent.create(decodeJson(data));
+    // Tournaments game ids are given at start.
+    player.updateGameId(gameStart.getGameId());
     log('Game starting: ' + gameStart.toString());
     nextState();
   }

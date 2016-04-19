@@ -42,9 +42,13 @@ function MapRendererDoT(){
 
   function record(event, debugInfo){
     var gameTick = event.getGameTick();
-    if(event.type === MapUpdateEvent.type || event.type === GameEndedEvent.type || event.type === TournamentEndedEvent.type){
+    if(event.type === MapUpdateEvent.type || event.type === GameEndedEvent.type){
       recordedGameStates[gameTick] = event;
     } else {
+      if(!gameTick){
+        // Some events do not carry game ticks, assume latest tick and state exists.
+        gameTick = Object.keys(recordedGameStates).length - 1;
+      }
       if (!recordedGameEvents[gameTick]) {
         recordedGameEvents[gameTick] = [];
       }
@@ -79,7 +83,7 @@ function MapRendererDoT(){
       updateGameSnakes(tick, gameSnakes, gameState, gameEvents);
       renderGameState(gameState, gameSnakes, debugData);
     }
-    renderEndOfGame(gameSnakes, gameStates[totalTicks - 1]);
+    renderEndOfGame(gameSnakes, gameStates[totalTicks - 1], recordedGameEvents[totalTicks - 1]);
     onComplete ? onComplete() : 0;
   }
 
@@ -141,27 +145,31 @@ function MapRendererDoT(){
     print(gameHeaderTemplate(templateData));
   }
 
-  function renderEndOfGame(gameSnakes, endGameState) {
-    if(endGameState.type === TournamentEndedEvent.type){
-      var templateData = {
-        colors: COLORS,
-        gameId: endGameState.getGameId(),
-        tournamentId: endGameState.getTournamentId(),
-        tournamentName: endGameState.getTournamentName(),
-        results: computeTournamentResults(gameSnakes, endGameState.getPlayerWinnerId(), endGameState.getPoints()),
-        gameSnakes: gameSnakes
-      };
-      print(tournamentResultTemplate(templateData));
-    } else {
-      var templateData = {
-        colors: COLORS,
-        gameId: endGameState.getGameId(),
-        gameSnakes: gameSnakes,
-        results: computeResults(gameSnakes, endGameState.getPlayerWinnerId())
-      };
-      print(gameResultTemplate(templateData));
-    }
+  function renderEndOfGame(gameSnakes, endGameState, events) {
 
+    var templateData = {
+      colors: COLORS,
+      gameId: endGameState.getGameId(),
+      gameSnakes: gameSnakes,
+      results: computeResults(gameSnakes, endGameState.getPlayerWinnerId())
+    };
+    print(gameResultTemplate(templateData));
+
+    if(events){
+      events.forEach(function (event) {
+        if (event.type === TournamentEndedEvent.type) {
+          var templateData = {
+            colors: COLORS,
+            gameId: event.getGameId(),
+            tournamentId: event.getTournamentId(),
+            tournamentName: event.getTournamentName(),
+            results: computeTournamentResults(gameSnakes, event.getPlayerWinnerId(), event.getGameResult()),
+            gameSnakes: gameSnakes
+          };
+          print(tournamentResultTemplate(templateData));
+        }
+      })
+    };
   }
 
   function initGameSnakes(mapState, followPlayerId){
@@ -219,12 +227,12 @@ function MapRendererDoT(){
     };
   }
 
-  function computeTournamentResults(gameSnakes, winnerPlayerId, points){
+  function computeTournamentResults(gameSnakes, winnerPlayerId, gameResults){
     var points = [];
-    for (var point in points) {
-      var snake = gameSnakes[point.playerId];
-      points.push({name: snake.getName(), points: point.points});
-    }
+    gameResults.forEach(function(result){
+      var snake = gameSnakes[result.playerId];
+      points.push({name: snake.name, points: result.points});
+    });
     return {
       points: points,
       winnerByPoints: gameSnakes[winnerPlayerId]

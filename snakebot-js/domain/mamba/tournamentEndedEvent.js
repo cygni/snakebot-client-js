@@ -6,6 +6,7 @@ function TournamentEndedEvent(playerWinnerId, gameId, gameResult, tournamentName
   var gameResult      = gameResult;
   var tournamentName  = tournamentName;
   var tournamentId    = tournamentId;
+  var gameTick        = null; // This event lacks the game tick.
 
   var toString = function () {
     return '<Type:' + type + ', playerWinnerId:' + playerWinnerId +
@@ -46,9 +47,10 @@ function TournamentEndedEvent(playerWinnerId, gameId, gameResult, tournamentName
   return Object.freeze({
     getPlayerWinnerId: getPlayerWinnerId,
     getGameId: getGameId,
-    getGameTick: getGameResult,
+    getGameResult: getGameResult,
     getTournamentName: getTournamentName,
     getTournamentId: getTournamentId,
+    getGameTick: function(){return null;},
     marshall: marshall,
     toString: toString,
     type: type
