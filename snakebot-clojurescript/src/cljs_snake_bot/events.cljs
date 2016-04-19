@@ -8,30 +8,27 @@
 (defn on-player-registered [msg]
   (s/state-set-many {:player-name (:name msg)
                      :player-id (:receivingPlayerId msg)
-                     :player-color (:color msg)
-                     :is-playing true})
+                     :game-id (:gameId msg)
+                     :player-color (:color msg)})
   (if (= "training" s/game-mode)
-      (msgs/get-start-game-message (s/state-get :player-id))
+      (msgs/get-start-game-message)
       nil))
 
 
 (defn on-map-updated [msg]
   (s/state-set :game-tick (:gameTick msg))
-  (msgs/get-move-message (s/state-get :player-id) (s/state-get :game-tick) (es/get-next-movement msg)))
+  (msgs/get-move-message (es/get-next-movement msg)))
 
 (defn on-game-ended [msg]
-  (s/state-set :game-running false?)
   nil)
 
 (defn on-snake-died [msg]
-  (s/state-set :is-playing false?)
   nil)
 
 (defn on-game-starting [msg]
   (s/state-set-many {:number-of-players (:noofPlayers msg)
                      :game-height (:height msg)
                      :game-width (:width msg)
-                     :game-running true
                      :game-tick -1})
   nil)
 

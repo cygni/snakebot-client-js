@@ -1,8 +1,7 @@
 {
-  "name": "mamba-client",
-  "version": "0.2.1",
+  "name": "snake-cli",
+  "version": "0.1.0",
   "description": "Another snake client",
-  "main": "bundle.js",
   "dependencies": {
     "bindings": "^1.2.1",
     "bufferutil": "^1.2.1",

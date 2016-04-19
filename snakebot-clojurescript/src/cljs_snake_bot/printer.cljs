@@ -105,9 +105,15 @@
     (println "\ngame tick: " (:gameTick msg))
     (print-pretty-map (:map msg))))
 
+(defn print [msg]
+  (swap! messages conj msg))
+
+(defn print-user-message [& msgs]
+  (print {:type "user" :content (apply str msgs)}))
+
 (defn renderer []
   (go-loop []
-      (async/<! (async/timeout 100))
+      (when (empty @messages) (async/<! (async/timeout 100)))
       (let [msg (first @messages)]
        (swap! messages #(into [] (rest %)))
        (when msg
@@ -117,7 +123,10 @@
             c/map-updated-message (print-map-updated-message (msg-utils/setup-map-message msg))
             c/snake-died-message (print-snake-died-message msg)
             c/game-starting-message (print-game-starting-message msg)
-            c/invalid-player-name-message (print-invalid-player-name-message msg))))
-      (if (or (s/state-get :game-running)
+            c/invalid-player-name-message (print-invalid-player-name-message msg)
+            c/heart-beat-response (println "heart beat message received")
+            c/invalid-message (println "Invalid message: " msg)
+            "user" (println (:content msg)))))
+      (if (or (s/state-get :socket-open)
               (> (count @messages) 0))
         (recur))))

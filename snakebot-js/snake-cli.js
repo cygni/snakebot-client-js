@@ -66,7 +66,6 @@ function onEvent(event){
       log('Ready to play!');
       gameInfo = event.payload;
       renderer = MapRenderer(gameInfo.getGameSettings().getWidth(), gameInfo.getGameSettings().getHeight());
-      client.sendClientInfo();
       client.startGame();
       break;
 
@@ -83,6 +82,12 @@ function onEvent(event){
 
     case 'GAME_ENDED':
       log('Game ended!');
+      renderer.record(event.payload);
+      endGame();
+      break;
+
+    case 'TOURNAMENT_ENDED':
+      log('Tournament ended!');
       renderer.record(event.payload);
       endGame();
       break;

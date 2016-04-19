@@ -2,35 +2,37 @@
  * The MapRenderer records and prints game information to the terminal, using DoT templates.
  */
 
-var MapUtils            = require('./mapUtils.js');
-var MapUpdateEvent      = require('./mamba/mapUpdateEvent.js');
-var GameEndedEvent      = require('./mamba/gameEndedEvent.js');
-var SnakeDeadEvent      = require('./mamba/snakeDeadEvent.js');
-var gameHeaderTemplate  = require('./templates/gameheader');
-var gameStateTemplate   = require('./templates/gamestate');
-var gameResultTemplate  = require('./templates/gameresult');
-var rl                  = require('readline');
+var MapUtils                  = require('./mapUtils.js');
+var MapUpdateEvent            = require('./mamba/mapUpdateEvent.js');
+var GameEndedEvent            = require('./mamba/gameEndedEvent.js');
+var TournamentEndedEvent      = require('./mamba/tournamentEndedEvent.js');
+var SnakeDeadEvent            = require('./mamba/snakeDeadEvent.js');
+var gameHeaderTemplate        = require('./templates/gameheader');
+var gameStateTemplate         = require('./templates/gamestate');
+var gameResultTemplate        = require('./templates/gameresult');
+var tournamentResultTemplate  = require('./templates/tournamentresult');
+var rl                        = require('readline');
 
 function MapRendererDoT(){
 
   var COLORS = {
-    green: '\x1b[1m\x1b[33m',
-    yellow : '\x1b[1m\x1b[32m',
-    blue: '\x1b[1m\x1b[34m',
-    magenta: '\x1b[1m\x1b[35m',
-    cyan: '\x1b[1m\x1b[36m',
-    red: '\x1b[1m\x1b[31m',
-    green2: '\x1b[2m\x1b[33m',
-    yellow2: '\x1b[2m\x1b[32m',
-    blue2: '\x1b[2m\x1b[34m',
+    green:    '\x1b[1m\x1b[33m',
+    yellow:   '\x1b[1m\x1b[32m',
+    blue:     '\x1b[1m\x1b[34m',
+    magenta:  '\x1b[1m\x1b[35m',
+    cyan:     '\x1b[1m\x1b[36m',
+    red:      '\x1b[1m\x1b[31m',
+    green2:   '\x1b[2m\x1b[33m',
+    yellow2:  '\x1b[2m\x1b[32m',
+    blue2:    '\x1b[2m\x1b[34m',
     magenta2: '\x1b[2m\x1b[35m',
-    cyan2: '\x1b[2m\x1b[36m',
-    red2: '\x1b[2m\x1b[31m',
-    white: '\x1b[37m',
-    bgred: '\x1b[41m',
-    bgwhite: '\x1b[47m',
-    bold: '\x1b[1m',
-    reset: '\x1b[0m'
+    cyan2:    '\x1b[2m\x1b[36m',
+    red2:     '\x1b[2m\x1b[31m',
+    white:    '\x1b[37m',
+    bgred:    '\x1b[41m',
+    bgwhite:  '\x1b[47m',
+    bold:     '\x1b[1m',
+    reset:    '\x1b[0m'
   };
   var COLORS_KEYS         = Object.keys(COLORS);
   var NEW_LINE            = '\n';
@@ -40,7 +42,7 @@ function MapRendererDoT(){
 
   function record(event, debugInfo){
     var gameTick = event.getGameTick();
-    if(event.type === MapUpdateEvent.type || event.type === GameEndedEvent.type){
+    if(event.type === MapUpdateEvent.type || event.type === GameEndedEvent.type || event.type === TournamentEndedEvent.type){
       recordedGameStates[gameTick] = event;
     } else {
       if (!recordedGameEvents[gameTick]) {
@@ -118,7 +120,7 @@ function MapRendererDoT(){
     var width = gameState.getMap().getWidth();
     var renderedGameMap = renderMap(gameState, gameSnakes, height, width).join('');
     var executionTime = debugData ? debugData.executionTime : 'n/a';
-    debugData ? delete debugData[executionTime] : 0;
+    debugData ? delete debugData.executionTime : 0;
     var templateData = {
       colors: COLORS,
       gameId: gameId,
@@ -140,14 +142,26 @@ function MapRendererDoT(){
   }
 
   function renderEndOfGame(gameSnakes, endGameState) {
-    var results = computeResults(gameSnakes, endGameState.getPlayerWinnerId());
-    var templateData = {
-      colors: COLORS,
-      gameId: endGameState.getGameId(),
-      gameSnakes: gameSnakes,
-      results: results
-    };
-    print(gameResultTemplate(templateData));
+    if(endGameState.type === TournamentEndedEvent.type){
+      var templateData = {
+        colors: COLORS,
+        gameId: endGameState.getGameId(),
+        tournamentId: endGameState.getTournamentId(),
+        tournamentName: endGameState.getTournamentName(),
+        results: computeTournamentResults(gameSnakes, endGameState.getPlayerWinnerId(), endGameState.getPoints()),
+        gameSnakes: gameSnakes
+      };
+      print(tournamentResultTemplate(templateData));
+    } else {
+      var templateData = {
+        colors: COLORS,
+        gameId: endGameState.getGameId(),
+        gameSnakes: gameSnakes,
+        results: computeResults(gameSnakes, endGameState.getPlayerWinnerId())
+      };
+      print(gameResultTemplate(templateData));
+    }
+
   }
 
   function initGameSnakes(mapState, followPlayerId){
@@ -201,6 +215,18 @@ function MapRendererDoT(){
     return {
       livingSnakesByPoints: livingSnakes,
       deadSnakesByTick: deadSnakes,
+      winnerByPoints: gameSnakes[winnerPlayerId]
+    };
+  }
+
+  function computeTournamentResults(gameSnakes, winnerPlayerId, points){
+    var points = [];
+    for (var point in points) {
+      var snake = gameSnakes[point.playerId];
+      points.push({name: snake.getName(), points: point.points});
+    }
+    return {
+      points: points,
       winnerByPoints: gameSnakes[winnerPlayerId]
     };
   }

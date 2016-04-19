@@ -79,7 +79,7 @@ Here is where you will include your snake. Update the final line of "on-map-upda
   (defn on-map-updated [msg]
     (p/print-map-updated-message msg)
     (s/state-set :game-tick (:gameTick msg))
-    (msgs/get-move-message (s/state-get :player-id) (s/state-get :game-tick) (ss/get-next-movement msg)))
+    (msgs/get-move-message (ss/get-next-movement msg)))
 
 ```
 And now your snake should start moving upwards instead.
@@ -95,6 +95,11 @@ To see how NodeJs dependencies are used. Look at the core.cljs file.
 
 There is a small utils library included that provides some basic helper functions. Documentation for the functions are found within the utils.cljs file.
 
+## Printing
+
+The console printer within this snake bot client is an asynchronous one. So to get the messages printed in the right order please use the supplied printing library.
+
+To print a user message just call the method print-user-message with all the text pieces that you want to print. It works the same way as println.
 
 ## Tests
 
@@ -106,5 +111,6 @@ To run these tests do the following:
 3. lein deps
 4. lein doo slimer test
 
+One thing worth to note is that the unit test will not run with the help of line doo if there are prints within the code. So either, just use lein doo as a compiler and run the output file with node, or just comment out the lines that are printing when you are writing/running your tests.
 
 You have now the ability to be one of the cool kids. Yay you!
