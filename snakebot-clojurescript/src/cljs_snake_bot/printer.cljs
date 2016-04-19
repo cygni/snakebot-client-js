@@ -127,6 +127,6 @@
             c/heart-beat-response (println "heart beat message received")
             c/invalid-message (println "Invalid message: " msg)
             "user" (println (:content msg)))))
-      (if (or (s/state-get :game-running)
+      (if (or (s/state-get :socket-open)
               (> (count @messages) 0))
         (recur))))

@@ -19,15 +19,13 @@
   (str (.platform os) " - " (.release os)))
 
 (defn get-start-game-message []
-  {:type c/start-game-message
-   :receivingPlayerId (s/state-get :player-id)})
+  {:type c/start-game-message})
 
 (defn get-move-message [direction]
   {:type c/register-move-message
    :direction (if (nil? direction) "DOWN" direction)
    :gameId (s/state-get :game-id)
-   :gameTick (s/state-get :game-tick)
-   :receivingPlayerId (s/state-get :player-id)})
+   :gameTick (s/state-get :game-tick)})
 
 
 (defn get-player-registration-message [name]
