@@ -7,8 +7,6 @@
 
 (defn on-player-registered [msg]
   (s/state-set-many {:player-name (:name msg)
-                     :player-id (:receivingPlayerId msg)
-                     :game-id (:gameId msg)
                      :player-color (:color msg)})
   (if (= "training" s/game-mode)
       (msgs/get-start-game-message)
@@ -16,8 +14,7 @@
 
 
 (defn on-map-updated [msg]
-  (s/state-set :game-tick (:gameTick msg))
-  (msgs/get-move-message (es/get-next-movement msg)))
+  (msgs/get-move-message (es/get-next-movement msg) (:gameId msg) (:gameTick msg)))
 
 (defn on-game-ended [msg]
   nil)
@@ -28,8 +25,7 @@
 (defn on-game-starting [msg]
   (s/state-set-many {:number-of-players (:noofPlayers msg)
                      :game-height (:height msg)
-                     :game-width (:width msg)
-                     :game-tick -1})
+                     :game-width (:width msg)})
   nil)
 
 (defn on-invalid-player-name [msg]

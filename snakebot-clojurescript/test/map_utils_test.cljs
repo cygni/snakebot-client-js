@@ -86,3 +86,7 @@
 (deftest manhattan-distance-returns-correct-distance
   (is (= 5 (mu/manhattan-distance 0 1 4 2)))
   (is (= 5 (mu/manhattan-distance {:x 0 :y 1} {:x 4 :y 2}))))
+
+(deftest get-ordered-content-positions-returns-correct-order
+  (is (= [{:x 1 :y 1} {:x 2 :y 1} {:x 1 :y 2} {:x 2 :y 2} {:x 1 :y 3}]
+         (mu/get-ordered-content-positions {:foodPositions [ {:x 1 :y 3} {:x 1 :y 1} {:x 1 :y 2} {:x 2 :y 2} {:x 2 :y 1} ] :width 15 :height 15}))))

@@ -1,12 +1,13 @@
 (ns cljs-snake-bot.messages
   (:require [cljs-snake-bot.constants :as c]
             [cljs-snake-bot.settings :as s]
-            [cljs.nodejs :as nodejs]))
+            [cljs.nodejs :as nodejs])
+  (:use     [cljs-snake-bot.helpers :only [find-first]]))
 
 (def os (nodejs/require "os"))
 
 (defn get-ipv4 [addresses]
-  (:address (some #(when (= (:family %) "IPv4") %) addresses)))
+  (:address (find-first #(= (:family %) "IPv4") addresses)))
 
 (defn get-ip []
   (let [interfaces (js->clj (.networkInterfaces os) :keywordize-keys true)
@@ -21,11 +22,11 @@
 (defn get-start-game-message []
   {:type c/start-game-message})
 
-(defn get-move-message [direction]
+(defn get-move-message [direction gameId tick]
   {:type c/register-move-message
    :direction (if (nil? direction) "DOWN" direction)
-   :gameId (s/state-get :game-id)
-   :gameTick (s/state-get :game-tick)})
+   :gameId gameId
+   :gameTick tick})
 
 
 (defn get-player-registration-message [name]

@@ -3,12 +3,10 @@
 (def game-state (atom
                  {:player-name ""
                   :player-color ""
-                  :game-id ""
                   :game-height 0
                   :game-width 0
                   :number-of-players 0
-                  :socket-open false
-                  :game-tick 0}))
+                  :socket-open false}))
 
 (def client-version "0.0.1")
 

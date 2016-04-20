@@ -1,6 +1,5 @@
-(ns cljs-snake-bot.utils.map-utils)
-
-(def reference-map (atom {}))
+(ns cljs-snake-bot.utils.map-utils
+  (:use [cljs-snake-bot.helpers :only [find-first]]))
 
 (def action-templates
   {:RIGHT {:x 1 :y 0}
@@ -39,35 +38,26 @@
 (defn inside-of-map [{x :x y :y} map]
   (and (>= x 0) (< x (:width map)) (>= y 0) (< y (:height map))))
 
-(defn create-content-map [width height positions]
- (let [absolute-positions (into #{} (mapv #(translate-position % width) positions))]
-   (map-indexed #(contains? absolute-positions %) (repeat (* width height) false))))
+  (defn get-content-positions [map]
+    (apply concat
+      (:foodPositions map)
+      (:obstaclePositions map)
+      (mapv :positions (:snakeInfos map))))
 
-(defn setup-map-buffer! [map]
-  (when (not= (:worldTick @reference-map)
-              (:worldTick map))
-    (let [positions (apply concat
-                      (:foodPositions map)
-                      (:obstaclePositions map)
-                      (mapv :positions (:snakeInfos map)))
-          content-map (into [] (create-content-map (:width map) (:height map) positions))]
-      (reset! reference-map (assoc map :content-reference content-map)))))
+(defn get-ordered-content-positions [map]
+  (sort-by #(translate-position % (:width map)) (get-content-positions map)))
 
 (defn content-at [point map]
-  (setup-map-buffer! map)
   (when (inside-of-map point map)
-    (case (get (:content-reference @reference-map) (translate-position point (:width map)))
-      true (let [sp (snake-contains-point point (:snakeInfos map))]
+      (let [sp (snake-contains-point point (:snakeInfos map))]
              (cond
                (some? sp) sp
                (contains-point point (:foodPositions map)) (assoc point :content "food")
                (contains-point point (:obstaclePositions map)) (assoc point :content "obstacle")
-               :else (assoc point :content "empty")))
-      false (assoc point :content "empty")
-      :else nil)))
+               :else (assoc point :content "empty")))))
 
 (defn get-head-of-snake [id snake-infos]
-  (let [snake (some #(when (= (:id %) id) %) snake-infos)]
+  (let [snake (find-first #(= (:id %) id) snake-infos)]
     (first (:positions snake))))
 
 ;Function used to evaluate the result of an action
