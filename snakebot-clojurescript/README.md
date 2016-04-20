@@ -53,8 +53,7 @@ Here is where you will include your snake. Update the final line of "on-map-upda
 ```clojure
 (defn on-map-updated [msg]
   (p/print-map-updated-message msg)
-  (s/state-set :game-tick (:gameTick msg))
-  (msgs/get-move-message (s/state-get :player-id) (s/state-get :game-tick) "DOWN")) // Change "DOWN" into something else
+  (msgs/get-move-message "DOWN" (:gameId msg) (:gameTick msg))) // Change "DOWN" into something else
 ```
 
   I would place my snake in its own namespace. Require that namespace into this file and call some get-move function that returns your next move. An example can be found below
@@ -78,8 +77,7 @@ Here is where you will include your snake. Update the final line of "on-map-upda
 
   (defn on-map-updated [msg]
     (p/print-map-updated-message msg)
-    (s/state-set :game-tick (:gameTick msg))
-    (msgs/get-move-message (ss/get-next-movement msg)))
+    (msgs/get-move-message (ss/get-next-movement msg) (:gameId msg) (:gameTick msg)))
 
 ```
 And now your snake should start moving upwards instead.

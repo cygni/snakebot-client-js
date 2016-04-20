@@ -6,14 +6,10 @@
     "projectUrl": "",
     "licenseUrl": "",
   "dependencies": {
-    "Microsoft.CSharp": "4.0.1-beta-*",
-    "Newtonsoft.Json": "8.0.2",
-    "System.Console": "4.0.0-beta-*",
-    "System.Net.WebSockets": "4.0.0-beta-*",
-    "System.Net.WebSockets.Client": "4.0.0-beta-*",
+    "Newtonsoft.Json": "8.0.2"
   },
 
-    "frameworks": {
-        "dnxcore50": { }
-    }
+  "frameworks": {
+    "dnx452": { }
+  }
 }

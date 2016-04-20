@@ -6,7 +6,8 @@
               [cljs.core.async :as async :refer [<! timeout]]
               [cljs-snake-bot.utils.map-utils :as mu]
               [cljs-snake-bot.utils.message-utils :as msg-utils]
-              [goog.Timer :as timer]))
+              [goog.Timer :as timer])
+    (:use     [cljs-snake-bot.helpers :only [find-first]]))
 
 (def colors (nodejs/require "colors"))
 
@@ -19,7 +20,7 @@
    color))
 
 (defn get-color [id]
-  (let [c (some #(when (= (:id %) id) (:color %)) @snake-colors)]
+  (let [c (:color (find-first #(= (:id %) id) @snake-colors))]
     (if (some? c)
       c
       (do (swap! snake-colors conj {:id id :color (get-next-color)})
@@ -50,15 +51,12 @@
   (colors.stylize (str (:name snake) (if (not (:alive snake)) "- [RIP]" "") "-" (:points snake) "pts" "-" (:id snake)) (get-color (:id snake))))
 
 (defn print-pretty-map [map]
-  (let [startTime (goog.now)
-        snakeInfos (:snakeInfos map)]
    (doseq [y (range (:height map))]
      (println (mapv #(let [tile (mu/content-at {:x % :y y} map)
                            formatted (format-tile tile)
                            color (get-tile-color tile)]
                        (colors.stylize formatted color)) (range (:width map)))
-              (if (< y (count snakeInfos)) (get-printable-snake-info (get snakeInfos y)) "")))
-    (println "t: " (- (goog.now) startTime))))
+              (if (< y (count (:snakeInfos map))) (get-printable-snake-info (get (:snakeInfos map) y)) ""))))
 
 (defn print-registration-message [msg]
  (when (:pretty-print-player-registration s/printer-settings)
@@ -113,7 +111,7 @@
 
 (defn renderer []
   (go-loop []
-      (when (empty @messages) (async/<! (async/timeout 100)))
+      (when (empty @messages) (async/<! (async/timeout 10)))
       (let [msg (first @messages)]
        (swap! messages #(into [] (rest %)))
        (when msg

@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -11,7 +15,7 @@ namespace Cygni.Snake.Client
     /// <summary>
     /// Provides a way to communicate with a CygniSnake server.
     /// </summary>
-    public class SnakeClient
+    public sealed class SnakeClient : IDisposable
     {
         private readonly WebSocket _socket;
         private readonly IGameObserver _observer;
@@ -27,7 +31,7 @@ namespace Cygni.Snake.Client
         /// </summary>
         /// <param name="socket">The specified <see cref="WebSocket"/> instance.</param>
         /// <param name="observer">The specified <see cref="IGameObserver"/> instance.</param>
-        public SnakeClient(WebSocket socket, IGameObserver observer)
+        public SnakeClient(WebSocket socket, IGameObserver observer) 
         {
             if (socket == null)
             {
@@ -93,24 +97,15 @@ namespace Cygni.Snake.Client
             {
                 throw new ArgumentNullException(nameof(snake));
             }
-            var state = _socket.State;
-            if (state != WebSocketState.Open)
+
+            if (_socket.State != WebSocketState.Open)
             {
                 throw new InvalidOperationException("Cannot start a new game without connecting the Snake server. " +
-                                                    $"The current state of the connection is {state}.");
+                                                    $"The current state of the connection is { _socket.State}.");
             }
 
             SendRegisterPlayerRequest(snake.Name, settings);
             SendClientInfoMessage();
-
-            Task.Run(() =>
-            {
-                while (_socket.State == WebSocketState.Open)
-                {
-                    SendPingMessage();
-                    Task.Delay(TimeSpan.FromSeconds(30)).Wait();
-                }
-            });
 
             while (_socket.State == WebSocketState.Open)
             {
@@ -217,7 +212,7 @@ namespace Cygni.Snake.Client
             {
                 ["type"] = MessageType.StartGame
             };
-            SendString(JsonConvert.SerializeObject(msg));
+            SendString(JsonConvert.SerializeObject(msg), _socket);
         }
 
         private void SendRegisterPlayerRequest(string playerName, GameSettings settings)
@@ -231,7 +226,7 @@ namespace Cygni.Snake.Client
             {
                 msg["gameSettings"] = JObject.FromObject(settings);
             }
-            SendString(JsonConvert.SerializeObject(msg));
+            SendString(JsonConvert.SerializeObject(msg), _socket);
         }
 
         private void SendRegisterMoveRequest(Direction direction, long gameTick, string gameId)
@@ -243,7 +238,17 @@ namespace Cygni.Snake.Client
                 ["gameTick"] = gameTick,
                 ["gameId"] = gameId
             };
-            SendString(JsonConvert.SerializeObject(msg));
+            SendString(JsonConvert.SerializeObject(msg), _socket);
+        }
+
+        private static string GetLocalIpAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork))
+            {
+                return ip.ToString();
+            }
+            throw new Exception("Local IP Address Not Found!");
         }
 
         private void SendClientInfoMessage()
@@ -252,26 +257,21 @@ namespace Cygni.Snake.Client
             {
                 ["type"] = MessageType.ClientInfo,
                 ["language"] = "C#",
-                ["operatingSystem"] = "Windows",
-                ["ipAddress"] = "",
+                ["operatingSystem"] = Environment.OSVersion.VersionString,
+                ["ipAddress"] = GetLocalIpAddress(),
                 ["clientVersion"] = ClientVersion
             };
-            SendString(JsonConvert.SerializeObject(msg));
+            SendString(JsonConvert.SerializeObject(msg), _socket);
         }
-
-        private void SendPingMessage()
-        {
-            var msg = new JObject
-            {
-                ["type"] = MessageType.HeartBeatRequest
-            };
-            SendString(JsonConvert.SerializeObject(msg));
-        }
-
-        private void SendString(string msg)
+        
+        private static void SendString(string msg, WebSocket ws)
         {
             var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
-            _socket.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+
+            lock(ws)
+            {
+                ws.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
+            }
         }
 
         private class VoidObserver : IGameObserver
@@ -280,6 +280,34 @@ namespace Cygni.Snake.Client
             public void OnGameStart() { }
             public void OnGameEnd(Map map) { }
             public void OnUpdate(Map map) { }
+        }
+
+        public void Dispose()
+        {
+            _socket?.Dispose();
+            GC.SuppressFinalize(this);
+        }
+        
+        public static SnakeClient CreateSnakeClient(Uri uri, IGameObserver observer)
+        {
+            var ws = new ClientWebSocket();
+            ws.ConnectAsync(uri, CancellationToken.None).Wait();
+
+            new TaskFactory().StartNew(() =>
+            {
+                while (ws.State == WebSocketState.Open)
+                {
+                    var msg = new JObject
+                    {
+                        ["type"] = MessageType.HeartBeatRequest
+                    };
+                    SendString(JsonConvert.SerializeObject(msg), ws);
+
+                    Task.Delay(TimeSpan.FromSeconds(30)).Wait();
+                }
+            });
+
+            return new SnakeClient(ws, observer);
         }
     }
 }

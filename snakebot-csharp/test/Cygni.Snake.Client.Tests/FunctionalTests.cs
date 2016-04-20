@@ -25,9 +25,8 @@ namespace Cygni.Snake.Client.Tests
             // Assert correct sequence of messages back to the socket.
             Assert.Equal(MessageType.RegisterPlayer, (string)socket.OutgoingJson[0]["type"]);
             Assert.Equal(MessageType.ClientInfo, (string)socket.OutgoingJson[1]["type"]);
-            Assert.Equal(MessageType.HeartBeatRequest, (string)socket.OutgoingJson[2]["type"]);
-            Assert.Equal(MessageType.StartGame, (string)socket.OutgoingJson[3]["type"]);
-            Assert.Equal(MessageType.RegisterMove, (string)socket.OutgoingJson[4]["type"]);
+            Assert.Equal(MessageType.StartGame, (string)socket.OutgoingJson[2]["type"]);
+            Assert.Equal(MessageType.RegisterMove, (string)socket.OutgoingJson[3]["type"]);
         }
 
         [Fact]
@@ -47,8 +46,7 @@ namespace Cygni.Snake.Client.Tests
             // Assert correct sequence of messages back to the socket.
             Assert.Equal(MessageType.RegisterPlayer, (string)socket.OutgoingJson[0]["type"]);
             Assert.Equal(MessageType.ClientInfo, (string)socket.OutgoingJson[1]["type"]);
-            Assert.Equal(MessageType.HeartBeatRequest, (string)socket.OutgoingJson[2]["type"]);
-            Assert.Equal(MessageType.RegisterMove, (string)socket.OutgoingJson[3]["type"]);
+            Assert.Equal(MessageType.RegisterMove, (string)socket.OutgoingJson[2]["type"]);
         }
     }
 }

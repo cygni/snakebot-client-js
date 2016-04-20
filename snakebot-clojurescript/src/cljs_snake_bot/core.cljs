@@ -19,20 +19,16 @@
 (defn json-parse [j]
   (js->clj (JSON/parse j) :keywordize-keys true))
 
-(defn clean-up[]
-  (.close socket))
-
 (defn setup-listener []
     (.on socket "message"
-         (fn [msg] (let [response (mh/get-response-message (json-parse msg))]
-                   (when (some? response) (.send socket (json-str response)))))))
+         #(let [response (mh/get-response-message (json-parse %))]
+            (when (some? response) (.send socket (json-str response))))))
 
 (defn setup-server-ping []
  (go-loop []
    (.send socket (json-str (m/get-ping-message)))
    (async/<! (async/timeout 30000))
-   (if (s/state-get :socket-open)
-     (recur))))
+   (when (s/state-get :socket-open) (recur))))
 
 (defn setup-socket []
   (.on socket "open"
@@ -47,7 +43,6 @@
        #(s/state-set :socket-open false)))
 
 (defn -main []
-  (println "Booting up")
   (setup-socket))
 
 (set! *main-cli-fn* -main)
