@@ -102,17 +102,16 @@ namespace Cygni.Snake.Client
             return GetResultOfDirection(playerId, dir).Equals(DirectionalResult.Death) == false;
         }
 
-        public static Map FromJson(string json)
+        public static Map FromJson(string json, string playerId)
         {
-            return FromJson(JObject.Parse(json));
+            return FromJson(JObject.Parse(json), playerId);
         }
 
-        public static Map FromJson(JObject json)
+        public static Map FromJson(JObject json, string playerId)
         {
             int width = (int)json["width"];
             int height = (int)json["height"];
-            int tick = (int)json["worldTick"];
-            string myId = (string) json["receivingPlayerId"];
+            int tick = (int)json["worldTick"];            
 
             var snakes = json["snakeInfos"].Select(token =>
             {
@@ -123,7 +122,7 @@ namespace Cygni.Snake.Client
                 return new SnakePlayer(id, name, points, positions);
             }).ToList();
 
-            var mySnake = snakes.FirstOrDefault(s => s.Id.Equals(myId));
+            var mySnake = snakes.FirstOrDefault(s => s.Id.Equals(playerId));
 
             var foods = json["foodPositions"].Select(i => MapCoordinate.FromIndex((int) i, width));
             var obstacles = json["obstaclePositions"].Select(i => MapCoordinate.FromIndex((int) i, width));

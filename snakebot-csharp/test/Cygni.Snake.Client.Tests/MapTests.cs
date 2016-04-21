@@ -49,7 +49,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var map = Map.FromJson(json);
+            var map = Map.FromJson(json,"id_python");
 
             Assert.Equal(2, map.Snakes.Count);
         }
@@ -59,7 +59,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var map = Map.FromJson(json);
+            var map = Map.FromJson(json,"id_python");
 
             Assert.Equal(2, map.Snakes[0].Positions.Count);
             Assert.Equal(1, map.Snakes[0].Positions[0].X);
@@ -79,7 +79,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var map = Map.FromJson(json);
+            var map = Map.FromJson(json,"id_python");
             
             Assert.Equal("id_python", map.MySnake.Id);
         }
