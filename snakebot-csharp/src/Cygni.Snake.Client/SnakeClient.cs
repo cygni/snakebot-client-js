@@ -194,13 +194,13 @@ namespace Cygni.Snake.Client
 
         private void OnGameEnded(JObject json)
         {
-            var map = Map.FromJson((JObject)json["map"]);
+            var map = Map.FromJson((JObject)json["map"], (string) json["receivingPlayerId"]);
             _observer.OnGameEnd(map);
         }
 
         private void OnMapUpdated(SnakeBot snake, JObject json)
         {
-            var map = Map.FromJson((JObject)json["map"]);
+            var map = Map.FromJson((JObject)json["map"], (string)json["receivingPlayerId"]);
             _observer.OnUpdate(map);
             var direction = snake.GetNextMove(map);
             SendRegisterMoveRequest(direction, map.Tick, (string)json["gameId"]);
