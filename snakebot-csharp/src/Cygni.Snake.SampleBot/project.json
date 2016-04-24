@@ -7,12 +7,12 @@
     },
 
     "dependencies": {
-      "Newtonsoft.Json": "8.0.2",
-      "Cygni.Snake.Client": ""
+        "Newtonsoft.Json": "8.0.2",
+        "Cygni.Snake.Client": ""
     },
 
     "frameworks": {
-        "dnx452": { }
+        "dnx451": { }
     },
 
     "commands": {

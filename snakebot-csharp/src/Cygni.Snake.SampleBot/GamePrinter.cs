@@ -51,6 +51,12 @@ namespace Cygni.Snake.SampleBot
             {
                 lock (Console.Out)
                 {
+                    foreach (var snake in map.Snakes.OrderByDescending(s => s.Points))
+                    {
+                        Console.ForegroundColor = PlayerColors.GetColor(snake.Id);
+                        string state = snake.IsAlive ? "(alive)" : "(dead)";
+                        Console.WriteLine($"{snake.Name}: {snake.Points} pts {state}");
+                    }
                     PrintMap(map);
                 }
             });
