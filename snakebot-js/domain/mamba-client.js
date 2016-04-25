@@ -22,6 +22,8 @@ function Mamba(host, port, eventListener, verboseLogging) {
     var TournamentEndedEvent = require('./mamba/tournamentEndedEvent.js');
     var SnakeDeadEvent = require('./mamba/snakeDeadEvent.js');
     var MapUpdateEvent = require('./mamba/mapUpdateEvent.js');
+    var HeartBeatRequest = require('./mamba/heartBeatRequest.js');
+    var HeartBeatResponse = require('./mamba/heartBeatResponse.js');
     var RegisterMove = require('./mamba/registerMove.js');
     var ClientInfo = require('./mamba/clientInfo.js');
 
@@ -31,9 +33,12 @@ function Mamba(host, port, eventListener, verboseLogging) {
     var STATE_GAME_READY = 'game_ready';
     var STATE_GAME_STARTED = 'game_started';
 
+    var HEART_BEAT_MS = 20 * 1000;
+
     var decoder = new StringDecoder('utf8');
     var eventBus = EventBus.new();
     var ws = null;
+
     var player = null;
     var currentState = STATE_INIT;
     var lastGameId = null;
@@ -73,16 +78,20 @@ function Mamba(host, port, eventListener, verboseLogging) {
             errorConnect();
         });
 
-        ws.on('message', function (data, flags) {
+        ws.on('message', function (data, buffer) {
+            var json = decodeJson(buffer);
+            if (json.type === HeartBeatResponse.type) {
+              return; // Heart beats kept outside the game logic state machine.
+            }
             switch (getCurrentState()) {
                 case STATE_REGISTER:
-                    handleRegistrationDone(flags);
+                    handleRegistrationDone(json);
                     break;
                 case STATE_GAME_READY:
-                    handleGameStart(flags);
+                    handleGameStart(json);
                     break;
                 case STATE_GAME_STARTED:
-                    handleGameEvent(flags);
+                    handleGameEvent(json);
                     break;
                 default:
                     break;
@@ -95,6 +104,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
     function postConnect() {
         nextState();
         log('Sssss...Connected to Snake Server on' + host + ' [' + port + ']');
+        setInterval(sendHeartBeat, HEART_BEAT_MS);
         eventBus.publish({type: "CONNECTED", payload: null});
     }
 
@@ -118,40 +128,42 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
     function moveSnake(direction, gameTick) {
         checkState(STATE_GAME_STARTED);
-        sendSocket(new RegisterMove(gameTick, direction, player.getPlayerId(), player.getGameId()).marshall());
+        sendSocket(RegisterMove.new(gameTick, direction, player.getPlayerId(), player.getGameId()).marshall());
     }
 
-    function handleRegistrationDone(data) {
-        player = PlayerRegistered.create(decodeJson(data));
+    function sendHeartBeat() {
+      sendSocket(HeartBeatRequest.new(player.getPlayerId()).marshall());
+    }
+
+    function handleRegistrationDone(json) {
+        player = PlayerRegistered.create(json);
         log('Registration complete - ' + player.getPlayerName() + ' (id:' + player.getPlayerId() + ') is now registered on ' + player.getGameId());
         nextState();
         eventBus.publish({type: 'REGISTERED', payload: player});
     }
 
-    function handleGameStart(data) {
-        var gameStart = GameStartingEvent.create(decodeJson(data));
+    function handleGameStart(json) {
+        var gameStart = GameStartingEvent.create(json);
         // Tournaments game ids are given at start.
         player.updateGameId(gameStart.getGameId());
         log('Game starting: ' + gameStart.toString());
         nextState();
     }
 
-    function handleGameEvent(data) {
-        var json = decodeJson(data);
+    function handleGameEvent(json) {
         var event = null;
         if (json.type === MapUpdateEvent.type) {
-            lastGameId = json.gameId;
-            event = {type: 'GAME_MAP_UPDATED', payload: MapUpdateEvent.create(json)};
+          lastGameId = json.gameId;
+          event = {type: 'GAME_MAP_UPDATED', payload: MapUpdateEvent.create(json)};
         } else if (json.type === GameEndedEvent.type) {
-            event = {type: 'GAME_ENDED', payload: GameEndedEvent.create(json)};
+          event = {type: 'GAME_ENDED', payload: GameEndedEvent.create(json)};
         } else if (json.type === TournamentEndedEvent.type) {
-            event = {type: 'TOURNAMENT_ENDED', payload: TournamentEndedEvent.create(json)};
+          event = {type: 'TOURNAMENT_ENDED', payload: TournamentEndedEvent.create(json)};
         } else if (json.type === GameStartingEvent.type) {
-            event = {type: 'GAME_STARTED', payload: GameStartingEvent.create(json)};
-            player.updateGameId(event.payload.getGameId());
-        }
-        else if (json.type === SnakeDeadEvent.type) {
-            event = {type: 'GAME_SNAKE_DEAD', payload: SnakeDeadEvent.create(json)};
+          event = {type: 'NEW_GAME_STARTED', payload: GameStartingEvent.create(json)};
+          player.updateGameId(event.payload.getGameId());
+        } else if (json.type === SnakeDeadEvent.type) {
+          event = {type: 'GAME_SNAKE_DEAD', payload: SnakeDeadEvent.create(json)};
         } else {
             event = {type: 'ERROR', payload: 'Unknown game event'};
         }

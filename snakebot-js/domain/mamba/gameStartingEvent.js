@@ -1,4 +1,4 @@
-function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId) {
+function GameStartingEvent(gameId, noOfPlayers, width, height, receivingPlayerId) {
 
   var type              = 'se.cygni.snake.api.event.GameStartingEvent';
   var gameId            = gameId;
@@ -9,7 +9,7 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
 
   var toString = function(){
     return '<Type:' + type + ', gameId:' + gameId +
-      ', noOfPlayers:' + noOfPlayers + 'width:' + width + ', height:' + height + ', receivingPlayerId:' + receivingPlayerId + '>';
+      ', noOfPlayers:' + noOfPlayers + ', width:' + width + ', height:' + height + ', receivingPlayerId:' + receivingPlayerId + '>';
   };
 
   function getGameId(){
@@ -20,6 +20,14 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
     return noOfPlayers;
   }
 
+  function getWidth(){
+    return width;
+  }
+
+  function getHeight(){
+    return height;
+  }
+
   function getReceivingPlayerId(){
     return receivingPlayerId;
   }
@@ -28,7 +36,7 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
     return {
       type : type,
       gameId : gameId,
-      noofPlayers : noOfPlayers,
+      noofPlayers : noOfPlayers, // sic!
       width : width,
       height : height,
       receivingPlayerId : receivingPlayerId
@@ -39,6 +47,8 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
     getGameId : getGameId,
     getNoOfPlayers : getNoOfPlayers,
     getReceivingPlayerId : getReceivingPlayerId,
+    getWidth : getWidth,
+    getHeight : getHeight,
     marshall : marshall,
     toString : toString,
     type: type
@@ -49,12 +59,11 @@ function GameStartingEvent(gameId, noOfPlayer, width, height, receivingPlayerId)
 function create(data){
   return GameStartingEvent(
     data.gameId,
-    data.noofPlayers,
+    data.noofPlayers, // sic!
     data.width,
     data.height,
     data.receivingPlayerId);
 };
-
 
 exports.new = GameStartingEvent;
 exports.create = create;

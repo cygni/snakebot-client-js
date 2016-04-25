@@ -1,18 +1,17 @@
 var GameSettings = require('./gameSettings.js');
 
-function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, color, settings) {
+function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, settings) {
 
   var type              = 'se.cygni.snake.api.response.PlayerRegisteredEvent';
   var gameId            = gameId;
   var gameMode          = gameMode;
   var receivingPlayerId = receivingPlayerId;
   var playerName        = name;
-  var color             = color;
   var settings          = settings;
 
   var toString = function(){
        return '<Type:' + type + 'gameId:' + gameId + ', gameMode:' + gameMode + ', receivingPlayerId:' + receivingPlayerId
-         + 'playerName:' + playerName + ', color:' + color + ', settings:' + settings +'>';
+         + 'playerName:' + playerName + ', settings:' + settings +'>';
   };
 
   function getReceivingPlayerId(){
@@ -35,10 +34,6 @@ function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, color, sett
     return playerName;
   }
 
-  function getColor(){
-    return color;
-  }
-
   function getSettings(){
     return settings;
   }
@@ -50,7 +45,6 @@ function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, color, sett
     getGameId: getGameId,
     getGameMode : getGameMode,
     getPlayerName: getPlayerName,
-    getColor: getColor,
     getGameSettings: getSettings,
     updateGameId: updateGameId
   });
@@ -63,11 +57,8 @@ function create(data){
     data.gameMode,
     data.receivingPlayerId,
     data.name,
-    data.color,
     GameSettings.create(data.gameSettings));
 };
-
-// Exports
 
 exports.new = PlayerRegistered;
 exports.create = create;

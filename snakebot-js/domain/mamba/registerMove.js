@@ -13,7 +13,7 @@ function RegisterMove(gameTick, direction, playerId, gameId) {
 
   var setPlayerId = function(playerId){
     receivingPlayerId = playerId;
-  }
+  };
 
   var marshall = function(){
     return {
@@ -33,5 +33,5 @@ function RegisterMove(gameTick, direction, playerId, gameId) {
 
 };
 
-module.exports = RegisterMove;
-exports.type   = RegisterMove().type;
+exports.new = RegisterMove;
+exports.type = RegisterMove().type;
