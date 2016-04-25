@@ -84,6 +84,11 @@ function onEvent(event){
       renderer.record(event.payload);
       break;
 
+    case 'GAME_STARTED':
+      log('Game started!');
+      renderer = MapRenderer(gameInfo.getGameSettings().getWidth(), gameInfo.getGameSettings().getHeight());
+      break;
+
     case 'GAME_ENDED':
       log('Game ended!');
       renderer.record(event.payload);
