@@ -15,7 +15,13 @@ namespace Cygni.Snake.Client
     internal class ClientWebSocket
     {
         private const string Magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-        
+
+        /// <summary>
+        /// <remarks>
+        /// Connection code copied and slightly modified from:
+        /// https://github.com/ayende/ravendb/blob/v4.0/src/Raven.Client/Platform/Unix/RavenUnixClientWebSocket.cs
+        /// </remarks>
+        /// </summary>
         public async Task<WebSocket> CreateWebSocket(Uri uri, CancellationToken cancellationToken)
         {
             if (uri.Scheme == "wss")
