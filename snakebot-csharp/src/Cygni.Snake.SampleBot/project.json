@@ -1,21 +1,22 @@
 ﻿{
-    "version": "1.0",
-    "description": "Cygni Snake Sample Bot",
+  "version": "1.0",
+  "description": "Cygni Snake Sample Bot",
 
-    "compilationOptions": {
-        "emitEntryPoint": true
-    },
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
 
-    "dependencies": {
-      "Newtonsoft.Json": "8.0.2",
-      "Cygni.Snake.Client": ""
-    },
-
-    "frameworks": {
-        "dnx452": { }
-    },
-
-    "commands": {
-        "Cygni.Snake.SampleBot": "Cygni.Snake.SampleBot"
+  "dependencies": {
+    "Cygni.Snake.Client": "1.0.0-*",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
     }
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": "dnxcore50"
+    }
+  }
 }
