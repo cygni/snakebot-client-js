@@ -8,7 +8,7 @@ namespace Cygni.Snake.Client.Tests
     {
         private static Stream GetResourceStream(string file)
         {
-            var assembly = Assembly.GetEntryAssembly();
+            var assembly = typeof(TestResources).GetTypeInfo().Assembly;
             return assembly.GetManifestResourceStream($"Cygni.Snake.Client.Tests.compiler.resources.{file}");
         }
 
