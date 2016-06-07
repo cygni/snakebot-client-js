@@ -2,6 +2,8 @@
 //inbound messages
 pub const GAME_ENDED: &'static str =
     "se.cygni.snake.api.event.GameEndedEvent";
+pub const TOURNAMENT_ENDED: &'static str =
+    "se.cygni.snake.api.event.TournamentEndedEvent";
 pub const MAP_UPDATE: &'static str =
     "se.cygni.snake.api.event.MapUpdateEvent";
 pub const SNAKE_DEAD: &'static str =
@@ -12,17 +14,18 @@ pub const PLAYER_REGISTERED: &'static str =
     "se.cygni.snake.api.response.PlayerRegistered";
 pub const INVALID_PLAYER_NAME: &'static str =
     "se.cygni.snake.api.exception.InvalidPlayerName";
-pub const HEART_BEAT_REQUEST: &'static str =
-    "se.cygni.snake.api.request.HeartBeatRequest";
+pub const HEART_BEAT_RESPONSE: &'static str =
+    "se.cygni.snake.api.request.HeartBeatResponse";
 
 //outbound messages
 pub const REGISTER_PLAYER_MESSAGE_TYPE: &'static str =
     "se.cygni.snake.api.request.RegisterPlayer";
-pub const START_GAME: &'static str = "se.cygni.snake.api.request.StartGame";
+pub const START_GAME: &'static str =
+    "se.cygni.snake.api.request.StartGame";
 pub const REGISTER_MOVE: &'static str =
     "se.cygni.snake.api.request.RegisterMove";
-pub const HEART_BEAT_RESPONSE: &'static str =
-    "se.cygni.snake.api.request.HeartBeatResponse";
+pub const HEART_BEAT_REQUEST: &'static str =
+    "se.cygni.snake.api.request.HeartBeatRequest";
 
 // Outbound messages
 #[derive(Serialize, Deserialize, Debug)]
@@ -151,6 +154,18 @@ pub struct HeartBeatResponse {
     #[serde(rename="type")]
     pub type_: String,
     pub receivingPlayerId: Option<String>
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TournamentEnded {
+    #[serde(rename="type")]
+    pub type_: String,
+    pub playerWinnerId: String,
+    pub gameId: String,
+    pub gameResult: String,
+    pub tournamentName: String,
+    pub tournamentId: String,
+    pub gameTick: Option<i32>
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -3,8 +3,13 @@ use maputil::{ Direction };
 use util::{ translate_positions };
 
 const LOG_TARGET: &'static str = "snake";
+pub const TRAINING_VENUE: &'static str = "TRAINING";
 
 pub struct Snake;
+
+pub fn get_venue() -> String {
+    String::from(TRAINING_VENUE)
+}
 
 impl Snake {
     pub fn get_name(&self) -> String {
@@ -39,6 +44,10 @@ impl Snake {
     }
 
     pub fn on_game_ended(&self, msg: &messages::GameEnded) {
+        info!(target: LOG_TARGET, "Game ended, the winner is: {:?}", msg.playerWinnerId);
+    }
+
+    pub fn on_tournament_ended(&self, msg: &messages::TournamentEnded) {
         info!(target: LOG_TARGET, "Game ended, the winner is: {:?}", msg.playerWinnerId);
     }
 

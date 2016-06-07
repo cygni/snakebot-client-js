@@ -22,7 +22,6 @@ use std::sync::Arc;
 
 const HOST: &'static str = "snake.cygni.se";
 const PORT: i32 = 80;
-const MODE: &'static str = "training";
 
 const HEART_BEAT_S: u64 = 20;
 const LOG_TARGET: &'static str = "client";
@@ -48,11 +47,15 @@ quick_error! {
     }
 }
 
+pub fn is_training_mode() -> bool{
+    snake::TRAINING_VENUE == snake::get_venue()
+}
+
 struct Client {
     out: Arc<ws::Sender>,
     snake: Snake,
     out_sender: mpsc::Sender<Arc<ws::Sender>>,
-    id_sender: mpsc::Sender<String>,
+    id_sender: mpsc::Sender<String>
 }
 
 fn route_msg(client: &mut Client, msg: &String) -> Result<(), ClientError> {
@@ -61,6 +64,14 @@ fn route_msg(client: &mut Client, msg: &String) -> Result<(), ClientError> {
     if msg.contains(messages::GAME_ENDED) {
         let json_msg: messages::GameEnded = try!(serde_json::from_str(msg));
         snake.on_game_ended(&json_msg);
+
+        if is_training_mode() {
+            try!(client.out.close(ws::CloseCode::Normal));
+        }
+    } else if msg.contains(messages::TOURNAMENT_ENDED) {
+        let json_msg: messages::TournamentEnded = try!(serde_json::from_str(msg));
+        snake.on_tournament_ended(&json_msg);
+        try!(client.out.close(ws::CloseCode::Normal));
     } else if msg.contains(messages::MAP_UPDATE) {
         let json_msg: messages::MapUpdate = try!(serde_json::from_str(msg));
         let direction = snake.get_next_move(&json_msg);
@@ -145,15 +156,17 @@ impl ws::Handler for Client {
 
 fn start_websocket_thread(id_sender: mpsc::Sender<String>,
                           out_sender: mpsc::Sender<Arc<ws::Sender>>) -> thread::JoinHandle<()> {
+
     thread::spawn(move || {
-        let connection_url = format!("ws://{}:{}/{}", HOST, PORT, MODE);
+        let connection_url = format!("ws://{}:{}/{}", HOST, PORT, snake::get_venue());
+
         info!(target: LOG_TARGET, "Connecting to {:?}", connection_url);
         let result = ws::connect(connection_url, |out| {
             Client {
                 out: Arc::from(out),
                 snake: snake::Snake,
                 out_sender: out_sender.clone(),
-                id_sender: id_sender.clone(),
+                id_sender: id_sender.clone()
             }
         });
         debug!(target: LOG_TARGET, "Websocket is done, result {:?}", result);
