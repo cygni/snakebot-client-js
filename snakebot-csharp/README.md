@@ -18,11 +18,8 @@ I would also like to leave you with a qoute from the aforementioned great man
 > Anything I’ve ever attempted, I was always willing to fail. So you can’t always win, but don’t be afraid of making decisions. You can’t be paralyzed by the fear of failure or you will never push yourself. You keep pushing because you believe in yourself and in your vision and you know that it is the right thing to do, and success will come. So don’t be afraid to fail. <br /> **Arnold Schwarzenegger**
 
 ## System Requirements
-
-- Windows 8 or higher (required by System.Net.WebSocket.ClientWebSocket)
-- .Net Core version 1.0.0-rc2, see: http://docs.asp.net/en/latest/getting-started/index.html
-- ASP .Net 5 RC. Follow the instructions at: https://get.asp.net/
-- Visual Studio 2015
+- Operating system supported by .NET Core 1.0 RC2 (https://www.microsoft.com/net/core).
+- Your favourite text-editor. Although we would recommend using either 'Visual Studio Code' or 'Visual Studio 2015'.
 
 ## Project structure
 The solution contains three projects
@@ -50,15 +47,33 @@ This project illustrates how to connect to the Cygni Snake server using a SnakeB
 
 ## Get started
 
-- Open the solution in Visual Studio 2015.
-- Restore packages.
-- Implement an awesome bot.
-- Build.
-- Run.
+### Installing .NET Core CLI
+If you already have .NET Core CLI and .NET Core 1.0 RC2 installed, you can skip this step. Otherwise, go to: https://www.microsoft.com/net/core and follow the 'Getting Started' instructions for your operating system.
+
+### Building and running
+Firstly, get the latest source with git clone:
+    
+    git clone http://github.com/cygni/snakebot-clients
+    
+cd into the .NET client:
+
+    cd snakebot-clients/snakebot-csharp
+
+Restore all dependencies:
+
+    dotnet restore
+    
+Run unit tests (optional):
+
+    dotnet test test/Cygni.Snake.Client.Tests/
+    
+Run the sample bot client:
+
+    dotnet run -p src/Cygni.Snake.SampleBot/
 
 ### Implementing a SnakeBot
 
-MySnakeBot.cs contains a skeleton SnakeBot implementation. All you need to do is to implement the GetNextMove()-method to return the direction of choice for your next move. The parameter map represents the current state of the world. It exposes a property called MySnake which represents your snake. Other than that, use the intellisense to examine its API.
+The file src/Cygni.Snake.SampleBot/MySnakeBot.cs contains a skeleton SnakeBot implementation. All you need to do is to implement the GetNextMove()-method to return the direction of choice for your next move. The parameter map represents the current state of the world. It exposes a property called MySnake which represents your snake. Other than that, use the intellisense to examine its API.
 
 ```csharp
 public class MySnakeBot : SnakeBot
@@ -84,12 +99,9 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var ws = new ClientWebSocket();
-        ws.ConnectAsync(new Uri("ws://snake.cygni.se:80/training"), CancellationToken.None).Wait();
+        var client = SnakeClient.CreateSnakeClient(new Uri("ws://snake.cygni.se:80/training"), new GamePrinter());
+        client.Start(new MySnakeBot("dotnetSnake"), true);
 
-        var client = new SnakeClient(ws, new GamePrinter());
-
-        client.Start(new MySnakeBot("dotnetSnake"));
         Console.ReadLine();
     }
 }

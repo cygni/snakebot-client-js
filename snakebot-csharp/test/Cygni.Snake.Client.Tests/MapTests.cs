@@ -20,7 +20,7 @@ namespace Cygni.Snake.Client.Tests
                 new MapCoordinate(1, 1),
                 new MapCoordinate(1, 2)
             });
-            var map = new Map(5, 5, 1, snake, new[] {snake}, new[] {new MapCoordinate(1, 0)}, new[] {new MapCoordinate(0, 0)});
+            var map = new Map(5, 5, 1, snake, new[] { snake }, new[] { new MapCoordinate(1, 0) }, new[] { new MapCoordinate(0, 0) });
 
             Assert.Equal(result, map.GetResultOfDirection("bestsnake", direction));
         }
@@ -43,13 +43,13 @@ namespace Cygni.Snake.Client.Tests
 
             Assert.Equal(expectedResult, map.AbleToUseDirection("bestsnake", direction));
         }
-        
+
         [Fact]
         public void FromJson_ReturnsMapWithCorrectNumberOfPlayers()
         {
             var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var map = Map.FromJson(json,"id_python");
+            var map = Map.FromJson(json, "id_python");
 
             Assert.Equal(2, map.Snakes.Count);
         }
@@ -59,7 +59,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var map = Map.FromJson(json,"id_python");
+            var map = Map.FromJson(json, "id_python");
 
             Assert.Equal(2, map.Snakes[0].Positions.Count);
             Assert.Equal(1, map.Snakes[0].Positions[0].X);
@@ -79,8 +79,8 @@ namespace Cygni.Snake.Client.Tests
         {
             var json = TestResources.GetResourceText("map.json", Encoding.UTF8);
 
-            var map = Map.FromJson(json,"id_python");
-            
+            var map = Map.FromJson(json, "id_python");
+
             Assert.Equal("id_python", map.MySnake.Id);
         }
     }

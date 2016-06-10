@@ -6,6 +6,16 @@
     "emitEntryPoint": true
   },
 
+<<<<<<< HEAD
+    "dependencies": {
+        "Newtonsoft.Json": "8.0.2",
+        "Cygni.Snake.Client": ""
+    },
+
+    "frameworks": {
+        "dnx451": { }
+    },
+=======
   "dependencies": {
     "Cygni.Snake.Client": "1.0.0-*",
     "Microsoft.NETCore.App": {
@@ -13,6 +23,7 @@
       "version": "1.0.0-rc2-3002702"
     }
   },
+>>>>>>> 6607ed43cfeb55df9aa70a816c83609adf913747
 
   "frameworks": {
     "netcoreapp1.0": {

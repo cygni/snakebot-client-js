@@ -16,8 +16,12 @@
   },
 
   "frameworks": {
+<<<<<<< HEAD
+    "dnx451": { }
+=======
     "netcoreapp1.0": {
       "imports": "dnxcore50"
     }
+>>>>>>> 6607ed43cfeb55df9aa70a816c83609adf913747
   }
 }

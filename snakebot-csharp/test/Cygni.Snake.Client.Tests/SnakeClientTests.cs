@@ -2,12 +2,39 @@
 using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
-using Moq;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Cygni.Snake.Client.Tests
 {
+    public class StubGameObserver : IGameObserver
+    {
+        public void OnSnakeDied(string reason, string snakeId)
+        {
+            SnakeDiedCalls++;
+        }
+
+        public void OnGameStart()
+        {
+            GameStartCalls++;
+        }
+
+        public void OnGameEnd(Map map)
+        {
+            GameEndCalls++;
+        }
+
+        public void OnUpdate(Map map)
+        {
+            UpdateCalls++;
+        }
+
+        public int GameStartCalls { get; private set; }
+        public int GameEndCalls { get; private set; }
+        public int UpdateCalls { get; private set; }
+        public int SnakeDiedCalls { get; private set; }
+    }
+
     public class SnakeClientTests
     {
         private readonly JObject _sampleMapJson = new JObject
@@ -63,7 +90,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var socket = new StubWebSocket(WebSocketState.Open);
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered } });
-            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
+            var client = new SnakeClient(socket, new StubGameObserver());
 
             var bot = new StubSnakeBot();
             client.Start(bot, true);
@@ -78,7 +105,7 @@ namespace Cygni.Snake.Client.Tests
         {
             var socket = new StubWebSocket(WebSocketState.Open);
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered } });
-            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
+            var client = new SnakeClient(socket, new StubGameObserver());
 
             client.Start(new StubSnakeBot(), true);
 
@@ -93,15 +120,13 @@ namespace Cygni.Snake.Client.Tests
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.PlayerRegistered } });
             socket.IncomingJson.Enqueue(new JObject { { "type", MessageType.GameStarting } });
 
-            var observer = new Mock<IGameObserver>();
-            observer.Setup(o => o.OnGameStart());
-
-            var client = new SnakeClient(socket, observer.Object);
+            var observer = new StubGameObserver();
+            var client = new SnakeClient(socket, observer);
             client.Start(new StubSnakeBot(), true);
 
-            observer.Verify(o => o.OnGameStart(), Times.Once);
+            Assert.Equal(1, observer.GameStartCalls);
         }
-        
+
         [Fact]
         public void Start_NotifiesObserverWhenMapHasUpdated()
         {
@@ -113,13 +138,12 @@ namespace Cygni.Snake.Client.Tests
             });
 
 
-            var observer = new Mock<IGameObserver>();
-            observer.Setup(o => o.OnUpdate(It.IsAny<Map>()));
+            var observer = new StubGameObserver();
 
-            var client = new SnakeClient(socket, observer.Object);
+            var client = new SnakeClient(socket, observer);
             client.Start(new StubSnakeBot(), true);
 
-            observer.Verify(o => o.OnUpdate(It.IsAny<Map>()), Times.Once);
+            Assert.Equal(1, observer.UpdateCalls);
         }
 
         [Fact]
@@ -133,13 +157,12 @@ namespace Cygni.Snake.Client.Tests
             });
 
 
-            var observer = new Mock<IGameObserver>();
-            observer.Setup(o => o.OnGameEnd(It.IsAny<Map>()));
+            var observer = new StubGameObserver();
 
-            var client = new SnakeClient(socket, observer.Object);
+            var client = new SnakeClient(socket, observer);
             client.Start(new StubSnakeBot(), true);
 
-            observer.Verify(o => o.OnGameEnd(It.IsAny<Map>()), Times.Once);
+            Assert.Equal(observer.GameEndCalls, 1);
         }
 
         [Fact]
@@ -153,17 +176,14 @@ namespace Cygni.Snake.Client.Tests
                 { "deathReason", "CollisionWithWall" },
             });
 
-            var observer = new Mock<IGameObserver>();
-            observer.Setup(o => o.OnSnakeDied(It.IsAny<string>(), It.IsAny<string>()));
+            var observer = new StubGameObserver();
 
-            var client = new SnakeClient(socket, observer.Object);
+            var client = new SnakeClient(socket, observer);
             client.Start(new StubSnakeBot(), true);
 
-            observer.Verify(o => o.OnSnakeDied(
-                It.Is<string>(s => s.Equals("CollisionWithWall", StringComparison.Ordinal)),
-                It.Is<string>(s => s.Equals("snake-id"))), Times.Once);
+            Assert.Equal(1, observer.SnakeDiedCalls);
         }
-        
+
         [Fact]
         public void Start_RequestsMoveFromSnakeBotOnMapUpdate()
         {
@@ -176,15 +196,15 @@ namespace Cygni.Snake.Client.Tests
                 { "map", _sampleMapJson }
             });
 
-            var bot = new Mock<StubSnakeBot>();
-            bot.Setup(b => b.GetNextMove(It.IsAny<Map>()));
+            bool receivedCall = false;
+            var bot = new StubSnakeBot(map => { receivedCall = true; return Direction.Down; });
 
             var client = new SnakeClient(socket);
-            client.Start(bot.Object, true);
+            client.Start(bot, true);
 
-            bot.Verify(o => o.GetNextMove(It.IsAny<Map>()), Times.Once);
+            Assert.True(receivedCall);
         }
-        
+
         [Fact]
         public void Start_RequestsMoveFromBotEventIfNoGameStartingMessageHasBeenReceived()
         {
@@ -192,12 +212,13 @@ namespace Cygni.Snake.Client.Tests
             var socket = new StubWebSocket(WebSocketState.Open);
             socket.IncomingJson.Enqueue(JObject.Parse(TestResources.GetResourceText("map-update.json", Encoding.UTF8)));
 
-            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
-            var mockSnake = new Mock<StubSnakeBot>();
-            mockSnake.Setup(s => s.GetNextMove(It.IsAny<Map>()));
-            client.Start(mockSnake.Object, true);
+            bool receivedCall = false;
+            var bot = new StubSnakeBot(map => { receivedCall = true; return Direction.Down; });
 
-            mockSnake.Verify(s => s.GetNextMove(It.IsAny<Map>()), Times.Once());
+            var client = new SnakeClient(socket);
+            client.Start(bot, true);
+
+            Assert.True(receivedCall);
         }
 
         [Theory]
@@ -216,7 +237,7 @@ namespace Cygni.Snake.Client.Tests
                 { "map", _sampleMapJson }
             });
 
-            var client = new SnakeClient(socket, Mock.Of<IGameObserver>());
+            var client = new SnakeClient(socket, new StubGameObserver());
             client.Start(new StubSnakeBot(direction), true);
 
             var moveMessage = socket.OutgoingJson.Last();

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -31,7 +31,7 @@ namespace Cygni.Snake.Client
         /// </summary>
         /// <param name="socket">The specified <see cref="WebSocket"/> instance.</param>
         /// <param name="observer">The specified <see cref="IGameObserver"/> instance.</param>
-        public SnakeClient(WebSocket socket, IGameObserver observer) 
+        public SnakeClient(WebSocket socket, IGameObserver observer)
         {
             if (socket == null)
             {
@@ -54,7 +54,7 @@ namespace Cygni.Snake.Client
         /// </summary>
         /// <param name="socket">The specified <see cref="WebSocket"/> instance.</param>
         public SnakeClient(WebSocket socket) : this(socket, new VoidObserver())
-        {}
+        { }
 
         /// <summary>
         /// Registers the specified <see cref="SnakeBot"/> with the server and
@@ -149,20 +149,23 @@ namespace Cygni.Snake.Client
                     break;
             }
         }
-        
+
         private string ReceiveString()
         {
             var sb = new StringBuilder();
-            
+
             while (true)
             {
                 var buffer = new byte[1024];
                 var result = _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None).Result;
-                
+
                 sb.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
 
                 if (result.EndOfMessage)
                 {
+                    var msg = sb.ToString();
+                    File.AppendAllText("C:\\Users\\Daniel\\log.txt", "\r\n### New message\r\n");
+                    File.AppendAllText("C:\\Users\\Daniel\\log.txt", msg);
                     return sb.ToString();
                 }
             }
@@ -170,16 +173,16 @@ namespace Cygni.Snake.Client
 
         private void OnPlayerRegistered()
         {
-            if(_isTrainingMode)
+            if (_isTrainingMode)
                 SendStartGameRequest();
         }
 
         private void OnInvalidPlayerName(SnakeBot snake, JObject json)
         {
-            var reason = (string) json["reasonCode"];
+            var reason = (string)json["reasonCode"];
             throw new InvalidOperationException($"The given player name '{snake.Name}' is not valid because. Reason: {reason}");
         }
-        
+
         private void OnGameStarting()
         {
             _observer.OnGameStart();
@@ -188,13 +191,13 @@ namespace Cygni.Snake.Client
         private void OnSnakeDead(JObject json)
         {
             string deathReason = (string)json["deathReason"];
-            string id = (string) json["playerId"];
+            string id = (string)json["playerId"];
             _observer.OnSnakeDied(deathReason, id);
         }
 
         private void OnGameEnded(JObject json)
         {
-            var map = Map.FromJson((JObject)json["map"], (string) json["receivingPlayerId"]);
+            var map = Map.FromJson((JObject)json["map"], (string)json["receivingPlayerId"]);
             _observer.OnGameEnd(map);
         }
 
@@ -243,7 +246,7 @@ namespace Cygni.Snake.Client
 
         private static string GetLocalIpAddress()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
+            var host = Dns.GetHostEntryAsync(Dns.GetHostName()).Result;
             foreach (var ip in host.AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork))
             {
                 return ip.ToString();
@@ -257,18 +260,18 @@ namespace Cygni.Snake.Client
             {
                 ["type"] = MessageType.ClientInfo,
                 ["language"] = "C#",
-                ["operatingSystem"] = Environment.OSVersion.VersionString,
+                ["operatingSystem"] = "N/A",
                 ["ipAddress"] = GetLocalIpAddress(),
                 ["clientVersion"] = ClientVersion
             };
             SendString(JsonConvert.SerializeObject(msg), _socket);
         }
-        
+
         private static void SendString(string msg, WebSocket ws)
         {
             var outputmessage = new ArraySegment<byte>(Encoding.UTF8.GetBytes(msg));
 
-            lock(ws)
+            lock (ws)
             {
                 ws.SendAsync(outputmessage, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
             }
@@ -276,7 +279,7 @@ namespace Cygni.Snake.Client
 
         private class VoidObserver : IGameObserver
         {
-            public void OnSnakeDied(string reason, string snakeId) {}
+            public void OnSnakeDied(string reason, string snakeId) { }
             public void OnGameStart() { }
             public void OnGameEnd(Map map) { }
             public void OnUpdate(Map map) { }
@@ -287,13 +290,12 @@ namespace Cygni.Snake.Client
             _socket?.Dispose();
             GC.SuppressFinalize(this);
         }
-        
+
         public static SnakeClient CreateSnakeClient(Uri uri, IGameObserver observer)
         {
-            var ws = new ClientWebSocket();
-            ws.ConnectAsync(uri, CancellationToken.None).Wait();
+            var ws = new ClientWebSocket().CreateWebSocket(uri, CancellationToken.None).Result;
 
-            new TaskFactory().StartNew(() =>
+            Task.Run(() =>
             {
                 while (ws.State == WebSocketState.Open)
                 {

@@ -52,8 +52,6 @@ function endGame(exit){
   } else {
     renderer.render({followPid : gameInfo.getPlayerId()}, fProcEnd);
   }
-
-
 }
 
 // Mamba client events are handled and responded to below.
@@ -84,12 +82,15 @@ function onEvent(event){
       renderer.record(event.payload);
       break;
 
+    case 'NEW_GAME_STARTED':
+      log('New game started!');
+      renderer = MapRenderer(event.getWidth(), event.getHeight());
+      break;
+
     case 'GAME_ENDED':
       log('Game ended!');
       renderer.record(event.payload);
-      if(!isTournament()){
-        endGame(true);
-      }
+      endGame(!isTournament()); // Do not exit in tournament mode.
       break;
 
     case 'TOURNAMENT_ENDED':
