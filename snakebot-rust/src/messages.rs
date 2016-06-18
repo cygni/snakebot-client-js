@@ -1,5 +1,7 @@
-#![allow(non_snake_case)]
-//inbound messages
+use structs;
+use serde_json::{ from_str, to_string, Error };
+
+// Inbound
 pub const GAME_ENDED: &'static str =
     "se.cygni.snake.api.event.GameEndedEvent";
 pub const TOURNAMENT_ENDED: &'static str =
@@ -17,181 +19,87 @@ pub const INVALID_PLAYER_NAME: &'static str =
 pub const HEART_BEAT_RESPONSE: &'static str =
     "se.cygni.snake.api.request.HeartBeatResponse";
 
-//outbound messages
-pub const REGISTER_PLAYER_MESSAGE_TYPE: &'static str =
+// Outbound
+const REGISTER_PLAYER_MESSAGE_TYPE: &'static str =
     "se.cygni.snake.api.request.RegisterPlayer";
-pub const START_GAME: &'static str =
+const START_GAME: &'static str =
     "se.cygni.snake.api.request.StartGame";
-pub const REGISTER_MOVE: &'static str =
+const REGISTER_MOVE: &'static str =
     "se.cygni.snake.api.request.RegisterMove";
-pub const HEART_BEAT_REQUEST: &'static str =
+const HEART_BEAT_REQUEST: &'static str =
     "se.cygni.snake.api.request.HeartBeatRequest";
 
-// Outbound messages
-#[derive(Serialize, Deserialize, Debug)]
-pub struct GameSettings {
-    pub width: String,
-    pub height: String,
-    pub maxNoofPlayers: u32,
-    pub startSnakeLength: u32,
-    pub timeInMsPerTick: u32,
-    pub obstaclesEnabled: bool,
-    pub foodEnabled: bool,
-    pub edgeWrapsAround: bool,
-    pub headToTailConsumes: bool,
-    pub tailConsumeGrows: bool,
-    pub addFoodLikelihood: u32,
-    pub removeFoodLikelihood: u32,
-    pub addObstacleLikelihood: u32,
-    pub removeObstacleLikelihood: u32,
-    pub spontaneousGrowthEveryNWorldTick: u32,
-    pub trainingGame: bool,
-    pub pointsPerLength: u32,
-    pub pointsPerFood: u32,
-    pub pointsPerCausedDeath: u32,
-    pub pointsPerNibble: u32,
-    pub pointsLastSnakeLiving: u32,
-    pub noofRoundsTailProtectedAfterNibble: u32,
-    pub pointsSuicide: i32,
+pub enum Inbound {
+    GameEnded(structs::GameEnded),
+    TournamentEnded(structs::TournamentEnded),
+    MapUpdate(structs::MapUpdate),
+    SnakeDead(structs::SnakeDead),
+    GameStarting(structs::GameStarting),
+    PlayerRegistered(structs::PlayerRegistered),
+    InvalidPlayerName(structs::InvalidPlayerName),
+    HeartBeatResponse(structs::HeartBeatResponse),
+    UnrecognizedMessage
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct PlayRegistration {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub playerName: String,
-    pub gameSettings: GameSettings,
+pub fn parse_inbound_msg(msg: &String) -> Result<Inbound, Error> {
+    let msg: Inbound =
+        if msg.contains(GAME_ENDED) {
+            Inbound::GameEnded(try!(from_str(msg)))
+        } else if msg.contains(TOURNAMENT_ENDED) {
+            Inbound::TournamentEnded(try!(from_str(msg)))
+        } else if msg.contains(MAP_UPDATE) {
+            Inbound::MapUpdate(try!(from_str(msg)))
+        } else if msg.contains(SNAKE_DEAD) {
+            Inbound::SnakeDead(try!(from_str(msg)))
+        } else if msg.contains(GAME_STARTING) {
+            Inbound::GameStarting(try!(from_str(msg)))
+        } else if msg.contains(PLAYER_REGISTERED) {
+            Inbound::PlayerRegistered(try!(from_str(msg)))
+        } else if msg.contains(INVALID_PLAYER_NAME) {
+            Inbound::InvalidPlayerName(try!(from_str(msg)))
+        } else if msg.contains(HEART_BEAT_RESPONSE) {
+            Inbound::HeartBeatResponse(try!(from_str(msg)))
+        } else {
+            Inbound::UnrecognizedMessage
+        };
+
+    Ok(msg)
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct RegisterMove {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub direction: String,
-    pub gameTick: u32,
-    pub receivingPlayerId: String,
-    pub gameId: String
+
+pub fn create_play_registration_msg(name: String) -> Result<String, Error> {
+    to_string(&structs::PlayRegistration {
+        type_: String::from(REGISTER_PLAYER_MESSAGE_TYPE),
+        playerName: name,
+        gameSettings: default_gamesettings()
+    })
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct StartGame {
-    #[serde(rename="type")]
-    pub type_: String,
+pub fn create_start_game_msg() -> Result<String, Error> {
+    to_string(&structs::StartGame {
+        type_: String::from(START_GAME)
+    })
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct HeartBeatRequest {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub receivingPlayerId: String
+pub fn create_register_move_msg(direction: String, request: structs::MapUpdate) -> Result<String, Error> {
+    to_string(&structs::RegisterMove {
+        type_: String::from(REGISTER_MOVE),
+        direction: direction,
+        gameTick: request.gameTick,
+        receivingPlayerId: request.receivingPlayerId,
+        gameId: request.gameId
+    })
 }
 
-//Inbound messages
-#[derive(Serialize, Deserialize, Debug)]
-pub struct PlayerRegistered {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub gameId: String,
-    pub gameMode: String,
-    pub receivingPlayerId: String,
-    pub name: String,
-    pub gameSettings: GameSettings
+pub fn create_heart_beat_msg(id: String) -> Result<String, Error> {
+    to_string(&structs::HeartBeatRequest {
+        type_: String::from( HEART_BEAT_REQUEST ),
+        receivingPlayerId: id
+    })
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct MapUpdate {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub receivingPlayerId: String,
-    pub gameId: String,
-    pub gameTick: u32,
-    pub map: Map,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct InvalidPlayerName {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub reasonCode: u32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct GameEnded {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub receivingPlayerId: String,
-    pub playerWinnerId: String,
-    pub gameId: String,
-    pub gameTick: u32,
-    pub map: Map,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SnakeDead {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub playerId: String,
-    pub x: u32,
-    pub y: u32,
-    pub gameId: String,
-    pub gameTick: u32,
-    pub deathReason: String,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct GameStarting {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub receivingPlayerId: String,
-    pub gameId: String,
-    pub noofPlayers: u32,
-    pub width: u32,
-    pub height: u32,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct HeartBeatResponse {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub receivingPlayerId: Option<String>
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct TournamentEnded {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub playerWinnerId: String,
-    pub gameId: String,
-    pub gameResult: String,
-    pub tournamentName: String,
-    pub tournamentId: String,
-    pub gameTick: Option<i32>
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Map {
-    #[serde(rename="type")]
-    pub type_: String,
-    pub width: i32,
-    pub height: i32,
-    pub worldTick: u32,
-    pub snakeInfos: Vec<SnakeInfo>,
-    pub foodPositions: Vec<i32>,
-    pub obstaclePositions: Vec<i32>,
-    pub receivingPlayerId: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
-pub struct SnakeInfo {
-    pub name: String,
-    pub points: i32,
-    pub positions: Vec<i32>,
-    pub tailProtectedForGameTicks: u32,
-    pub id: String
-}
-
-pub fn default_gamesettings() -> GameSettings {
-    GameSettings {
+pub fn default_gamesettings() -> structs::GameSettings {
+    structs::GameSettings {
         width: String::from("MEDIUM"),
         height: String::from("MEDIUM"),
         maxNoofPlayers: 5,

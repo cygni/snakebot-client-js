@@ -8,6 +8,7 @@ extern crate serde;
 #[macro_use] extern crate log;
 extern crate log4rs;
 
+mod structs;
 mod messages;
 mod snake;
 mod util;
@@ -19,6 +20,7 @@ use std::thread;
 use std::time::Duration;
 use std::sync::mpsc;
 use std::sync::Arc;
+use messages::{ Inbound };
 
 const HOST: &'static str = "snake.cygni.se";
 const PORT: i32 = 80;
@@ -58,66 +60,57 @@ struct Client {
     id_sender: mpsc::Sender<String>
 }
 
-fn route_msg(client: &mut Client, msg: &String) -> Result<(), ClientError> {
+fn route_msg(client: &mut Client, str_msg: &String) -> Result<(), ClientError> {
     let snake = &mut client.snake;
+    let inbound_msg = try!(messages::parse_inbound_msg(str_msg));
 
-    if msg.contains(messages::GAME_ENDED) {
-        let json_msg: messages::GameEnded = try!(serde_json::from_str(msg));
-        snake.on_game_ended(&json_msg);
-
-        if is_training_mode() {
+    match inbound_msg {
+        Inbound::GameEnded(msg) => {
+            snake.on_game_ended(&msg);
+            if is_training_mode() {
+                try!(client.out.close(ws::CloseCode::Normal));
+            }
+        },
+        Inbound::TournamentEnded(msg) => {
+            snake.on_tournament_ended(&msg);
             try!(client.out.close(ws::CloseCode::Normal));
-        }
-    } else if msg.contains(messages::TOURNAMENT_ENDED) {
-        let json_msg: messages::TournamentEnded = try!(serde_json::from_str(msg));
-        snake.on_tournament_ended(&json_msg);
-        try!(client.out.close(ws::CloseCode::Normal));
-    } else if msg.contains(messages::MAP_UPDATE) {
-        let json_msg: messages::MapUpdate = try!(serde_json::from_str(msg));
-        let direction = snake.get_next_move(&json_msg);
-
-        let response = messages::RegisterMove {
-            type_: String::from(messages::REGISTER_MOVE),
-            direction: maputil::direction_as_string(&direction),
-            gameTick: json_msg.gameTick,
-            receivingPlayerId: json_msg.receivingPlayerId,
-            gameId: json_msg.gameId
-        };
-        debug!(target: LOG_TARGET, "Responding with RegisterMove {:?}", response);
-
-        let response = try!(serde_json::to_string(&response));
-        try!(client.out.send(response));
-    } else if msg.contains(messages::SNAKE_DEAD) {
-        let json_msg: messages::SnakeDead = try!(serde_json::from_str(msg));
-        snake.on_snake_dead(&json_msg);
-    } else if msg.contains(messages::GAME_STARTING) {
-        let json_msg: messages::GameStarting = try!(serde_json::from_str(msg));
-        snake.on_game_starting(&json_msg);
-    } else if msg.contains(messages::PLAYER_REGISTERED) {
-        let json_msg: messages::PlayerRegistered = try!(serde_json::from_str(msg));
-        info!(target: LOG_TARGET, "Successfully registered player");
-
-        snake.on_player_registered(&json_msg);
-
-        if json_msg.gameMode == "TRAINING" {
-            let start_msg = messages::StartGame {
-                type_: String::from(messages::START_GAME)
-            };
-            debug!(target: LOG_TARGET, "Requesting a game start {:?}", start_msg);
-
-            let response = try!(serde_json::to_string(&start_msg));
+        },
+        Inbound::MapUpdate(msg) => {
+            let direction = maputil::direction_as_string(&snake.get_next_move(&msg));
+            let response = try!(messages::create_register_move_msg(direction, msg));
+            debug!(target: LOG_TARGET, "Responding with RegisterMove {:?}", response);
             try!(client.out.send(response));
-        };
+        },
+        Inbound::SnakeDead(msg) => {
+            snake.on_snake_dead(&msg);
+        },
+        Inbound::GameStarting(msg) => {
+            snake.on_game_starting(&msg);
+        },
+        Inbound::PlayerRegistered(msg) => {
+            info!(target: LOG_TARGET, "Successfully registered player");
+            snake.on_player_registered(&msg);
 
-        try!(client.out_sender.send(client.out.clone()));
-        try!(client.id_sender.send(json_msg.receivingPlayerId));
-    } else if msg.contains(messages::INVALID_PLAYER_NAME) {
-        let json_msg: messages::InvalidPlayerName = try!(serde_json::from_str(msg));
-        snake.on_invalid_playername(&json_msg);
-    } else if msg.contains(messages::HEART_BEAT_RESPONSE) {
-        // do nothing
-        let _: messages::InvalidPlayerName = try!(serde_json::from_str(msg));
-    }
+            if msg.gameMode == "TRAINING" {
+                let response = try!(messages::create_start_game_msg());
+                debug!(target: LOG_TARGET, "Requesting a game start {:?}", response);
+                try!(client.out.send(response));
+            };
+
+            info!(target: LOG_TARGET, "Starting heart beat");
+            try!(client.out_sender.send(client.out.clone()));
+            try!(client.id_sender.send(msg.receivingPlayerId));
+        },
+        Inbound::InvalidPlayerName(msg) => {
+            snake.on_invalid_playername(&msg);
+        },
+        Inbound::HeartBeatResponse(_) => {
+            // do nothing
+        },
+        Inbound::UnrecognizedMessage => {
+
+        }
+    };
 
     Ok(())
 }
@@ -127,16 +120,15 @@ impl ws::Handler for Client {
     fn on_open(&mut self, _: ws::Handshake) -> ws::Result<()> {
         debug!(target: LOG_TARGET, "Connection to Websocket opened");
 
-        let message = messages::PlayRegistration {
-            type_: String::from(messages::REGISTER_PLAYER_MESSAGE_TYPE),
-            playerName: self.snake.get_name(),
-            gameSettings: messages::default_gamesettings()
-        };
+        let parse_msg = messages::create_play_registration_msg(self.snake.get_name());
 
-        info!(target: LOG_TARGET, "Registering player with message: {:?}", message);
-
-        let encoded_message = serde_json::to_string(&message).unwrap();
-        self.out.send(encoded_message)
+        if let Ok(response) = parse_msg {
+            info!(target: LOG_TARGET, "Registering player with message: {:?}", response);
+            self.out.send(response)
+        } else {
+            error!(target: LOG_TARGET, "Unable to create play registration message {:?}", parse_msg);
+            self.out.close(ws::CloseCode::Error)
+        }
     }
 
     fn on_message(&mut self, msg: ws::Message) -> ws::Result<()> {
@@ -173,43 +165,57 @@ fn start_websocket_thread(id_sender: mpsc::Sender<String>,
     })
 }
 
+fn do_heart_beat(id: String, out: Arc<ws::Sender>, done_receiver: mpsc::Receiver<()>) {
+    loop {
+        thread::sleep(Duration::from_secs(HEART_BEAT_S));
+        let rec = done_receiver.try_recv();
+
+        // if the channel is disconnected or a done message is sent, break the loop
+        if let Err(e) = rec {
+            if e == mpsc::TryRecvError::Disconnected {
+                debug!(target: LOG_TARGET, "Stopping heartbeat due to channel disconnecting");
+                break;
+            }
+        } else {
+            debug!(target: LOG_TARGET, "Stopping heartbeat due to finished execution");
+            break;
+        }
+
+        debug!(target: LOG_TARGET, "Sending heartbeat request");
+
+        let id = id.clone();
+        let parsed_msg = messages::create_heart_beat_msg(id);
+        if let Ok(heart_beat) = parsed_msg {
+            let send_result = out.send(heart_beat);
+            if let Err(e) = send_result {
+                error!(target: LOG_TARGET, "Unable to send heartbeat, got error {:?}", e);
+            }
+        } else {
+            error!(target: LOG_TARGET, "Unable to parse heart beat message {:?}", parsed_msg);
+        }
+    }
+}
+
+pub fn recv_channels(id_receiver: mpsc::Receiver<String>,
+                     out_receiver: mpsc::Receiver<Arc<ws::Sender>>)
+                     -> Result<(String, Arc<ws::Sender>), mpsc::RecvError> {
+    let id = try!(id_receiver.recv());
+    let out = try!(out_receiver.recv());
+    Ok((id, out))
+}
+
 fn start_heart_beat_thread(id_receiver: mpsc::Receiver<String>,
                            out_receiver: mpsc::Receiver<Arc<ws::Sender>>,
                            done_receiver: mpsc::Receiver<()>) -> thread::JoinHandle<()> {
     thread::spawn(move || {
-        let id = id_receiver.recv().unwrap();
-        let out = out_receiver.recv().unwrap();
+        let res = recv_channels(id_receiver, out_receiver);
 
-        debug!(target: LOG_TARGET, "Starting heartbeat");
-
-        loop {
-            thread::sleep(Duration::from_secs(HEART_BEAT_S));
-            let rec = done_receiver.try_recv();
-
-            // if the channel is disconnected or a done message is sent, break the loop
-            if let Err(e) = rec {
-                if e == mpsc::TryRecvError::Disconnected {
-                    debug!(target: LOG_TARGET, "Stopping heartbeat due to channel disconnecting");
-                    break;
-                }
-            } else {
-                debug!(target: LOG_TARGET, "Stopping heartbeat due to finished execution");
-                break;
-            }
-
-            let id = id.clone();
-            let heart_beat = messages::HeartBeatRequest {
-                type_: String::from( messages::HEART_BEAT_REQUEST ),
-                receivingPlayerId: id
-            };
-
-            debug!(target: LOG_TARGET, "Sending heartbeat request");
-            let request = serde_json::to_string(&heart_beat).unwrap();
-            let send_result = out.send(request);
-            if let Err(e) = send_result {
-                error!(target: LOG_TARGET, "Unable to send heartbeat, got error {:?}", e);
-            }
-        }
+        if let Ok((id, out)) = res {
+            debug!(target: LOG_TARGET, "Starting heartbeat");
+            do_heart_beat(id, out, done_receiver);
+        } else {
+            error!(target: LOG_TARGET, "Unable to start heart beat, the channel has been closed.");
+        };
     })
 }
 

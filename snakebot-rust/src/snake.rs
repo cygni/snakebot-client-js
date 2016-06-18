@@ -1,4 +1,4 @@
-use messages;
+use structs::{ MapUpdate, GameEnded, TournamentEnded, SnakeDead, GameStarting, PlayerRegistered, InvalidPlayerName};
 use maputil::{ Direction };
 use util::{ translate_positions };
 
@@ -16,7 +16,7 @@ impl Snake {
         String::from("rusty-snake")
     }
 
-    pub fn get_next_move(&self, msg: &messages::MapUpdate) -> Direction {
+    pub fn get_next_move(&self, msg: &MapUpdate) -> Direction {
         info!(target: LOG_TARGET, "Game map updated, tick: {}", msg.gameTick);
 
         let ref map = msg.map;
@@ -43,27 +43,27 @@ impl Snake {
         direction
     }
 
-    pub fn on_game_ended(&self, msg: &messages::GameEnded) {
+    pub fn on_game_ended(&self, msg: &GameEnded) {
         info!(target: LOG_TARGET, "Game ended, the winner is: {:?}", msg.playerWinnerId);
     }
 
-    pub fn on_tournament_ended(&self, msg: &messages::TournamentEnded) {
+    pub fn on_tournament_ended(&self, msg: &TournamentEnded) {
         info!(target: LOG_TARGET, "Game ended, the winner is: {:?}", msg.playerWinnerId);
     }
 
-    pub fn on_snake_dead(&self, msg: &messages::SnakeDead) {
+    pub fn on_snake_dead(&self, msg: &SnakeDead) {
         info!(target: LOG_TARGET, "The snake died, reason was: {:?}", msg.deathReason);
     }
 
-    pub fn on_game_starting(&self, _: &messages::GameStarting) {
+    pub fn on_game_starting(&self, _: &GameStarting) {
 
     }
 
-    pub fn on_player_registered(&self, _: &messages::PlayerRegistered) {
+    pub fn on_player_registered(&self, _: &PlayerRegistered) {
 
     }
 
-    pub fn on_invalid_playername(&self, _: &messages::InvalidPlayerName) {
+    pub fn on_invalid_playername(&self, _: &InvalidPlayerName) {
 
     }
 }

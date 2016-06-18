@@ -1,4 +1,4 @@
-use messages::{ Map, SnakeInfo };
+use structs::{ Map, SnakeInfo };
 use util;
 
 #[derive(PartialEq, Debug)]
