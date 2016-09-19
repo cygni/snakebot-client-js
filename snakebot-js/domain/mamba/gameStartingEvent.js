@@ -1,5 +1,4 @@
 function GameStartingEvent(gameId, noOfPlayers, width, height, receivingPlayerId) {
-
   var type              = 'se.cygni.snake.api.event.GameStartingEvent';
   var gameId            = gameId;
   var noOfPlayers       = noOfPlayers;

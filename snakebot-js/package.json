@@ -17,9 +17,9 @@
     "uglifyjs": "^2.4.10",
     "ultron": "^1.0.2",
     "utf-8-validate": "^1.2.1",
-    "ws": "^1.0.1"
+    "ws": "^1.0.1",
+    "open": "0.0.5"
   },
-  "devDependencies": {},
   "author": "",
   "license": "ISC"
 }

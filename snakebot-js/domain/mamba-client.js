@@ -18,6 +18,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
     var PlayerRegistered = require('./mamba/playerRegistered.js');
     var StartGame = require('./mamba/startGame.js');
     var GameStartingEvent = require('./mamba/gameStartingEvent.js');
+    var GameLinkEvent = require('./mamba/gameLinkEvent.js');
     var GameEndedEvent = require('./mamba/gameEndedEvent.js');
     var TournamentEndedEvent = require('./mamba/tournamentEndedEvent.js');
     var SnakeDeadEvent = require('./mamba/snakeDeadEvent.js');
@@ -143,11 +144,18 @@ function Mamba(host, port, eventListener, verboseLogging) {
     }
 
     function handleGameStart(json) {
-        var gameStart = GameStartingEvent.create(json);
-        // Tournaments game ids are given at start.
-        player.updateGameId(gameStart.getGameId());
-        log('Game starting: ' + gameStart.toString());
-        nextState();
+        if (json.type === GameStartingEvent.type) {
+            var gameStart = GameStartingEvent.create(json);
+            log('Game starting: ' + gameStart.toString());
+            // Tournaments game ids are given at start.
+            player.updateGameId(gameStart.getGameId());
+            nextState();
+        } else if (json.type === GameLinkEvent.type) {
+            var event = {type: 'GAME_LINK', payload: GameLinkEvent.create(json)};
+            eventBus.publish(event);
+        } else  {
+            logError('Illegal game start state, type: ' + json.type);
+        }
     }
 
     function handleGameEvent(json) {
@@ -165,7 +173,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
         } else if (json.type === SnakeDeadEvent.type) {
           event = {type: 'GAME_SNAKE_DEAD', payload: SnakeDeadEvent.create(json)};
         } else {
-            event = {type: 'ERROR', payload: 'Unknown game event'};
+          event = {type: 'ERROR', payload: 'Unknown game event'};
         }
         log(event.payload.toString());
         eventBus.publish(event);

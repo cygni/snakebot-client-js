@@ -10,6 +10,7 @@ var GameSettings    = require('./domain/mamba/gameSettings.js');
 var MapRenderer     = require('./domain/mapRenderer.js');
 var DateFormat      = require('dateformat');
 var now             = require("performance-now");
+var open            = require('open');
 var argv            = require('minimist')(process.argv.slice(2));
 var options         = parseOptions(argv);
 
@@ -67,7 +68,7 @@ function onEvent(event){
     case 'REGISTERED':
       log('Ready to play!');
       gameInfo = event.payload;
-      renderer = MapRenderer(gameInfo.getGameSettings().getWidth(), gameInfo.getGameSettings().getHeight());
+      renderer = MapRenderer();
       client.startGame();
       break;
 
@@ -84,7 +85,14 @@ function onEvent(event){
 
     case 'NEW_GAME_STARTED':
       log('New game started!');
-      renderer = MapRenderer(event.getWidth(), event.getHeight());
+      gameStarted = event.payload;
+      renderer = MapRenderer(gameStarted.getWidth(), gameStarted.getHeight());
+      break;
+
+    case 'GAME_LINK':
+      log('Game link!');
+      gameLink = event.payload;
+      open(gameLink.getUrl());
       break;
 
     case 'GAME_ENDED':
