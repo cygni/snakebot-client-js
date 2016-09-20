@@ -92,7 +92,9 @@ function onEvent(event){
     case 'GAME_LINK':
       log('Game link!');
       gameLink = event.payload;
-      open(gameLink.getUrl());
+      if(options.gamelink){
+        open(gameLink.getUrl());
+      }
       break;
 
     case 'GAME_ENDED':
@@ -147,9 +149,11 @@ function parseOptions(argv){
     host        : argv.host ? argv.host : 'snake.cygni.se',
     port        : argv.port ? argv.port : 80,
     venue       : argv.venue ? argv.venue : 'training',
+    training    : argv.t || argv.training,
     renderMode  : argv.animate ? 'animate' : 'default',
     silentLog   : argv.silent,
-    mambaDebug  : argv.mambadbg
+    mambaDebug  : argv.mambadbg,
+    gamelink    : argv.gamelink
   };
   if(!opts.user){
     log('WARN: Username not set, consider setting one `-u, --user <name>`')
@@ -168,9 +172,11 @@ function printUsage(options){
     console.log(' --host <snake.cygni.se> : the host');
     console.log(' --port <80> : the server port');
     console.log(' --venue <training> : the game room');
+    console.log(' -t --training : force training');
     console.log(' --animate : animated game replay');
     console.log(' --silent : keep logs to minimum');
     console.log(' --mambadbg : show all mamba logs');
+    console.log(' --gamelink : open GameLink®');
     console.log('\n');
     process.exit();
   }
