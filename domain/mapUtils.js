@@ -177,7 +177,6 @@ exports.getManhattanDistance  = getManhattanDistance;
 exports.getEuclidianDistance  = getEuclidianDistance;
 exports.whereIsSnake          = whereIsSnake;
 exports.translatePosition     = translatePosition;
-exports.findPathAS            = findPathAS;
 exports.getAt                 = getAt;
 exports.positionsToCoords     = positionsToCoords;
 exports.findFood              = findFood;
