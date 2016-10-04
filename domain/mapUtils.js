@@ -1,18 +1,3 @@
-var SearchAStar = require('./searchAStar.js')();
-
-/**
- * Calculates the path to the goal using the A-star algorithm.
- * @param startCoord      the start coordinate {x: xn, y: yn}
- * @param goalCoord       the goal coordinate {x: xn, y: yn}
- * @param mapWidth        the maps width
- * @param mapHeight       the maps height
- * @param fCalculateCost  optional function that calculates the cost (heuristic value) for moving from current node to the goal.
- *                        <h value> = f(<node coordinate>={x: xn, y: yn}, <goal coordinate> = {x: xg, y: yg})
- * @returns the path to the goal as an array [{coord:{x:11,y:10}, direction:'UP'}}, {...}, ...]
- */
-function findPathAS(startCoord, goalCoord, mapWidth, mapHeight, fCalculateCost){
-  return SearchAStar.findPath(startCoord, goalCoord, mapWidth, mapHeight, fCalculateCost);
-}
 /**
  * Calculates the Manhattan (or cab/grid) distance from point a to point b.
  * Note that Manhattan distance will not walk diagonally.
@@ -63,7 +48,8 @@ function whereIsSnake(playerId, map){
  */
 function getAt(coords, map){
   var point = translateCoordinate(coords, map.getWidth());
-  return getOccupiedMapTiles(map)[point];
+  tile = getOccupiedMapTiles(map)[point];
+  return tile !== undefined ? tile : {content: ''};
 }
 
 /**
