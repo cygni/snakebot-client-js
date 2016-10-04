@@ -88,22 +88,3 @@ That's it, now go out there, have fun twisting your minds!
 Don't forget to raid the Cygni fridge before you get started, it's free after all. **Yay!**
 
 /Snake McWriggles
-
-
-#### PS. Need a nudge in some direction? Here's a snippet for a snake that eats and tries to keep itself out of trouble.
-
-```js
-var food = MapUtils.findFood(myCoords, map);
-if(food.length){
-var path = MapUtils.findPathAS(myCoords, food.pop(), map.getWidth(), map.getHeight(), function (coord, goalCoord) {
-      var tile = MapUtils.getAt(coord, map);
-      return MapUtils.getManhattanDistance(coord, goalCoord) + (tile && (tile.content === 'snakebody' || tile.content === 'snakehead') ? 1000 : 0);
-    });
-    direction = path[0].direction;
-}
-```
-
-DS.
- 
-
-
