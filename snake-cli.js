@@ -18,6 +18,7 @@ printUsage(options);
 
 var snakeBot        = setupSnake(options);
 var gameInfo        = null;
+var gameLink        = null;
 var renderer        = null;
 var client          = Mamba(options.host, options.port, onEvent, options.mambaDebug).connect(options.venue);
 
@@ -48,7 +49,16 @@ function handleGameUpdate(mapUpdateEvent){
 function endGame(exit){
   var fProcEnd = exit ? function(){process.exit()} : 0;
   snakeBot.gameEnded();
-  if(options.renderMode == 'animate'){
+
+  if(options.gamelink){
+    open(gameLink.getUrl());
+  } else {
+    log("GameLink: " + gameLink.getUrl());
+  }
+
+  if(options.renderMode == 'norender'){
+    fProcEnd();
+  } else if(options.renderMode == 'animate'){
     renderer.render({animate: true, delay: 500, followPid : gameInfo.getPlayerId()}, fProcEnd);
   } else {
     renderer.render({followPid : gameInfo.getPlayerId()}, fProcEnd);
@@ -85,16 +95,13 @@ function onEvent(event){
 
     case 'NEW_GAME_STARTED':
       log('New game started!');
-      gameStarted = event.payload;
+      var gameStarted = event.payload;
       renderer = MapRenderer(gameStarted.getWidth(), gameStarted.getHeight());
       break;
 
     case 'GAME_LINK':
       log('Game link!');
       gameLink = event.payload;
-      if(options.gamelink){
-        open(gameLink.getUrl());
-      }
       break;
 
     case 'GAME_ENDED':
@@ -139,7 +146,7 @@ function isTournament(){
 /**
  * Parses the command line options.
  * @param argv minimist command line options
- * @returns {{help: *, snakeScript: null, user: *, host: *, port: *, venue: string, renderMode: string, silentLog: *, mambaDebug: *}}
+ * @returns {{help: *, snakeScript: null, user: *, host: *, port: *, venue: string, training: *, renderMode: string, silentLog: *, mambaDebug: *, gamelink: *}}
  */
 function parseOptions(argv){
   var opts = {
@@ -150,7 +157,7 @@ function parseOptions(argv){
     port        : argv.port ? argv.port : 80,
     venue       : argv.venue ? argv.venue : 'training',
     training    : argv.t || argv.training,
-    renderMode  : argv.animate ? 'animate' : 'default',
+    renderMode  : argv.norender ? 'norender' : argv.animate ? 'animate' : 'default',
     silentLog   : argv.silent,
     mambaDebug  : argv.mambadbg,
     gamelink    : argv.gamelink
@@ -173,8 +180,9 @@ function printUsage(options){
     console.log(' --port <80> : the server port');
     console.log(' --venue <training> : the game room');
     console.log(' -t --training : force training');
+    console.log(' --norender : no game replay');
     console.log(' --animate : animated game replay');
-    console.log(' --silent : keep logs to minimum');
+    console.log(' --silent : snakebot log is silenced');
     console.log(' --mambadbg : show all mamba logs');
     console.log(' --gamelink : open GameLink®');
     console.log('\n');

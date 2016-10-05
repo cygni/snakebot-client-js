@@ -35,8 +35,9 @@ node snake-cli.js
  --port <80> : the server port
  --venue <training> : the game room
  -t --training : force training
+ --norender : no game replay
  --animate : animated game replay
- --silent : keep logs to minimum
+ --silent : snakebot log is silenced
  --mambadbg : mamba debug logs
  --gamelink : open GameLink®
 ```
@@ -92,6 +93,19 @@ Use it, or not...you sturdy computer science genious you...ggrrrrr. Uhm, well.
 Oh and by the way, you need to issue your move before the next game tick. Otherwise your snake will just keep going in the same direction as it did the last tick. Hmm that reminds me of a song; 'Right, right goes your snake, gently down the grid, merrily merrily, merrily, merrily until it KA-SCHMACK HITS THE WALL'. It's such a sad song.
 
 ## Analysing the game 
+ 
+*GameLink:*
+
+[GameLink](http://game.snake.cygni.se/) is the online visualiser of Snake games.
+The game link is displayed after each game. 
+
+*To automatically open the link in your standard browser, without any console rendering (see MapRender below):*
+
+```bash 
+node snake-cli ./snakepit/snakestein-bot.js --gamelink --norender
+```
+ 
+*MapRenderer:*
  
 The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal. It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you.
 
