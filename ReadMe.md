@@ -60,7 +60,7 @@ You have already experienced an important lesson; "if I go all the way to the ri
 Well, actually it will hurt your snake the most. Don't hurt your snake. 
 To improve the snake you need to do some serious thinking. Right now your snakes brain is as small as a shopping list. It's entire mind resides in the method named *::update(mapState)*.
 
-This method takes just one teeny weeny, er I mean mighty, parameter named *mapState* (see [::MapUpdateEvent](domain/mamba/MapUpdateEvent.js)).     
+This method takes just one teeny weeny, er I mean mighty, parameter named *mapState* (see [::MapUpdateEvent](domain/mamba/mapUpdateEvent.js)).     
 This mapState parameter represents the world state at a given game tick. All snakes sees the same world at the same game tick (yes, even snakes must obey the arrow of time and anyways the theory of relativity has not yet been formalised  
 by Snakebert Snakestein). The world changes state every 250 millisecond in the standard snake Universe.   
 You, being a God in the snake Universe, can tweak this and other worldly parameters with the *game settings*   
