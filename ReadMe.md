@@ -71,7 +71,7 @@ You, being a God in the snake Universe, can tweak this and other worldly paramet
 The first thing on your agenda should probably be to wriggle that slimy worm of yours in another direction.  
 You issue commands to you snake by returning a direction in *::update(mapState)*.   
 The *direction* is a string and can be one of < UP | DOWN | LEFT | RIGHT >. Remember that you can only  
-make one move per game tick, so no *bullet time* or any other Matrix tricks buddy! Yes, I'm talking to you. Or you. Or..yeah ok you got it. 
+make one move per game tick, so no *bullet time* or any other Matrix tricks buddy! Yes, I'm talking to you. Or you. Or...yeah ok you got it. 
 
 ### Lesson 2: The only fence against the world is a thorough knowledge of it
 
@@ -96,7 +96,7 @@ Oh and by the way, you need to issue your move before the next game tick. Otherw
 The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal. It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you.
 
 ```bash 
- node snake-cli ./snakepit/snakestein-bot.js --animated
+ node snake-cli ./snakepit/snakestein-bot.js --animate
 ```
 
 *To log data to the console:*
