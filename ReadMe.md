@@ -10,18 +10,36 @@ This a Snake Client written in javascript (ECMAScript 5).
 
 ## Installation
 
-A. Clone the repository: `git clone https://github.com/cygni/snakebot-clients.git`.
+A. Clone the repository: `git clone https://github.com/cygni/snakebot-client-js.git`.
 
-B. Open: `<repo>/snakebot-js`
+B. Open: `<repo>/snakebot-client-js`
 
 C. Execute: `npm install`
 
 
 ## Usage
 
-`node snake-cli -h`
+*To launch a quick game using the template snake:*
 
-This will give you a nice print out of the available options.
+```bash 
+node snake-cli.js ./snakepit/snakestein-bot.js
+```
+
+*To get a nice print out of the available options:*
+
+```bash 
+node snake-cli.js
+
+ -u, --user <username> : the username
+ --host <snake.cygni.se> : the host
+ --port <80> : the server port
+ --venue <training> : the game room
+ -t --training : force training
+ --animate : animated game replay
+ --silent : keep logs to minimum
+ --mambadbg : mamba debug logs
+ --gamelink : open GameLink®
+```
 
 ## Your first game
 
@@ -60,7 +78,7 @@ make one move per game tick, so no *bullet time* or any other Matrix tricks budd
 To be able to execute good moves you really need to understand the world your snake lives and grows in.    
 Yes your goal is to survive and eat, if you didn't know this already.  
 The *mapState* as mentioned above contains everything you really need to know. The *mapState::gameMap()*  
-method  will give you access to all the game tiles, *::getTiles()*, and all the snake positions, *::getSnakeInfos()*.  
+method will give you access to all the game tiles, *::getTiles()*, and all the snake positions, *::getSnakeInfos()*.  
 You are a God indeed. Use this data to gain a good view of the...snakepit or whatever you wish to call  
 that, *yuck*, slimy world of theirs.
 
@@ -68,8 +86,7 @@ that, *yuck*, slimy world of theirs.
 
 You know how to move the snake and you know the layout of the world. It's now time to synthesise this knowledge      
 to form a puny brain or...a sentient life form. It's all up to you. Now, if you have forgotten all those classes     
-in artifical intelligence and discrete mathematics from uni there is still some hope for you. Enter the *::MapUtils*    
-(see domain/mapUtils.js). This little helper contains some crufty functions for calculating routes and distances.   
+in artifical intelligence and discrete mathematics from uni there is still some hope for you. Enter the [::MapUtils]  (https://github.com/cygni/snakebot-client-js/blob/master/domain/mapUtils.js). This little helper contains some crufty functions for calculating routes and distances.   
 Use it, or not...you sturdy computer science genious you...ggrrrrr. Uhm, well.  
 
 Oh and by the way, you need to issue your move before the next game tick. Otherwise your snake will just keep going in the same direction as it did the last tick. Hmm that reminds me of a song; 'Right, right goes your snake, gently down the grid, merrily merrily, merrily, merrily until it KA-SCHMACK HITS THE WALL'. It's such a sad song.
@@ -79,7 +96,19 @@ Oh and by the way, you need to issue your move before the next game tick. Otherw
 The MapRenderer visualises the outcome of a game. It is enabled by default and prints game data to the console for your perusal. It prints either the data in chronological order or displays an animated version. It can even spit out debug information for you.
 
 ```bash 
- node snake-cli bot.js --animated
+ node snake-cli ./snakepit/snakestein-bot.js --animated
+```
+
+*To log data to the console:*
+
+```
+log('I am here:', myCoords);
+```
+
+*To log and display data in the MapRenderer:*
+
+```
+snakeBrainDump.iamhere = myCoords;
 ```
 
 # Happy snaking!
