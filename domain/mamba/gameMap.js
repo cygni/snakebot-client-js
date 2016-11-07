@@ -53,9 +53,9 @@ function GameMap(width, height, worldTick, foodPositions, obstaclePositions, sna
       width : width,
       height : height,
       worldTick : worldTick,
-      foodPositions : JSON.stringify(foodPositions),
-      obstaclePositions : JSON.stringify(obstaclePositions),
-      snakeInfos : SnakeInfos.create(snakeInfos)
+      foodPositions : foodPositions,
+      obstaclePositions : obstaclePositions,
+      snakeInfos : snakeInfos.map(function(val){return val.marshall()})
     };
   };
 

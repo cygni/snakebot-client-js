@@ -20,6 +20,7 @@ function Mamba(host, port, eventListener, verboseLogging) {
     var GameStartingEvent = require('./mamba/gameStartingEvent.js');
     var GameLinkEvent = require('./mamba/gameLinkEvent.js');
     var GameEndedEvent = require('./mamba/gameEndedEvent.js');
+    var GameResultEvent = require('./mamba/gameResultEvent.js');
     var TournamentEndedEvent = require('./mamba/tournamentEndedEvent.js');
     var SnakeDeadEvent = require('./mamba/snakeDeadEvent.js');
     var MapUpdateEvent = require('./mamba/mapUpdateEvent.js');
@@ -165,6 +166,8 @@ function Mamba(host, port, eventListener, verboseLogging) {
           event = {type: 'GAME_MAP_UPDATED', payload: MapUpdateEvent.create(json)};
         } else if (json.type === GameEndedEvent.type) {
           event = {type: 'GAME_ENDED', payload: GameEndedEvent.create(json)};
+        } else if (json.type === GameResultEvent.type) {
+          event = {type: 'GAME_RESULT', payload: GameResultEvent.create(json)};
         } else if (json.type === TournamentEndedEvent.type) {
           event = {type: 'TOURNAMENT_ENDED', payload: TournamentEndedEvent.create(json)};
         } else if (json.type === GameStartingEvent.type) {

@@ -39,8 +39,8 @@ function SnakeInfos(name, points, positions, id) {
     return {
       type : type,
       name : name,
-      points : points,
-      positions : positions,
+      points : JSON.stringify(points),
+      positions : JSON.stringify(positions),
       id : id
     };
   };
