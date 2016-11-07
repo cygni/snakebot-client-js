@@ -240,6 +240,7 @@ function parseOptions(argv){
 
   if(options.help || !options.snakeScript && !options.snakeoil){
     printUsage(options);
+    process.exit();
   }
 
   if(!options.user){
@@ -265,7 +266,7 @@ function printUsage(options){
     console.log(' --silent : snakebot log is silenced');
     console.log(' --mambadbg : show all mamba logs');
     console.log(' --gamelink : open GameLink');
-    console.log(' --snakeoil <4242> : enable SnakeOil bot bus');
+    console.log(' --snakeoil <4242> : enable SnakeOil bot bus (sandbox feature)');
     console.log('\n');
 }
 
