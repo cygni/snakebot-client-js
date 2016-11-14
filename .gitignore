@@ -17,5 +17,4 @@ out
 # OSX
 .DS_Store
 
-snakebot-js/node_modules
-
+node_modules
