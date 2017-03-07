@@ -31,7 +31,12 @@ initSnakeBot(launchGame);
  */
 function launchGame(theSnakeBot){
   snakeBot = theSnakeBot;
-  client.connect(options.venue);
+
+  if (options.venue === 'arena') {
+    client.connect(options.venue + '/' + options.arena);
+  } else {
+    client.connect(options.venue);
+  }
 }
 
 /**
@@ -60,12 +65,12 @@ function handleGameUpdate(mapUpdateEvent, onResponse){
  * @param exit true if process should exit.
  */
 function endGame(exit){
-  var fProcEnd = exit ? function(){process.exit()} : 0;
+  var fProcEnd = exit ? function() { process.exit() } : function() { return };
   snakeBot.gameEnded();
 
-  if(options.gamelink){
+  if(options.gamelink && gameLink){
     open(gameLink.getUrl());
-  } else {
+  } else if (gameLink) {
     log("GameLink: " + gameLink.getUrl());
   }
 
@@ -97,6 +102,7 @@ function onEvent(event){
 
     case 'GAME_MAP_UPDATED':
       log('Game map updated - gameTick:' + event.payload.getGameTick());
+      log('gameid: ' + event.payload.getGameId());
       handleGameUpdate(event.payload, function(debugData) {
         renderer.record(event.payload, debugData);
       });
@@ -109,7 +115,9 @@ function onEvent(event){
 
     case 'NEW_GAME_STARTED':
       log('New game started!');
+      log(JSON.stringify(event.payload));
       var gameStarted = event.payload;
+
       renderer = MapRenderer(gameStarted.getWidth(), gameStarted.getHeight());
       break;
 
@@ -120,8 +128,9 @@ function onEvent(event){
 
     case 'GAME_ENDED':
       log('Game ended!');
+      log(JSON.stringify(event.payload));
       renderer.record(event.payload);
-      endGame(!isTournament()); // Do not exit in tournament mode.
+      endGame(!isTournament() && !isArena()); // Do not exit in tournament mode.
       break;
 
     case 'GAME_RESULT':
@@ -217,6 +226,10 @@ function isTournament(){
   return gameInfo.getGameMode() === 'TOURNAMENT';
 }
 
+function isArena() {
+  return gameInfo.getGameMode() === 'ARENA';
+}
+
 /**
  * Parses the command line options.
  * @param argv minimist command line options
@@ -230,6 +243,7 @@ function parseOptions(argv){
     host        : argv.host ? argv.host : 'snake.cygni.se',
     port        : argv.port ? argv.port : 80,
     venue       : argv.venue ? argv.venue : 'training',
+    arena       : argv.a ? argv.arena : 'official',
     training    : argv.t || argv.training,
     renderMode  : argv.norender ? 'norender' : argv.animate ? 'animate' : 'default',
     silentLog   : argv.silent,
@@ -259,8 +273,9 @@ function printUsage(options){
     console.log(' -u, --user <username> : the username');
     console.log(' --host <snake.cygni.se> : the host');
     console.log(' --port <80> : the server port');
-    console.log(' --venue <training> : the game room');
+    console.log(' --venue <training | arena | tournament> : the game room');
     console.log(' -t --training : force training');
+    console.log(' -a --arena : arena name');
     console.log(' --norender : no game replay');
     console.log(' --animate : animated game replay');
     console.log(' --silent : snakebot log is silenced');
