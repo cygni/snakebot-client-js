@@ -8,7 +8,6 @@ console.log('\n*** snake-cli by Cygni ***\n');
 var Colors          = {yellow: '\x1b[1m\x1b[33m', red: '\x1b[1m\x1b[31m', reset: '\x1b[0m'};
 var Mamba           = require('./domain/mamba-client.js');
 var GameSettings    = require('./domain/mamba/gameSettings.js');
-var MapRenderer     = require('./domain/mapRenderer.js');
 var Net             = require('net');
 var JsonSocket      = require('json-socket');
 var DateFormat      = require('dateformat');
@@ -56,7 +55,9 @@ function handleGameUpdate(mapUpdateEvent, onResponse){
   snakeBot.gameStateChanged(mapUpdateEvent, gameInfo.getPlayerId(), function(response) {
     response.debugData.executionTime = (now()-start).toFixed(3);
     client.moveSnake(response.direction, mapUpdateEvent.getGameTick());
-    onResponse(response.debugData);
+    if (onResponse) {
+      onResponse(response.debugData);
+    }
   });
 }
 
@@ -74,13 +75,7 @@ function endGame(exit){
     log("GameLink: " + gameLink.getUrl());
   }
 
-  if(options.renderMode == 'norender'){
-    fProcEnd();
-  } else if(options.renderMode == 'animate'){
-    renderer.render({animate: true, delay: 500, followPid : gameInfo.getPlayerId()}, fProcEnd);
-  } else {
-    renderer.render({followPid : gameInfo.getPlayerId()}, fProcEnd);
-  }
+  fProcEnd();
 }
 
 // Mamba client events are handled and responded to below.
@@ -96,29 +91,23 @@ function onEvent(event){
     case 'REGISTERED':
       log('Ready to play!');
       gameInfo = event.payload;
-      renderer = MapRenderer();
       client.startGame();
       break;
 
     case 'GAME_MAP_UPDATED':
       log('Game map updated - gameTick:' + event.payload.getGameTick());
       log('gameid: ' + event.payload.getGameId());
-      handleGameUpdate(event.payload, function(debugData) {
-        renderer.record(event.payload, debugData);
-      });
+      handleGameUpdate(event.payload);
       break;
 
     case 'GAME_SNAKE_DEAD':
       log('A snake died!');
-      renderer.record(event.payload);
       break;
 
     case 'NEW_GAME_STARTED':
       log('New game started!');
       log(JSON.stringify(event.payload));
       var gameStarted = event.payload;
-
-      renderer = MapRenderer(gameStarted.getWidth(), gameStarted.getHeight());
       break;
 
     case 'GAME_LINK':
@@ -129,8 +118,7 @@ function onEvent(event){
     case 'GAME_ENDED':
       log('Game ended!');
       log(JSON.stringify(event.payload));
-      renderer.record(event.payload);
-      endGame(!isTournament() && !isArena()); // Do not exit in tournament mode.
+      endGame(!isTournament() && !isArena()); // Do not exit in tournament or arena mode.
       break;
 
     case 'GAME_RESULT':
@@ -139,7 +127,6 @@ function onEvent(event){
 
     case 'TOURNAMENT_ENDED':
       log('Tournament ended!');
-      renderer.record(event.payload);
       endGame(true);
       break;
 
@@ -243,9 +230,8 @@ function parseOptions(argv){
     host        : argv.host ? argv.host : 'snake.cygni.se',
     port        : argv.port ? argv.port : 80,
     venue       : argv.venue ? argv.venue : 'training',
-    arena       : argv.a ? argv.arena : 'official',
+    arena       : argv.arena ? argv.arena : 'official',
     training    : argv.t || argv.training,
-    renderMode  : argv.norender ? 'norender' : argv.animate ? 'animate' : 'default',
     silentLog   : argv.silent,
     mambaDebug  : argv.mambadbg,
     gamelink    : argv.gamelink,
@@ -275,9 +261,7 @@ function printUsage(options){
     console.log(' --port <80> : the server port');
     console.log(' --venue <training | arena | tournament> : the game room');
     console.log(' -t --training : force training');
-    console.log(' -a --arena : arena name');
-    console.log(' --norender : no game replay');
-    console.log(' --animate : animated game replay');
+    console.log(' --arena : arena name');
     console.log(' --silent : snakebot log is silenced');
     console.log(' --mambadbg : show all mamba logs');
     console.log(' --gamelink : open GameLink');
