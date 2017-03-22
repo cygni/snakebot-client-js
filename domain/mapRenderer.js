@@ -83,8 +83,19 @@ function MapRendererDoT(){
       updateGameSnakes(tick, gameSnakes, gameState, gameEvents);
       renderGameState(gameState, gameSnakes, debugData);
     }
-    renderEndOfGame(gameSnakes, gameStates[totalTicks - 1], recordedGameEvents[totalTicks - 1]);
+
+    renderEndOfGame(gameSnakes, getGameEndedEvent(gameStates), recordedGameEvents[totalTicks - 1]);
     onComplete ? onComplete() : 0;
+  }
+
+  function getGameEndedEvent(gameStates) {
+
+    var tickKeys = Object.keys(gameStates);
+    var key = tickKeys.find(function (tick) {
+      return gameStates[tick].type === 'se.cygni.snake.api.event.GameEndedEvent'
+    });
+
+    return gameStates[key];
   }
 
   function renderAnimated(gameStates, settings, onComplete){
@@ -109,7 +120,8 @@ function MapRendererDoT(){
         if (renderIdx < totalTicks) {
           renderStates();
         }  else {
-          renderEndOfGame(gameSnakes, gameStates[tick]);
+          console.log(JSON.stringify(gameStates));
+          renderEndOfGame(gameSnakes, getGameEndedEvent(gameStates));
           onComplete ? onComplete() : 0;
         }
       }, settings.delay);

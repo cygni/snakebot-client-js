@@ -63,10 +63,10 @@ function endGame(exit){
   var fProcEnd = exit ? function(){process.exit()} : 0;
   snakeBot.gameEnded();
 
-  if(options.gamelink){
+  if(options.gamelink && gameLink){
     open(gameLink.getUrl());
   } else {
-    log("GameLink: " + gameLink.getUrl());
+    log("GameLink: " + (gameLink ? gameLink.getUrl() : 'no GameLink received'));
   }
 
   if(options.renderMode == 'norender'){
