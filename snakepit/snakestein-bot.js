@@ -18,14 +18,14 @@ function onMapUpdated(mapState, myUserId) {
     // 2. Do some nifty planning...
     // (Tip: see MapUtils for some off-the-shelf navigation aid.
 
-    const directions = ['up', 'down', 'left', 'right'];
-    for (const key in directions) {
-        if (MapUtils.canIMoveInDirection(directions[key], myCoords, map)) {
-            direction = directions[key].toUpperCase();
-            log(direction);
-            break;
+    ['left', 'right', 'up', 'down'].some((dir) => {
+        if (MapUtils.canIMoveInDirection(dir, myCoords, map)) {
+            direction = dir.toUpperCase();
+            return true;
         }
-    }
+
+        return false;
+    });
 
     // 3. Then shake that snake!
     return {

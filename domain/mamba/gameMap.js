@@ -1,60 +1,110 @@
 const SnakeInfos = require('./snakeInfos.js');
 
+/**
+ * GameMap
+ *
+ * @param {number} width Width of the map.
+ * @param {number} height Height of the map.
+ * @param {number} worldTick The current world tick.
+ * @param {array<number>} foodPositions Positions of food in the map
+ * @param {array<number>} obstaclePositions Positions of obstacles in the map.
+ * @param {array<SnakeInfos>} snakeInfos The snakes in the map.
+ * @returns {object}
+ * @constructor
+ */
 function GameMap(width, height, worldTick, foodPositions, obstaclePositions, snakeInfos) {
     const type = 'Map';
-    var width = width;
-    var height = height;
-    var worldTick = worldTick;
-    var foodPositions = foodPositions;
-    var obstaclePositions = obstaclePositions;
-    var snakeInfos = snakeInfos;
+    let _width = width;
+    let _height = height;
+    let _worldTick = worldTick;
+    let _foodPositions = foodPositions;
+    let _obstaclePositions = obstaclePositions;
+    let _snakeInfos = snakeInfos;
 
     const toString = function () {
-        return `<Type:${type}, width:${width}, height:${height}worldTick:${worldTick
-        }, foodPositions:${foodPositions}, obstaclePositions:${obstaclePositions}, snakeInfos:${snakeInfos}>`;
+        return `<Type:${type}, width:${_width}, height:${_height}worldTick:${_worldTick
+        }, foodPositions:${_foodPositions}, obstaclePositions:${_obstaclePositions}, snakeInfos:${_snakeInfos}>`;
     };
 
+    /**
+     * Get map width.
+     *
+     * @return {number} Map width.
+     */
     function getWidth() {
-        return width;
+        return _width;
     }
 
+    /**
+     * Get map height.
+     *
+     * @return {number} Map height.
+     */
     function getHeight() {
-        return height;
+        return _height;
     }
 
+    /**
+     * Get world tick.
+     *
+     * @return {number} Current world tick.
+     */
     function getWorldTick() {
-        return worldTick;
+        return _worldTick;
     }
 
+    /**
+     * Get food positions.
+     *
+     * @return {array<number>} Array of food positions.
+     */
     function getFoodPositions() {
-        return foodPositions;
+        return _foodPositions;
     }
 
+    /**
+     * Get food positions.
+     *
+     * @return {array<number>} Array of obstacle positions.
+     */
     function getObstaclePositions() {
-        return obstaclePositions;
+        return _obstaclePositions;
     }
 
+    /**
+     * Get food positions.
+     *
+     * @return {array<snakeinfo>} Array of snake infos.
+     */
     function getSnakeInfos() {
-        return snakeInfos;
+        return _snakeInfos;
     }
 
+    /**
+     * Get the snake info for a specific snake.
+     *
+     * @param {string} playerId The id of the snake to retreive.
+     * @return {SnakeInfos} Snake info.
+     */
     function getSnakeInfoForId(playerId) {
-        for (let i = 0; i < snakeInfos.length; i++) {
-            if (snakeInfos[i].getId() === playerId) {
-                return snakeInfos[i];
+        for (let i = 0; i < _snakeInfos.length; i++) {
+            if (_snakeInfos[i].getId() === playerId) {
+                return _snakeInfos[i];
             }
         }
+
+        throw new Error(`Unable to find snake width id ${playerId}`);
     }
 
     const marshall = function () {
         return {
             type,
-            width,
-            height,
-            worldTick,
-            foodPositions,
-            obstaclePositions,
-            snakeInfos: snakeInfos.map(val => val.marshall())
+            width: _width,
+            height: _height,
+            worldTick: _worldTick,
+            foodPositions: _foodPositions,
+            obstaclePositions: _obstaclePositions,
+            snakeInfos: _snakeInfos.map(val => val.marshall())
         };
     };
 

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: mamba/gameMap.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: mamba/gameMap.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const SnakeInfos = require('./snakeInfos.js');
+
+/**
+ * GameMap
+ *
+ * @param {number} width Width of the map.
+ * @param {number} height Height of the map.
+ * @param {number} worldTick The current world tick.
+ * @param {array&lt;number>} foodPositions Positions of food in the map
+ * @param {array&lt;number>} obstaclePositions Positions of obstacles in the map.
+ * @param {array&lt;SnakeInfos>} snakeInfos The snakes in the map.
+ * @returns {object}
+ * @constructor
+ */
+function GameMap(width, height, worldTick, foodPositions, obstaclePositions, snakeInfos) {
+    const type = 'Map';
+    let _width = width;
+    let _height = height;
+    let _worldTick = worldTick;
+    let _foodPositions = foodPositions;
+    let _obstaclePositions = obstaclePositions;
+    let _snakeInfos = snakeInfos;
+
+    const toString = function () {
+        return `&lt;Type:${type}, width:${_width}, height:${_height}worldTick:${_worldTick
+        }, foodPositions:${_foodPositions}, obstaclePositions:${_obstaclePositions}, snakeInfos:${_snakeInfos}>`;
+    };
+
+    /**
+     * Get map width.
+     *
+     * @return {number} Map width.
+     */
+    function getWidth() {
+        return _width;
+    }
+
+    /**
+     * Get map height.
+     *
+     * @return {number} Map height.
+     */
+    function getHeight() {
+        return _height;
+    }
+
+    /**
+     * Get world tick.
+     *
+     * @return {number} Current world tick.
+     */
+    function getWorldTick() {
+        return _worldTick;
+    }
+
+    /**
+     * Get food positions.
+     *
+     * @return {array&lt;number>} Array of food positions.
+     */
+    function getFoodPositions() {
+        return _foodPositions;
+    }
+
+    /**
+     * Get food positions.
+     *
+     * @return {array&lt;number>} Array of obstacle positions.
+     */
+    function getObstaclePositions() {
+        return _obstaclePositions;
+    }
+
+    /**
+     * Get food positions.
+     *
+     * @return {array&lt;snakeinfo>} Array of snake infos.
+     */
+    function getSnakeInfos() {
+        return _snakeInfos;
+    }
+
+    /**
+     * Get the snake info for a specific snake.
+     *
+     * @param {string} playerId The id of the snake to retreive.
+     * @return {SnakeInfos} Snake info.
+     */
+    function getSnakeInfoForId(playerId) {
+        for (let i = 0; i &lt; _snakeInfos.length; i++) {
+            if (_snakeInfos[i].getId() === playerId) {
+                return _snakeInfos[i];
+            }
+        }
+
+        throw new Error(`Unable to find snake width id ${playerId}`);
+    }
+
+    const marshall = function () {
+        return {
+            type,
+            width: _width,
+            height: _height,
+            worldTick: _worldTick,
+            foodPositions: _foodPositions,
+            obstaclePositions: _obstaclePositions,
+            snakeInfos: _snakeInfos.map(val => val.marshall())
+        };
+    };
+
+    return Object.freeze({
+        getWidth,
+        getHeight,
+        getWorldTick,
+        getSnakeInfos,
+        getSnakeInfoForId,
+        getFoodPositions,
+        getObstaclePositions,
+        marshall,
+        toString,
+        type
+    });
+}
+
+function create(data) {
+    return GameMap(
+        data.width,
+        data.height,
+        data.worldTick,
+        data.foodPositions,
+        data.obstaclePositions,
+        data.snakeInfos.map(SnakeInfos.create)
+    );
+}
+
+exports.new = GameMap;
+exports.create = create;
+exports.type = GameMap().type;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GameMap.html">GameMap</a></li><li><a href="Mamba.html">Mamba</a></li><li><a href="SnakeInfos.html">SnakeInfos</a></li></ul><h3>Global</h3><ul><li><a href="global.html#canIMoveInDirection">canIMoveInDirection</a></li><li><a href="global.html#getEuclidianDistance">getEuclidianDistance</a></li><li><a href="global.html#getManhattanDistance">getManhattanDistance</a></li><li><a href="global.html#getOccupiedMapTiles">getOccupiedMapTiles</a></li><li><a href="global.html#getSnakeCoordinates">getSnakeCoordinates</a></li><li><a href="global.html#getSnakeLength">getSnakeLength</a></li><li><a href="global.html#getSnakePosition">getSnakePosition</a></li><li><a href="global.html#getSnakesCoordinates">getSnakesCoordinates</a></li><li><a href="global.html#getTileAt">getTileAt</a></li><li><a href="global.html#getTileInDirection">getTileInDirection</a></li><li><a href="global.html#isCoordinateOutOfBounds">isCoordinateOutOfBounds</a></li><li><a href="global.html#isTileAvailableForMovementTo">isTileAvailableForMovementTo</a></li><li><a href="global.html#isWithinSquare">isWithinSquare</a></li><li><a href="global.html#listCoordinatesContainingFood">listCoordinatesContainingFood</a></li><li><a href="global.html#listCoordinatesContainingObstacle">listCoordinatesContainingObstacle</a></li><li><a href="global.html#positionsToCoords">positionsToCoords</a></li><li><a href="global.html#sortByClosestTo">sortByClosestTo</a></li><li><a href="global.html#translateCoordinate">translateCoordinate</a></li><li><a href="global.html#translateCoordinates">translateCoordinates</a></li><li><a href="global.html#translatePosition">translatePosition</a></li><li><a href="global.html#translatePositions">translatePositions</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Oct 29 2017 01:01:11 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

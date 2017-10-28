@@ -1,45 +1,87 @@
+/**
+ * SnakeInfos
+ *
+ * @param {string} name The name of the snake.
+ * @param {number} points The score of the snake.
+ * @param {positions}  positions The positions of the snake.
+ * @param {string} id Id of the snake.
+ * @returns {object}
+ * @constructor
+ */
 function SnakeInfos(name, points, positions, id) {
     const type = 'SnakeInfos';
-    var name = name;
-    var points = points;
-    var positions = positions;
-    var id = id;
+    let _name = name;
+    let _points = points;
+    let _positions = positions;
+    let _id = id;
 
     const toString = function () {
         return `<Type:${type}, name:${name
         }, points:${points}, positions:${positions}, id:${id}>`;
     };
 
+    /**
+     * Get snake name.
+     *
+     * @return {string} Snake name.
+     */
     function getName() {
-        return name;
+        return _name;
     }
 
+    /**
+     * Get the score of the snake.
+     *
+     * @return {number} Snake score.
+     */
     function getPoints() {
-        return points;
+        return _points;
     }
 
+    /**
+     * Get the positions of the snake.
+     *
+     * @return {array<number>} The positions of the snake. This array is ordered
+     * in the direction that the snake is moving. The head is on index 0 and
+     * the tail is the last item..
+     */
     function getPositions() {
-        return positions;
+        return _positions;
     }
 
+    /**
+     * Get the id of the snake.
+     *
+     * @return {string} Snake id.
+     */
     function getId() {
-        return id;
+        return _id;
     }
 
+    /**
+     * Get the length of the snake.
+     *
+     * @return {number} Snake length.
+     */
     function getLength() {
-        return positions.length;
+        return _positions.length;
     }
 
+    /**
+     * Check if the snake is alive.
+     *
+     * @return {boolean} True if the snake is alive.
+     */
     function isAlive() {
-        return positions.length > 0;
+        return _positions.length > 0;
     }
 
     const marshall = function () {
         return {
             type,
-            name,
-            points: JSON.stringify(points),
-            positions: JSON.stringify(positions),
+            name: _name,
+            points: JSON.stringify(_points),
+            positions: JSON.stringify(_positions),
             id
         };
     };

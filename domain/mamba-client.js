@@ -46,17 +46,17 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
     if (!host) {
         logError("No host you say? That's just plain rude you scurvy rebel!");
-        return;
+        return null;
     }
 
     if (!port) {
         logError("No port given, you sure are optimistic! I'm not.");
-        return;
+        return null;
     }
 
     if (!eventListener) {
         logError('Missing event listener...so I\'m supposed to talk to the hand yeah?');
-        return;
+        return null;
     }
 
     // Subscribe caller to the event bus

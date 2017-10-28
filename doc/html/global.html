@@ -154,7 +154,16 @@
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">'UP'</span>
+|
+
+<span class="param-type">'DOWN'</span>
+|
+
+<span class="param-type">'LEFT'</span>
+|
+
+<span class="param-type">'RIGHT'</span>
 
 
             
@@ -164,7 +173,7 @@
 
             
 
-            <td class="description last">[ 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' ]</td>
+            <td class="description last">The direction to check.</td>
         </tr>
 
     
@@ -177,7 +186,7 @@
             <td class="type">
             
                 
-<span class="param-type">coordinate</span>
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
 
 
             
@@ -187,7 +196,7 @@
 
             
 
-            <td class="description last">The position of the snakes head. { x: (number), y: (number) }</td>
+            <td class="description last">The position of the snakes head.</td>
         </tr>
 
     
@@ -200,7 +209,7 @@
             <td class="type">
             
                 
-<span class="param-type">map</span>
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
 
 
             
@@ -210,7 +219,7 @@
 
             
 
-            <td class="description last">The game map</td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -251,7 +260,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line309">line 309</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line370">line 370</a>
     </li></ul></dd>
     
 
@@ -277,6 +286,10 @@
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    True if movement will not result in death.
+</div>
+
 
 
 <dl>
@@ -354,7 +367,7 @@ Note that eculidan distance will walk diagonally.
             <td class="type">
             
                 
-<span class="param-type">coordinate</span>
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
 
 
             
@@ -364,7 +377,7 @@ Note that eculidan distance will walk diagonally.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Start coordinate.</td>
         </tr>
 
     
@@ -377,7 +390,7 @@ Note that eculidan distance will walk diagonally.
             <td class="type">
             
                 
-<span class="param-type">coordinate</span>
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
 
 
             
@@ -387,7 +400,7 @@ Note that eculidan distance will walk diagonally.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Goal coordinate.</td>
         </tr>
 
     
@@ -428,7 +441,7 @@ Note that eculidan distance will walk diagonally.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line29">line 29</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line54">line 54</a>
     </li></ul></dd>
     
 
@@ -455,7 +468,7 @@ Note that eculidan distance will walk diagonally.
 
         
 <div class="param-desc">
-    Distance in map units
+    Distance in map units.
 </div>
 
 
@@ -492,7 +505,8 @@ Note that eculidan distance will walk diagonally.
 
 
 <div class="description">
-    Calculates the Manhattan (or cab/grid) distance from point a to point b.
+    S
+Calculates the Manhattan (or cab/grid) distance from point a to point b.
 Note that Manhattan distance will not walk diagonally.
 </div>
 
@@ -535,7 +549,7 @@ Note that Manhattan distance will not walk diagonally.
             <td class="type">
             
                 
-<span class="param-type">coordinate</span>
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
 
 
             
@@ -545,7 +559,7 @@ Note that Manhattan distance will not walk diagonally.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Start coordinate.</td>
         </tr>
 
     
@@ -558,7 +572,7 @@ Note that Manhattan distance will not walk diagonally.
             <td class="type">
             
                 
-<span class="param-type">coordinate</span>
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
 
 
             
@@ -568,7 +582,7 @@ Note that Manhattan distance will not walk diagonally.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Goal coordinate.</td>
         </tr>
 
     
@@ -609,7 +623,7 @@ Note that Manhattan distance will not walk diagonally.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line16">line 16</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -636,7 +650,7 @@ Note that Manhattan distance will not walk diagonally.
 
         
 <div class="param-desc">
-    Distance in map units
+    Distance in map units.
 </div>
 
 
@@ -665,7 +679,7 @@ Note that Manhattan distance will not walk diagonally.
     
 
     
-    <h4 class="name" id="getOccupiedMapTiles"><span class="type-signature"></span>getOccupiedMapTiles<span class="signature">(map)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="getOccupiedMapTiles"><span class="type-signature"></span>getOccupiedMapTiles<span class="signature">(map)</span><span class="type-signature"> &rarr; {object|<a href="global.html#tile">tile</a>}</span></h4>
     
 
     
@@ -673,7 +687,8 @@ Note that Manhattan distance will not walk diagonally.
 
 
 <div class="description">
-    Get all occupied map tiles and the content [food | obstacle | snakehead | snakebody]
+    Get all occupied map tiles and the content
+[ food | obstacle | snakehead | snakebody | snaketail ]
 </div>
 
 
@@ -715,7 +730,7 @@ Note that Manhattan distance will not walk diagonally.
             <td class="type">
             
                 
-<span class="param-type">map</span>
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
 
 
             
@@ -725,7 +740,7 @@ Note that Manhattan distance will not walk diagonally.
 
             
 
-            <td class="description last">the map</td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -766,7 +781,7 @@ Note that Manhattan distance will not walk diagonally.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line96">line 96</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line162">line 162</a>
     </li></ul></dd>
     
 
@@ -790,10 +805,11 @@ Note that Manhattan distance will not walk diagonally.
 
 
 <h5>Returns:</h5>
-
-        
+<ul>
+        <li>
 <div class="param-desc">
-    Object of occupied tiles where the tile position is the key
+    tiles Object of occupied tiles where the tile position is
+the key.
 </div>
 
 
@@ -804,13 +820,33 @@ Note that Manhattan distance will not walk diagonally.
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
     </dd>
 </dl>
-
+</li>
     
+        <li>
+<div class="param-desc">
+    tiles.POSITION the tile at position.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#tile">tile</a></span>
+
+
+    </dd>
+</dl>
+</li>
+    </ul>
 
 
 
@@ -822,7 +858,7 @@ Note that Manhattan distance will not walk diagonally.
     
 
     
-    <h4 class="name" id="getSnakeCoordinates"><span class="type-signature"></span>getSnakeCoordinates<span class="signature">(map)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="getSnakeCoordinates"><span class="type-signature"></span>getSnakeCoordinates<span class="signature">(playerId, map)</span><span class="type-signature"> &rarr; {array.&lt;<a href="global.html#coordinate">coordinate</a>>}</span></h4>
     
 
     
@@ -866,10 +902,15 @@ Note that Manhattan distance will not walk diagonally.
 
         <tr>
             
-                <td class="name"><code>map</code></td>
+                <td class="name"><code>playerId</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
             
             </td>
 
@@ -877,7 +918,30 @@ Note that Manhattan distance will not walk diagonally.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The snake to retrieve.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -918,7 +982,7 @@ Note that Manhattan distance will not walk diagonally.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line163">line 163</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line301">line 301</a>
     </li></ul></dd>
     
 
@@ -945,7 +1009,7 @@ Note that Manhattan distance will not walk diagonally.
 
         
 <div class="param-desc">
-    of {x: (number), y: (number)} coordinates
+    The coordinates of the snake in question.
 </div>
 
 
@@ -956,7 +1020,7 @@ Note that Manhattan distance will not walk diagonally.
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
 
 
     </dd>
@@ -1034,7 +1098,7 @@ Note that Manhattan distance will not walk diagonally.
 
             
 
-            <td class="description last">the snakes player id</td>
+            <td class="description last">The snakes player id.</td>
         </tr>
 
     
@@ -1046,13 +1110,18 @@ Note that Manhattan distance will not walk diagonally.
 
             <td class="type">
             
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last">the map</td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -1093,7 +1162,7 @@ Note that Manhattan distance will not walk diagonally.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line56">line 56</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -1120,7 +1189,7 @@ Note that Manhattan distance will not walk diagonally.
 
         
 <div class="param-desc">
-    The length of the snake
+    The length of the snake.
 </div>
 
 
@@ -1149,7 +1218,7 @@ Note that Manhattan distance will not walk diagonally.
     
 
     
-    <h4 class="name" id="getSnakePosition"><span class="type-signature"></span>getSnakePosition<span class="signature">(playerId, map)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id="getSnakePosition"><span class="type-signature"></span>getSnakePosition<span class="signature">(playerId, map)</span><span class="type-signature"> &rarr; {<a href="global.html#snakeheadcoordinate">snakeheadcoordinate</a>}</span></h4>
     
 
     
@@ -1198,13 +1267,18 @@ Note that Manhattan distance will not walk diagonally.
 
             <td class="type">
             
+                
+<span class="param-type">string</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last">the snakes player id</td>
+            <td class="description last">The snakes player id.</td>
         </tr>
 
     
@@ -1212,690 +1286,12 @@ Note that Manhattan distance will not walk diagonally.
         <tr>
             
                 <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the map</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    If the snake is dead, then x and y is coerced to 0.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getSnakesCoordinates"><span class="type-signature"></span>getSnakesCoordinates<span class="signature">(map)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the coordinates of all snakes.
-Note: You probably want to filter out your own snake.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line145">line 145</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    of {x: (number), y: (number)} coordinates
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getTileAt"><span class="type-signature"></span>getTileAt<span class="signature">(coords, map)</span><span class="type-signature"> &rarr; {object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the tile content at the given coordinate [food | obstacle | snakehead | snakebody | snaketail | outofbounds].
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>coords</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the coordinate</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the map</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line80">line 80</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    or null
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="getTileInDirection"><span class="type-signature"></span>getTileInDirection<span class="signature">(direction, direction, snakeHeadPosition, map)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Converts a MapCoordinate to the same position in the flattened
-single array representation of the Map.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>direction</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>direction</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">['UP' | 'DOWN' | 'LEFT' | 'RIGHT']</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>snakeHeadPosition</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line288">line 288</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="isCoordinateOutOfBounds"><span class="type-signature"></span>isCoordinateOutOfBounds<span class="signature">(coordinate, map)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the length of the snake with a specific id.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>coordinate</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">coordinate</span>
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
 
 
             
@@ -1905,582 +1301,7 @@ single array representation of the Map.
 
             
 
-            <td class="description last">the coordinate to check {x: {number}, y: {number}}</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the map</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line67">line 67</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="isTileAvailableForMovementTo"><span class="type-signature"></span>isTileAvailableForMovementTo<span class="signature">(direction, direction, snakeHeadPosition, map)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Converts a MapCoordinate to the same position in the flattened
-single array representation of the Map.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>direction</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>direction</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">['UP' | 'DOWN' | 'LEFT' | 'RIGHT']</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>snakeHeadPosition</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line269">line 269</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="isWithinSquare"><span class="type-signature"></span>isWithinSquare<span class="signature">(coord, neCoords, swCoords)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Check if the coordinate is within a square, ne.x|y, sw.x|y.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>coord</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">coordinate to check</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>neCoords</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">north east coordinate</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>swCoords</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">south west coordinate</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line195">line 195</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    true if within
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="listCoordinatesContainingFood"><span class="type-signature"></span>listCoordinatesContainingFood<span class="signature">(coords, map)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get all food on the map sorted by distance to the coordinate.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>coords</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the coordinate</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>map</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the map</td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -2548,7 +1369,7 @@ single array representation of the Map.
 
         
 <div class="param-desc">
-    of food coordinates
+    If the snake is dead, then x and y is set to 0.
 </div>
 
 
@@ -2559,7 +1380,7 @@ single array representation of the Map.
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type"><a href="global.html#snakeheadcoordinate">snakeheadcoordinate</a></span>
 
 
     </dd>
@@ -2577,7 +1398,7 @@ single array representation of the Map.
     
 
     
-    <h4 class="name" id="listCoordinatesContainingObstacle"><span class="type-signature"></span>listCoordinatesContainingObstacle<span class="signature">(coords, map)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="getSnakesCoordinates"><span class="type-signature"></span>getSnakesCoordinates<span class="signature">(map)</span><span class="type-signature"> &rarr; {object|array.&lt;<a href="global.html#coordinate">coordinate</a>>}</span></h4>
     
 
     
@@ -2585,7 +1406,8 @@ single array representation of the Map.
 
 
 <div class="description">
-    Get all obstacles on the map sorted by distance to the coordinate.
+    Get the coordinates of all snakes.
+Note: You probably want to filter out your own snake.
 </div>
 
 
@@ -2621,10 +1443,15 @@ single array representation of the Map.
 
         <tr>
             
-                <td class="name"><code>coords</code></td>
+                <td class="name"><code>map</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
             
             </td>
 
@@ -2632,7 +1459,579 @@ single array representation of the Map.
 
             
 
-            <td class="description last">the coordinate</td>
+            <td class="description last">The game map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line277">line 277</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+<ul>
+        <li>
+<div class="param-desc">
+    snakeCoordinates Snake coordinates indexed by playerId.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+</li>
+    
+        <li>
+<div class="param-desc">
+    snakeCoordinates.playerId The coordinates of the
+snake in question.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
+
+
+    </dd>
+</dl>
+</li>
+    </ul>
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getTileAt"><span class="type-signature"></span>getTileAt<span class="signature">(coordinate, map)</span><span class="type-signature"> &rarr; {<a href="global.html#tile">tile</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the tile content at the given coordinate
+[food | obstacle | snakehead | snakebody | snaketail | outofbounds].
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The coordinate of the tile to retrieve.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The game map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line195">line 195</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The tile in question.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#tile">tile</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getTileInDirection"><span class="type-signature"></span>getTileInDirection<span class="signature">(direction, snakeHeadPosition, map)</span><span class="type-signature"> &rarr; {<a href="global.html#tile">tile</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Converts a MapCoordinate to the same position in the flattened
+single array representation of the Map.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>direction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">'UP'</span>
+|
+
+<span class="param-type">'DOWN'</span>
+|
+
+<span class="param-type">'LEFT'</span>
+|
+
+<span class="param-type">'RIGHT'</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The direction to check.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>snakeHeadPosition</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The position of the snakes head.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The game map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line349">line 349</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Tile in the selected direction related to the snakes head.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#tile">tile</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isCoordinateOutOfBounds"><span class="type-signature"></span>isCoordinateOutOfBounds<span class="signature">(coordinate, map)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check if a coordinate is outside of the game map.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The coordinate to check.</td>
         </tr>
 
     
@@ -2650,7 +2049,7 @@ single array representation of the Map.
 
             
 
-            <td class="description last">the map</td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -2691,7 +2090,7 @@ single array representation of the Map.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line131">line 131</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line146">line 146</a>
     </li></ul></dd>
     
 
@@ -2718,7 +2117,7 @@ single array representation of the Map.
 
         
 <div class="param-desc">
-    of food coordinates
+    True if coordinate is out of bounds.
 </div>
 
 
@@ -2729,7 +2128,7 @@ single array representation of the Map.
     </dt>
     <dd>
         
-<span class="param-type">Array</span>
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -2747,344 +2146,7 @@ single array representation of the Map.
     
 
     
-    <h4 class="name" id="positionsToCoords"><span class="type-signature"></span>positionsToCoords<span class="signature">(points, mapWidth)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Converts an array of positions to an array of coordinates.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>points</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the positions to convert</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mapWidth</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the width of the map</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line205">line 205</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="sortByClosestTo"><span class="type-signature"></span>sortByClosestTo<span class="signature">(items, coords)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Sorts the items in the array from closest to farthest
-in relation to the given coordinate using Manhattan distance.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>items</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the items (must expose ::getX() and ::getY();</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>coords</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line176">line 176</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    the ordered array with the closest item at the end.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="translateCoordinate"><span class="type-signature"></span>translateCoordinate<span class="signature">(coordinate, mapWidth)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="isTileAvailableForMovementTo"><span class="type-signature"></span>isTileAvailableForMovementTo<span class="signature">(coordinate, map)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -3134,23 +2196,33 @@ single array representation of the Map.
 
             <td class="type">
             
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The coordinate.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>mapWidth</code></td>
+                <td class="name"><code>map</code></td>
             
 
             <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
             
             </td>
 
@@ -3158,7 +2230,7 @@ single array representation of the Map.
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -3199,7 +2271,7 @@ single array representation of the Map.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line243">line 243</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line331">line 331</a>
     </li></ul></dd>
     
 
@@ -3226,10 +2298,23 @@ single array representation of the Map.
 
         
 <div class="param-desc">
-    [...Object]
+    True if movement to the coordinate in question does not
+result in death.
 </div>
 
 
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
 
     
 
@@ -3243,7 +2328,1112 @@ single array representation of the Map.
     
 
     
-    <h4 class="name" id="translateCoordinates"><span class="type-signature"></span>translateCoordinates<span class="signature">(coordinates, map)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="isWithinSquare"><span class="type-signature"></span>isWithinSquare<span class="signature">(coordinate, neCoordinate, swCoordinate)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check if the coordinate is within a square, ne.x|y, sw.x|y.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The coordinate to check.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>neCoordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">North east coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>swCoordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">South west coordinate.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line315">line 315</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    True if within.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="listCoordinatesContainingFood"><span class="type-signature"></span>listCoordinatesContainingFood<span class="signature">(coordinate, map)</span><span class="type-signature"> &rarr; {array.&lt;<a href="global.html#coordinate">coordinate</a>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get all food on the map sorted by distance to the coordinate.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The game map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line247">line 247</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Array of food coordinates.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="listCoordinatesContainingObstacle"><span class="type-signature"></span>listCoordinatesContainingObstacle<span class="signature">(coordinate, map)</span><span class="type-signature"> &rarr; {array.&lt;<a href="global.html#coordinate">coordinate</a>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get all obstacles on the map sorted by distance to the coordinate.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>map</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The game map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line261">line 261</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Array of obstacle coordinates.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="positionsToCoords"><span class="type-signature"></span>positionsToCoords<span class="signature">(positions, mapWidth)</span><span class="type-signature"> &rarr; {array.&lt;<a href="global.html#coordinate">coordinate</a>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Converts an array of positions to an array of coordinates.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>positions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The positions to convert.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mapWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width of the map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line213">line 213</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Array of coordinates.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="sortByClosestTo"><span class="type-signature"></span>sortByClosestTo<span class="signature">(items, coordinate)</span><span class="type-signature"> &rarr; {array.&lt;item>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sorts the items in the array from closest to farthest
+in relation to the given coordinate using Manhattan distance.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>items</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the items (must expose ::getX() and ::getY();</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The coordinate used as a reference.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line225">line 225</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The ordered array with the closest item at the end.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;item></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="translateCoordinate"><span class="type-signature"></span>translateCoordinate<span class="signature">(coordinate, mapWidth)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Converts a MapCoordinate to the same position in the flattened
+single array representation of the Map.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>coordinate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Coordinate to translate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mapWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width of the game map.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line95">line 95</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Flattened single array position.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="translateCoordinates"><span class="type-signature"></span>translateCoordinates<span class="signature">(coordinates, map)</span><span class="type-signature"> &rarr; {array.&lt;number>}</span></h4>
     
 
     
@@ -3293,13 +3483,18 @@ single array representation of the Map.
 
             <td class="type">
             
+                
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Array of coordinates to translate.</td>
         </tr>
 
     
@@ -3311,13 +3506,18 @@ single array representation of the Map.
 
             <td class="type">
             
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -3358,7 +3558,7 @@ single array representation of the Map.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line255">line 255</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line107">line 107</a>
     </li></ul></dd>
     
 
@@ -3385,10 +3585,22 @@ single array representation of the Map.
 
         
 <div class="param-desc">
-    []
+    Array of flattened single array positions.
 </div>
 
 
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;number></span>
+
+
+    </dd>
+</dl>
 
     
 
@@ -3402,7 +3614,7 @@ single array representation of the Map.
     
 
     
-    <h4 class="name" id="translatePosition"><span class="type-signature"></span>translatePosition<span class="signature">(position)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="translatePosition"><span class="type-signature"></span>translatePosition<span class="signature">(position, mapWidth)</span><span class="type-signature"> &rarr; {<a href="global.html#coordinate">coordinate</a>}</span></h4>
     
 
     
@@ -3452,13 +3664,41 @@ of the Map to a MapCoordinate.
 
             <td class="type">
             
+                
+<span class="param-type">number</span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The position to convert.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mapWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width of the map.</td>
         </tr>
 
     
@@ -3499,7 +3739,7 @@ of the Map to a MapCoordinate.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line216">line 216</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -3526,10 +3766,22 @@ of the Map to a MapCoordinate.
 
         
 <div class="param-desc">
-    [...Object]
+    Coordinate of the position.
 </div>
 
 
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="global.html#coordinate">coordinate</a></span>
+
+
+    </dd>
+</dl>
 
     
 
@@ -3543,7 +3795,7 @@ of the Map to a MapCoordinate.
     
 
     
-    <h4 class="name" id="translatePositions"><span class="type-signature"></span>translatePositions<span class="signature">(positions, map)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="translatePositions"><span class="type-signature"></span>translatePositions<span class="signature">(positions, map)</span><span class="type-signature"> &rarr; {array.&lt;<a href="global.html#coordinate">coordinate</a>>}</span></h4>
     
 
     
@@ -3593,13 +3845,18 @@ of the Map to an array of coordinates { x: number, y: number}.
 
             <td class="type">
             
+                
+<span class="param-type">array.&lt;number></span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The positions to translate</td>
         </tr>
 
     
@@ -3611,13 +3868,18 @@ of the Map to an array of coordinates { x: number, y: number}.
 
             <td class="type">
             
+                
+<span class="param-type"><a href="GameMap.html">GameMap</a></span>
+
+
+            
             </td>
 
             
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The game map.</td>
         </tr>
 
     
@@ -3658,7 +3920,7 @@ of the Map to an array of coordinates { x: number, y: number}.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line230">line 230</a>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line82">line 82</a>
     </li></ul></dd>
     
 
@@ -3685,10 +3947,22 @@ of the Map to an array of coordinates { x: number, y: number}.
 
         
 <div class="param-desc">
-    [...Object]
+    Array of coordinates
 </div>
 
 
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array.&lt;<a href="global.html#coordinate">coordinate</a>></span>
+
+
+    </dd>
+</dl>
 
     
 
@@ -3699,6 +3973,451 @@ of the Map to an array of coordinates { x: number, y: number}.
         
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id="coordinate">coordinate</h4>
+
+
+
+
+<div class="description">
+    Coordinate: { x: number, y: number }
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The X Coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Y Coordinate.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line8">line 8</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="snakeheadcoordinate">snakeheadcoordinate</h4>
+
+
+
+
+<div class="description">
+    Snake head coordinate: { x: number, y: number, alive: boolean }
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The X Coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The Y Coordinate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>alive</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">True if snake is alive.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="tile">tile</h4>
+
+
+
+
+<div class="description">
+    Tile: { content: string }
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The contents of the tile.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="mapUtils.js.html">mapUtils.js</a>, <a href="mapUtils.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
     
 
     
@@ -3712,13 +4431,13 @@ of the Map to an array of coordinates { x: number, y: number}.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Mamba.html">Mamba</a></li></ul><h3>Global</h3><ul><li><a href="global.html#canIMoveInDirection">canIMoveInDirection</a></li><li><a href="global.html#getEuclidianDistance">getEuclidianDistance</a></li><li><a href="global.html#getManhattanDistance">getManhattanDistance</a></li><li><a href="global.html#getOccupiedMapTiles">getOccupiedMapTiles</a></li><li><a href="global.html#getSnakeCoordinates">getSnakeCoordinates</a></li><li><a href="global.html#getSnakeLength">getSnakeLength</a></li><li><a href="global.html#getSnakePosition">getSnakePosition</a></li><li><a href="global.html#getSnakesCoordinates">getSnakesCoordinates</a></li><li><a href="global.html#getTileAt">getTileAt</a></li><li><a href="global.html#getTileInDirection">getTileInDirection</a></li><li><a href="global.html#isCoordinateOutOfBounds">isCoordinateOutOfBounds</a></li><li><a href="global.html#isTileAvailableForMovementTo">isTileAvailableForMovementTo</a></li><li><a href="global.html#isWithinSquare">isWithinSquare</a></li><li><a href="global.html#listCoordinatesContainingFood">listCoordinatesContainingFood</a></li><li><a href="global.html#listCoordinatesContainingObstacle">listCoordinatesContainingObstacle</a></li><li><a href="global.html#positionsToCoords">positionsToCoords</a></li><li><a href="global.html#sortByClosestTo">sortByClosestTo</a></li><li><a href="global.html#translateCoordinate">translateCoordinate</a></li><li><a href="global.html#translateCoordinates">translateCoordinates</a></li><li><a href="global.html#translatePosition">translatePosition</a></li><li><a href="global.html#translatePositions">translatePositions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GameMap.html">GameMap</a></li><li><a href="Mamba.html">Mamba</a></li><li><a href="SnakeInfos.html">SnakeInfos</a></li></ul><h3>Global</h3><ul><li><a href="global.html#canIMoveInDirection">canIMoveInDirection</a></li><li><a href="global.html#getEuclidianDistance">getEuclidianDistance</a></li><li><a href="global.html#getManhattanDistance">getManhattanDistance</a></li><li><a href="global.html#getOccupiedMapTiles">getOccupiedMapTiles</a></li><li><a href="global.html#getSnakeCoordinates">getSnakeCoordinates</a></li><li><a href="global.html#getSnakeLength">getSnakeLength</a></li><li><a href="global.html#getSnakePosition">getSnakePosition</a></li><li><a href="global.html#getSnakesCoordinates">getSnakesCoordinates</a></li><li><a href="global.html#getTileAt">getTileAt</a></li><li><a href="global.html#getTileInDirection">getTileInDirection</a></li><li><a href="global.html#isCoordinateOutOfBounds">isCoordinateOutOfBounds</a></li><li><a href="global.html#isTileAvailableForMovementTo">isTileAvailableForMovementTo</a></li><li><a href="global.html#isWithinSquare">isWithinSquare</a></li><li><a href="global.html#listCoordinatesContainingFood">listCoordinatesContainingFood</a></li><li><a href="global.html#listCoordinatesContainingObstacle">listCoordinatesContainingObstacle</a></li><li><a href="global.html#positionsToCoords">positionsToCoords</a></li><li><a href="global.html#sortByClosestTo">sortByClosestTo</a></li><li><a href="global.html#translateCoordinate">translateCoordinate</a></li><li><a href="global.html#translateCoordinates">translateCoordinates</a></li><li><a href="global.html#translatePosition">translatePosition</a></li><li><a href="global.html#translatePositions">translatePositions</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Oct 28 2017 22:56:53 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Oct 29 2017 01:01:11 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
