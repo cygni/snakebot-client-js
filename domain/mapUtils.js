@@ -36,8 +36,7 @@ function getEuclidianDistance(startCoord, goalCoord) {
  * Find where the head of the snake is on the map.
  * @param playerId the snakes player id
  * @param map the map
- * @return {x: (Number), y: (Number), alive: (Boolean)}
- *          If the snake is dead, then x and y is coerced to 0.
+ * @return {object} If the snake is dead, then x and y is coerced to 0.
  */
 function getSnakePosition(playerId, map) {
     const snake = map.getSnakeInfoForId(playerId);
@@ -61,9 +60,9 @@ function getSnakeLength(playerId, map) {
 
 /**
  * Get the length of the snake with a specific id.
- * @param coordinate the coordinate to check {x: (Number), y: (Number)}
+ * @param {coordinate} coordinate the coordinate to check {x: {number}, y: {number}}
  * @param map the map
- * @return [Boolean]
+ * @return {boolean}
  */
 function isCoordinateOutOfBounds(coordinate, map) {
     return coordinate.x < 0 ||
@@ -76,7 +75,7 @@ function isCoordinateOutOfBounds(coordinate, map) {
  * Get the tile content at the given coordinate [food | obstacle | snakehead | snakebody | snaketail | outofbounds].
  * @param coords the coordinate
  * @param map the map
- * @returns {{content: String}} or null
+ * @returns {object} or null
  */
 function getTileAt(coordinate, map) {
     if (isCoordinateOutOfBounds(coordinate, map)) {
@@ -201,7 +200,7 @@ function isWithinSquare(coord, neCoords, swCoords) {
  * Converts an array of positions to an array of coordinates.
  * @param points the positions to convert
  * @param mapWidth the width of the map
- * @returns {{x: (Number), y: (Number)}}
+ * @returns {{x: {number}, y: {number}}}
  */
 function positionsToCoords(positions, mapWidth) {
     return positions.map(pos => translatePosition(pos, mapWidth));
@@ -212,7 +211,7 @@ function positionsToCoords(positions, mapWidth) {
  * of the Map to a MapCoordinate.
  *
  * @param position
- * @return
+ * @return [...Object]
  */
 function translatePosition(position, mapWidth) {
     const y = Math.floor(position / mapWidth);
@@ -226,7 +225,7 @@ function translatePosition(position, mapWidth) {
  *
  * @param positions
  * @param map
- * @return [{ x: number, y: number }, { x: number, y: number}]
+ * @return [...Object]
  */
 function translatePositions(positions, map) {
     return positions.map(p => translatePosition(p, map.width));
@@ -239,7 +238,7 @@ function translatePositions(positions, map) {
  *
  * @param coordinate
  * @param mapWidth
- * @return
+ * @return [...Object]
  */
 function translateCoordinate(coords, mapWidth) {
     return coords.x + coords.y * mapWidth;
@@ -265,7 +264,7 @@ function translateCoordinates(coordinates, mapWidth) {
  * @param direction ['UP' | 'DOWN' | 'LEFT' | 'RIGHT']
  * @param snakeHeadPosition
  * @param map
- * @return boolean
+ * @return {boolean}
  */
 function isTileAvailableForMovementTo(coordinate, map) {
     const tile = getTileAt(coordinate, map);
@@ -284,7 +283,7 @@ function isTileAvailableForMovementTo(coordinate, map) {
  * @param direction ['UP' | 'DOWN' | 'LEFT' | 'RIGHT']
  * @param snakeHeadPosition
  * @param map
- * @return boolean
+ * @return {boolean}
  */
 function getTileInDirection(direction, snakeHeadPosition, map) {
     const directionMovementDelta = directionMovementDeltas[direction.toLocaleLowerCase()];

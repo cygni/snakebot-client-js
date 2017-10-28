@@ -9,7 +9,7 @@
     "scripts": {
         "lint": "eslint ./",
         "test": "mocha",
-        "doc": "jsdoc ./domain -d doc"
+        "doc": "jsdoc2md ./**/*.js > doc/api.md"
     },
     "dependencies": {
         "bindings": "^1.2.1",
@@ -18,6 +18,7 @@
         "commander": "^2.9.0",
         "dateformat": "^1.0.12",
         "dot": "^1.0.3",
+        "jsdoc-to-markdown": "^3.0.0",
         "json-socket": "0.2.0",
         "minimist": "^1.2.0",
         "mkdirp": "^0.5.1",
