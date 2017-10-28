@@ -1,35 +1,33 @@
 function HeartBeatResponse(playerId) {
+    const type = 'se.cygni.snake.api.response.HeartBeatResponse';
+    const receivingPlayerId = playerId;
 
-  var type                = 'se.cygni.snake.api.response.HeartBeatResponse';
-  var receivingPlayerId   = playerId;
-
-  var toString = function(){
-    return '<Type:' + type + ', receivingPlayerId:' + receivingPlayerId + '>';
-  };
-
-  var getPlayerId = function(){
-    return receivingPlayerId;
-  }
-
-  var marshall = function(){
-    return {
-      type : type,
-      receivingPlayerId : receivingPlayerId
+    const toString = function () {
+        return `<Type:${type}, receivingPlayerId:${receivingPlayerId}>`;
     };
-  };
 
-  return Object.freeze({
-    type : type,
-    getPlayerId : getPlayerId,
-    marshall : marshall,
-    toString : toString
-  });
+    const getPlayerId = function () {
+        return receivingPlayerId;
+    };
 
-};
+    const marshall = function () {
+        return {
+            type,
+            receivingPlayerId
+        };
+    };
 
-function create(data){
-  return HeartBeatResponse(data.receivingPlayerId);
-};
+    return Object.freeze({
+        type,
+        getPlayerId,
+        marshall,
+        toString
+    });
+}
+
+function create(data) {
+    return HeartBeatResponse(data.receivingPlayerId);
+}
 
 exports.new = HeartBeatResponse;
 exports.create = create;

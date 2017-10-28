@@ -1,42 +1,79 @@
 /**
  * Snake Bot script.
  */
-var MapUtils = require('./../domain/mapUtils.js');
-var log = null; // Injected logger
+const MapUtils = require('./../domain/mapUtils.js');
 
-function update(mapState, myUserId){
+let log = null; // Injected logger
 
-  var map             =  mapState.getMap();
-  var direction       = 'RIGHT';  // <'UP' | 'DOWN' | 'LEFT' | 'RIGHT'>
-  var snakeBrainDump  = {}; // Optional debug information about the snakes current state of mind.
+function onMapUpdated(mapState, myUserId) {
+    const map = mapState.getMap();
+    let direction = 'DOWN'; // <'UP' | 'DOWN' | 'LEFT' | 'RIGHT'>
+    const snakeBrainDump = {}; // Optional debug information about the snakes current state of mind.
 
-  // 1. Where's what etc.
-  var myCoords = MapUtils.whereIsSnake(myUserId, map);
-  log('I am here:', myCoords);
-  log("On my tile:", MapUtils.getAt(myCoords, map));
-  log("Food:", MapUtils.findFood(myCoords, map));
-  snakeBrainDump.myCoords = myCoords;
+    // 1. Where's what etc.
+    const myCoords = MapUtils.getSnakePosition(myUserId, map);
+    log('I am here:', myCoords);
+    snakeBrainDump.myCoords = myCoords;
 
-  // 2. Do some nifty planning...
-  // (Tip: see MapUtils for some off-the-shelf navigation aid.
+    // 2. Do some nifty planning...
+    // (Tip: see MapUtils for some off-the-shelf navigation aid.
 
+    const directions = ['up', 'down', 'left', 'right'];
+    for (const key in directions) {
+        if (MapUtils.canIMoveInDirection(directions[key], myCoords, map)) {
+            direction = directions[key].toUpperCase();
+            log(direction);
+            break;
+        }
+    }
 
-
-  // 3. Then shake that snake!
-  return {
-    direction:  direction,
-    debugData : snakeBrainDump
-  }
+    // 3. Then shake that snake!
+    return {
+        direction,
+        debugData: snakeBrainDump
+    };
 }
 
-function bootStrap(logger){
-  log = logger;
+function bootStrap(logger) {
+    log = logger;
 }
 
-function gameEnded(){
-  // Implement as needed.
+function onGameEnded(event) {
+    log('On Game Ended');
+    log(event);
+    // Implement as needed.
 }
 
-exports.bootStrap = bootStrap;
-exports.update    = update;
-exports.gameEnded = gameEnded;
+function onTournamentEnded(event) {
+    log('On Tournament Ended');
+    log(event);
+    // Implement as needed.
+}
+
+function onSnakeDied(event) {
+    log('On Snake Died');
+    log(event);
+    // Implement as needed.
+}
+
+function onGameStarted(event) {
+    log('On Game Started');
+    log(event);
+    // Implement as needed.
+}
+
+function onGameResult(event) {
+    log('On Game Result');
+    log(event);
+    // Implement as needed.
+}
+
+module.exports = {
+    bootStrap,
+    onGameEnded,
+    onGameResult,
+    onGameStarted,
+    onMapUpdated,
+    onSnakeDied,
+    onTournamentEnded
+};

@@ -1,71 +1,71 @@
 function TournamentEndedEvent(playerWinnerId, gameId, gameResult, tournamentName, tournamentId) {
+    const type = 'se.cygni.snake.api.event.TournamentEndedEvent';
+    var playerWinnerId = playerWinnerId;
+    var gameId = gameId;
+    var gameResult = gameResult;
+    var tournamentName = tournamentName;
+    var tournamentId = tournamentId;
+    const gameTick = null; // This event lacks the game tick.
 
-  var type            = 'se.cygni.snake.api.event.TournamentEndedEvent';
-  var playerWinnerId  = playerWinnerId;
-  var gameId          = gameId;
-  var gameResult      = gameResult;
-  var tournamentName  = tournamentName;
-  var tournamentId    = tournamentId;
-  var gameTick        = null; // This event lacks the game tick.
-
-  var toString = function () {
-    return '<Type:' + type + ', playerWinnerId:' + playerWinnerId +
-      ', gameId:' + gameId + 'gameResult:' + gameResult + ', tournamentName:' + tournamentName + ', tournamentId:' + tournamentId + '>';
-  };
-
-  function getPlayerWinnerId() {
-    return playerWinnerId;
-  }
-
-  function getGameId() {
-    return gameId;
-  }
-
-  function getGameResult() {
-    return gameResult;
-  }
-
-  function getTournamentName() {
-    return tournamentName;
-  }
-
-  function getTournamentId() {
-    return tournamentId;
-  }
-
-  var marshall = function () {
-    return {
-      type: type,
-      playerWinnerId: playerWinnerId,
-      gameId: gameId,
-      gameResult: gameResult,
-      tournamentName: tournamentName,
-      tournamentId: tournamentId
+    const toString = function () {
+        return `<Type:${type}, playerWinnerId:${playerWinnerId
+        }, gameId:${gameId}gameResult:${gameResult}, tournamentName:${tournamentName}, tournamentId:${tournamentId}>`;
     };
-  };
 
-  return Object.freeze({
-    getPlayerWinnerId: getPlayerWinnerId,
-    getGameId: getGameId,
-    getGameResult: getGameResult,
-    getTournamentName: getTournamentName,
-    getTournamentId: getTournamentId,
-    getGameTick: function(){return null;},
-    marshall: marshall,
-    toString: toString,
-    type: type
-  });
+    function getPlayerWinnerId() {
+        return playerWinnerId;
+    }
+
+    function getGameId() {
+        return gameId;
+    }
+
+    function getGameResult() {
+        return gameResult;
+    }
+
+    function getTournamentName() {
+        return tournamentName;
+    }
+
+    function getTournamentId() {
+        return tournamentId;
+    }
+
+    const marshall = function () {
+        return {
+            type,
+            playerWinnerId,
+            gameId,
+            gameResult,
+            tournamentName,
+            tournamentId
+        };
+    };
+
+    return Object.freeze({
+        getPlayerWinnerId,
+        getGameId,
+        getGameResult,
+        getTournamentName,
+        getTournamentId,
+        getGameTick() { return null; },
+        marshall,
+        toString,
+        type
+    });
 }
 
 function create(data) {
-  return TournamentEndedEvent(
-    data.playerWinnerId,
-    data.gameId,
-    data.gameResult,
-    data.tournamentName,
-    data.tournamentId);
-};
+    return TournamentEndedEvent(
+        data.playerWinnerId,
+        data.gameId,
+        data.gameResult,
+        data.tournamentName,
+        data.tournamentId
+    );
+}
 
-exports.new     = TournamentEndedEvent;
-exports.create  = create;
-exports.type    = TournamentEndedEvent().type;
+exports.new = TournamentEndedEvent;
+exports.create = create;
+exports.type = TournamentEndedEvent().type;

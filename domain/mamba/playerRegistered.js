@@ -1,64 +1,63 @@
-var GameSettings = require('./gameSettings.js');
+const GameSettings = require('./gameSettings.js');
 
 function PlayerRegistered(gameId, gameMode, receivingPlayerId, name, settings) {
+    const type = 'se.cygni.snake.api.response.PlayerRegisteredEvent';
+    var gameId = gameId;
+    var gameMode = gameMode;
+    var receivingPlayerId = receivingPlayerId;
+    const playerName = name;
+    var settings = settings;
 
-  var type              = 'se.cygni.snake.api.response.PlayerRegisteredEvent';
-  var gameId            = gameId;
-  var gameMode          = gameMode;
-  var receivingPlayerId = receivingPlayerId;
-  var playerName        = name;
-  var settings          = settings;
+    const toString = function () {
+        return `<Type:${type}gameId:${gameId}, gameMode:${gameMode}, receivingPlayerId:${receivingPlayerId
+        }playerName:${playerName}, settings:${settings}>`;
+    };
 
-  var toString = function(){
-       return '<Type:' + type + 'gameId:' + gameId + ', gameMode:' + gameMode + ', receivingPlayerId:' + receivingPlayerId
-         + 'playerName:' + playerName + ', settings:' + settings +'>';
-  };
+    function getReceivingPlayerId() {
+        return receivingPlayerId;
+    }
 
-  function getReceivingPlayerId(){
-    return receivingPlayerId;
-  }
+    function getGameId() {
+        return gameId;
+    }
 
-  function getGameId(){
-    return gameId;
-  }
+    function updateGameId(theGameId) {
+        gameId = theGameId;
+    }
 
-  function updateGameId(theGameId){
-    gameId = theGameId;
-  }
+    function getGameMode() {
+        return gameMode;
+    }
 
-  function getGameMode(){
-    return gameMode;
-  }
+    function getPlayerName() {
+        return playerName;
+    }
 
-  function getPlayerName(){
-    return playerName;
-  }
+    function getSettings() {
+        return settings;
+    }
 
-  function getSettings(){
-    return settings;
-  }
+    return Object.freeze({
+        type,
+        toString,
+        getPlayerId: getReceivingPlayerId,
+        getGameId,
+        getGameMode,
+        getPlayerName,
+        getGameSettings: getSettings,
+        updateGameId
+    });
+}
 
-  return Object.freeze({
-    type: type,
-    toString : toString,
-    getPlayerId : getReceivingPlayerId,
-    getGameId: getGameId,
-    getGameMode : getGameMode,
-    getPlayerName: getPlayerName,
-    getGameSettings: getSettings,
-    updateGameId: updateGameId
-  });
-
-};
-
-function create(data){
-  return PlayerRegistered(
-    data.gameId,
-    data.gameMode,
-    data.receivingPlayerId,
-    data.name,
-    GameSettings.create(data.gameSettings));
-};
+function create(data) {
+    return PlayerRegistered(
+        data.gameId,
+        data.gameMode,
+        data.receivingPlayerId,
+        data.name,
+        GameSettings.create(data.gameSettings)
+    );
+}
 
 exports.new = PlayerRegistered;
 exports.create = create;

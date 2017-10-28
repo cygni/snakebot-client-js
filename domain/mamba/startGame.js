@@ -1,26 +1,24 @@
 function StartGame(playerId) {
+    const type = 'se.cygni.snake.api.request.StartGame';
+    var playerId = playerId;
 
-  var type      = 'se.cygni.snake.api.request.StartGame';
-  var playerId  = playerId;
-
-  var toString = function(){
-    return '<Type:' + type + ', playerId:' + playerId + '>';
-  };
-
-  var marshall = function(){
-    return {
-      type : type,
-      receivingPlayerId : playerId
+    const toString = function () {
+        return `<Type:${type}, playerId:${playerId}>`;
     };
-  };
 
-  return Object.freeze({
-    marshall : marshall,
-    toString : toString,
-    type: type
-  });
+    const marshall = function () {
+        return {
+            type,
+            receivingPlayerId: playerId
+        };
+    };
 
-};
+    return Object.freeze({
+        marshall,
+        toString,
+        type
+    });
+}
 
 exports.new = StartGame;
 exports.type = StartGame().type;

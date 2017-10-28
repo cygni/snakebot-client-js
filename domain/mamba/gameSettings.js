@@ -1,42 +1,40 @@
-var GameSettings = function(settings) {
+const GameSettings = function (settings) {
+    const maxNoofPlayers = settings && settings.maxNoofPlayers || 5;
+    const startSnakeLength = settings && settings.startSnakeLength || 1;
+    const timeInMsPerTick = settings && settings.timeInMsPerTick || 250;
+    const obstaclesEnabled = settings && settings.obstaclesEnabled || false;
+    const foodEnabled = settings && settings.foodEnabled || true;
+    const headToTailConsumes = settings && settings.headToTailConsumes || true;
+    const tailConsumeGrows = settings && settings.tailConsumeGrows || false;
+    const addFoodLikelihood = settings && settings.addFoodLikelihood || 15;
+    const removeFoodLikelihood = settings && settings.removeFoodLikelihood || 5;
+    const obstacleIntensity = settings && settings.obstacleIntensity || 5;
+    const trainingGame = settings && settings.trainingGame || false;
 
-  var maxNoofPlayers            = settings && settings.maxNoofPlayers || 5;
-  var startSnakeLength          = settings && settings.startSnakeLength || 1;
-  var timeInMsPerTick           = settings && settings.timeInMsPerTick || 250;
-  var obstaclesEnabled          = settings && settings.obstaclesEnabled || false;
-  var foodEnabled               = settings && settings.foodEnabled || true;
-  var headToTailConsumes        = settings && settings.headToTailConsumes || true;
-  var tailConsumeGrows          = settings && settings.tailConsumeGrows || false;
-  var addFoodLikelihood         = settings && settings.addFoodLikelihood || 15;
-  var removeFoodLikelihood      = settings && settings.removeFoodLikelihood || 5;
-  var obstacleIntensity         = settings && settings.obstacleIntensity || 5;
-  var trainingGame              = settings && settings.trainingGame || false;
+    const marshall = function () {
+        return {
+            maxNoofPlayers,
+            startSnakeLength,
+            timeInMsPerTick,
+            obstaclesEnabled,
+            foodEnabled,
+            headToTailConsumes,
+            tailConsumeGrows,
+            addFoodLikelihood,
+            removeFoodLikelihood,
+            obstacleIntensity,
+            trainingGame
+        };
+    };
 
-  var marshall = function(){
-    return {
-      maxNoofPlayers: maxNoofPlayers,
-      startSnakeLength : startSnakeLength,
-      timeInMsPerTick : timeInMsPerTick,
-      obstaclesEnabled : obstaclesEnabled,
-      foodEnabled : foodEnabled,
-      headToTailConsumes : headToTailConsumes,
-      tailConsumeGrows : tailConsumeGrows,
-      addFoodLikelihood : addFoodLikelihood,
-      removeFoodLikelihood : removeFoodLikelihood,
-      obstacleIntensity : obstacleIntensity,
-      trainingGame : trainingGame
-    }
-  };
+    const toString = function () {
+        return `< maxNoofPlayers:${maxNoofPlayers}, startSnakeLength:${startSnakeLength}>`;
+    };
 
-  var toString = function(){
-    return '< maxNoofPlayers:' + maxNoofPlayers + ', startSnakeLength:' + startSnakeLength + '>';
-  };
-
-  return Object.freeze({
-    marshall  : marshall,
-    toString  : toString
-  });
-
+    return Object.freeze({
+        marshall,
+        toString
+    });
 };
 
 exports.create = GameSettings;
