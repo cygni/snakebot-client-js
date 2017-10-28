@@ -9,7 +9,7 @@
     "scripts": {
         "lint": "eslint ./",
         "test": "mocha",
-        "doc": "jsdoc ./domain"
+        "doc": "jsdoc ./domain -d doc"
     },
     "dependencies": {
         "bindings": "^1.2.1",
