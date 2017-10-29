@@ -8,7 +8,7 @@
     },
     "scripts": {
         "lint": "eslint ./",
-        "test": "mocha",
+        "test": "nyc mocha",
         "doc": "jsdoc ./domain/** -d doc/html; jsdox ./domain/** --output doc/markdown"
     },
     "dependencies": {
@@ -24,6 +24,7 @@
         "mkdirp": "^0.5.1",
         "mocha": "^4.0.1",
         "nan": "^2.2.0",
+        "nyc": "^11.2.1",
         "open": "0.0.5",
         "options": "0.0.6",
         "performance-now": "^0.2.0",

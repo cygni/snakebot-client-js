@@ -1,5 +1,5 @@
 const os = require('os');
-const version = require('../package.json').version || 'unknown';
+const version = require('../../package.json').version || 'unknown';
 
 function ClientInfo() {
     const type = 'se.cygni.snake.api.request.ClientInfo';

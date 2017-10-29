@@ -1,7 +1,7 @@
 /**
  * Snake Bot script.
  */
-const MapUtils = require('./../domain/mapUtils.js');
+const MapUtils = require('../domain/mapUtils.js');
 
 let log = null; // Injected logger
 

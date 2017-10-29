@@ -40,6 +40,7 @@ const directionMovementDeltas = {
 function getManhattanDistance(startCoord, goalCoord) {
     const x = Math.abs(startCoord.x - goalCoord.x);
     const y = Math.abs(startCoord.y - goalCoord.y);
+
     return x + y;
 }
 
@@ -54,6 +55,7 @@ function getManhattanDistance(startCoord, goalCoord) {
 function getEuclidianDistance(startCoord, goalCoord) {
     const xd = Math.abs(startCoord.x - goalCoord.x);
     const yd = Math.abs(startCoord.y - goalCoord.y);
+
     return Math.sqrt((xd * xd) + (yd * yd));
 }
 
@@ -68,6 +70,7 @@ function getEuclidianDistance(startCoord, goalCoord) {
 function translatePosition(position, mapWidth) {
     const y = Math.floor(position / mapWidth);
     const x = Math.abs(position - (y * mapWidth));
+
     return { x, y };
 }
 
@@ -79,8 +82,8 @@ function translatePosition(position, mapWidth) {
  * @param {GameMap} map The game map.
  * @return {array<coordinate>} Array of coordinates
  */
-function translatePositions(positions, map) {
-    return positions.map(p => translatePosition(p, map.width));
+function translatePositions(positions, mapWidth) {
+    return positions.map(p => translatePosition(p, mapWidth));
 }
 
 
@@ -117,10 +120,12 @@ function translateCoordinates(coordinates, mapWidth) {
  */
 function getSnakePosition(playerId, map) {
     const snake = map.getSnakeInfoForId(playerId);
+
     if (snake.isAlive()) {
         const pos = translatePosition(snake.getPositions()[0], map.getWidth());
         return { x: pos.x, y: pos.y, alive: snake.isAlive() };
     }
+
     return { x: 0, y: 0, alive: false };
 }
 
@@ -223,18 +228,18 @@ function positionsToCoords(positions, mapWidth) {
  * @returns {array<item>} The ordered array with the closest item at the end.
  */
 function sortByClosestTo(items, coordinate) {
-    const distanceItem = [];
+    const distanceItems = [];
 
     items.forEach((item) => {
-        distanceItem.push({
-            d: getManhattanDistance(coordinate, { x: item.x, y: item.y }),
+        distanceItems.push({
+            d: getManhattanDistance(coordinate, item),
             item
         });
     });
 
-    distanceItem.sort((a, b) => b.d - a.d);
+    distanceItems.sort((a, b) => a.d - b.d);
 
-    return distanceItem.map(di => di.item);
+    return distanceItems.map(di => di.item);
 }
 
 /**
@@ -266,31 +271,6 @@ function listCoordinatesContainingObstacle(coordinate, map) {
 }
 
 /**
- * Get the coordinates of all snakes.
- * Note: You probably want to filter out your own snake.
- *
- * @param {GameMap} map The game map.
- * @returns {object} snakeCoordinates Snake coordinates indexed by playerId.
- * @return {array<coordinate>} snakeCoordinates.playerId The coordinates of the
- * snake in question.
- */
-function getSnakesCoordinates(map, excludeIds) {
-    const snakeInfos = map.getSnakeInfos();
-    const snakeCoords = [];
-
-    snakeInfos.forEach((snakeInfo) => {
-        if (!excludeIds || excludeIds.indexOf(snakeInfo.getId()) === -1) {
-            const coords = positionsToCoords(snakeInfo.getPositions(),
-                                             map.getWidth());
-
-            snakeCoords[snakeInfo.getId()] = coords;
-        }
-    });
-
-    return snakeCoords;
-}
-
-/**
  * Get the coordinates of a specific snake.
  *
  * @param {string} playerId The snake to retrieve.
@@ -305,18 +285,43 @@ function getSnakeCoordinates(playerId, map) {
 }
 
 /**
+ * Get the coordinates of all snakes.
+ * Note: You probably want to filter out your own snake.
+ *
+ * @param {GameMap} map The game map.
+ * @param {array<string>} excludeIds Snake ids to exclude.
+ * @returns {object} snakeCoordinates Snake coordinates indexed by playerId.
+ * @return {array<coordinate>} snakeCoordinates.playerId The coordinates of the
+ * snake in question.
+ */
+function getSnakesCoordinates(map, excludeIds) {
+    const snakeInfos = map.getSnakeInfos();
+    const snakeCoords = {};
+
+    snakeInfos.forEach((snakeInfo) => {
+        const snakeId = snakeInfo.getId();
+
+        if (!excludeIds || excludeIds.includes(snakeId) === false) {
+            snakeCoords[snakeId] = getSnakeCoordinates(snakeId, map);
+        }
+    });
+
+    return snakeCoords;
+}
+
+/**
  * Check if the coordinate is within a square, ne.x|y, sw.x|y.
  *
  * @param {coordinate} coordinate The coordinate to check.
- * @param {coordinate} neCoordinate North east coordinate.
- * @param {coordinate} swCoordinate South west coordinate.
+ * @param {coordinate} nwCoordinate North west coordinate.
+ * @param {coordinate} seCoordinate South east coordinate.
  * @returns {boolean} True if within.
  */
-function isWithinSquare(coordinate, neCoordinate, swCoordinate) {
-    return coordinate.x < neCoordinate.x ||
-        coordinate.x > swCoordinate.x ||
-        coordinate.y < swCoordinate.y ||
-        coordinate.y > neCoordinate.y;
+function isWithinSquare(coordinate, nwCoordinate, seCoordinate) {
+    return coordinate.x >= nwCoordinate.x &&
+        coordinate.y >= nwCoordinate.y &&
+    coordinate.x <= seCoordinate.x &&
+        coordinate.y <= seCoordinate.y;
 }
 
 /**
