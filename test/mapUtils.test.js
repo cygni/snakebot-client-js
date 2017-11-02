@@ -93,7 +93,7 @@ describe('Map utils', () => {
             'DOWN',
             { x: 7, y: 4 },
             m
-        )).to.be.true;
+        )).to.be.false;
     });
 
     it('getTileAt', () => {
