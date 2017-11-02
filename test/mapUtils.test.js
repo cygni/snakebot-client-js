@@ -10,7 +10,7 @@ describe('Map utils', () => {
     beforeEach(() => {
     });
 
-    it('canIMoveInDirection', () => {
+    it('canSnakeMoveInDirection', () => {
         const food = [2];
         const obstacles = [10];
         const snake = snakeInfos.new(
@@ -25,71 +25,71 @@ describe('Map utils', () => {
         const snakes = [snake];
         const m = map.new(10, 10, 1, food, obstacles, snakes);
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'UP',
             { x: 0, y: 0 },
             m
         )).to.be.false;
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'LEFT',
             { x: 0, y: 0 },
             m
         )).to.be.false;
 
         //Obstacle under
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'DOWN',
             { x: 0, y: 0 },
             m
         )).to.be.false;
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'RIGHT',
             { x: 0, y: 0 },
             m
         )).to.be.true;
 
         //Food to the right
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'UP',
             { x: 1, y: 0 },
             m
         )).to.be.false;
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'LEFT',
             { x: 1, y: 0 },
             m
         )).to.be.true;
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'DOWN',
             { x: 1, y: 0 },
             m
         )).to.be.true;
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'RIGHT',
             { x: 1, y: 0 },
             m
         )).to.be.true;
 
         //Snake under
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'DOWN',
             { x: 5, y: 4 },
             m
         )).to.be.false;
 
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'DOWN',
             { x: 6, y: 4 },
             m
         )).to.be.false;
 
         // Snake under but tail
-        expect(mapUtils.canIMoveInDirection(
+        expect(mapUtils.canSnakeMoveInDirection(
             'DOWN',
             { x: 7, y: 4 },
             m

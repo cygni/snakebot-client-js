@@ -372,7 +372,7 @@ function getTileInDirection(direction, snakeHeadPosition, map) {
  * @param {GameMap} map The game map.
  * @returns {boolean} True if movement will not result in death.
  */
-function canIMoveInDirection(direction, snakeHeadPosition, map) {
+function canSnakeMoveInDirection(direction, snakeHeadPosition, map) {
     const tile = getTileInDirection(direction, snakeHeadPosition, map);
 
     return tile.content !== 'outofbounds' &&
@@ -381,7 +381,7 @@ function canIMoveInDirection(direction, snakeHeadPosition, map) {
         tile.content !== 'obstacle';
 }
 
-exports.canIMoveInDirection = canIMoveInDirection;
+exports.canSnakeMoveInDirection = canSnakeMoveInDirection;
 exports.getEuclidianDistance = getEuclidianDistance;
 exports.getManhattanDistance = getManhattanDistance;
 exports.getOccupiedMapTiles = getOccupiedMapTiles;
