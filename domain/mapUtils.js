@@ -375,10 +375,8 @@ function getTileInDirection(direction, snakeHeadPosition, map) {
 function canSnakeMoveInDirection(direction, snakeHeadPosition, map) {
     const tile = getTileInDirection(direction, snakeHeadPosition, map);
 
-    return tile.content !== 'outofbounds' &&
-        tile.content !== 'snakehead' &&
-        tile.content !== 'snakebody' &&
-        tile.content !== 'obstacle';
+    return tile.content === '' ||
+        tile.content === 'food';
 }
 
 exports.canSnakeMoveInDirection = canSnakeMoveInDirection;

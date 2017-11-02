@@ -211,20 +211,6 @@ Get all obstacles on the map sorted by distance to the coordinate.
 **Returns**: `array.&lt;coordinate&gt;`, Array of obstacle coordinates.
 
 
-### getSnakesCoordinates(map) 
-
-Get the coordinates of all snakes.
-Note: You probably want to filter out your own snake.
-
-**Parameters**
-
-**map**: `GameMap`, The game map.
-
-**Returns**: `object`, snakeCoordinates Snake coordinates indexed by playerId.
-**Returns**: `array.&lt;coordinate&gt;`, snakeCoordinates.playerId The coordinates of the
-snake in question.
-
-
 ### getSnakeCoordinates(playerId, map) 
 
 Get the coordinates of a specific snake.
@@ -238,7 +224,23 @@ Get the coordinates of a specific snake.
 **Returns**: `array.&lt;coordinate&gt;`, The coordinates of the snake in question.
 
 
-### isWithinSquare(coordinate, neCoordinate, swCoordinate) 
+### getSnakesCoordinates(map, excludeIds) 
+
+Get the coordinates of all snakes.
+Note: You probably want to filter out your own snake.
+
+**Parameters**
+
+**map**: `GameMap`, The game map.
+
+**excludeIds**: `array.&lt;string&gt;`, Snake ids to exclude.
+
+**Returns**: `object`, snakeCoordinates Snake coordinates indexed by playerId.
+**Returns**: `array.&lt;coordinate&gt;`, snakeCoordinates.playerId The coordinates of the
+snake in question.
+
+
+### isWithinSquare(coordinate, nwCoordinate, seCoordinate) 
 
 Check if the coordinate is within a square, ne.x|y, sw.x|y.
 
@@ -246,9 +248,9 @@ Check if the coordinate is within a square, ne.x|y, sw.x|y.
 
 **coordinate**: `coordinate`, The coordinate to check.
 
-**neCoordinate**: `coordinate`, North east coordinate.
+**nwCoordinate**: `coordinate`, North west coordinate.
 
-**swCoordinate**: `coordinate`, South west coordinate.
+**seCoordinate**: `coordinate`, South east coordinate.
 
 **Returns**: `boolean`, True if within.
 
