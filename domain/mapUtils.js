@@ -1,8 +1,17 @@
 /**
+ * MapUtils.
+ * @module MapUtils
+ * @type { core }
+ */
+
+/**
  * Tile: { content: string }
  *
  * @typedef {object} tile
- * @property {string} content The contents of the tile.
+ * @property {string} content The contents of the tile. If the tile is empty an
+ * empty string is returned.
+ * [ 'food' | 'obstacle' | 'snakehead' | 'snakebody' | 'snaketail' |
+ * 'outofbounds' | '']
  */
 
 /**
@@ -29,7 +38,7 @@ const directionMovementDeltas = {
     down: { x: 0, y: 1 }
 };
 
-/** S
+/**
  * Calculates the Manhattan (or cab/grid) distance from point a to point b.
  * Note that Manhattan distance will not walk diagonally.
  *

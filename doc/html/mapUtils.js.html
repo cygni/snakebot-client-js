@@ -27,10 +27,19 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
+ * MapUtils.
+ * @module MapUtils
+ * @type { core }
+ */
+
+/**
  * Tile: { content: string }
  *
  * @typedef {object} tile
- * @property {string} content The contents of the tile.
+ * @property {string} content The contents of the tile. If the tile is empty an
+ * empty string is returned.
+ * [ 'food' | 'obstacle' | 'snakehead' | 'snakebody' | 'snaketail' |
+ * 'outofbounds' | '']
  */
 
 /**
@@ -57,7 +66,7 @@ const directionMovementDeltas = {
     down: { x: 0, y: 1 }
 };
 
-/** S
+/**
  * Calculates the Manhattan (or cab/grid) distance from point a to point b.
  * Note that Manhattan distance will not walk diagonally.
  *
@@ -68,6 +77,7 @@ const directionMovementDeltas = {
 function getManhattanDistance(startCoord, goalCoord) {
     const x = Math.abs(startCoord.x - goalCoord.x);
     const y = Math.abs(startCoord.y - goalCoord.y);
+
     return x + y;
 }
 
@@ -82,6 +92,7 @@ function getManhattanDistance(startCoord, goalCoord) {
 function getEuclidianDistance(startCoord, goalCoord) {
     const xd = Math.abs(startCoord.x - goalCoord.x);
     const yd = Math.abs(startCoord.y - goalCoord.y);
+
     return Math.sqrt((xd * xd) + (yd * yd));
 }
 
@@ -96,6 +107,7 @@ function getEuclidianDistance(startCoord, goalCoord) {
 function translatePosition(position, mapWidth) {
     const y = Math.floor(position / mapWidth);
     const x = Math.abs(position - (y * mapWidth));
+
     return { x, y };
 }
 
@@ -107,8 +119,8 @@ function translatePosition(position, mapWidth) {
  * @param {GameMap} map The game map.
  * @return {array&lt;coordinate>} Array of coordinates
  */
-function translatePositions(positions, map) {
-    return positions.map(p => translatePosition(p, map.width));
+function translatePositions(positions, mapWidth) {
+    return positions.map(p => translatePosition(p, mapWidth));
 }
 
 
@@ -145,10 +157,12 @@ function translateCoordinates(coordinates, mapWidth) {
  */
 function getSnakePosition(playerId, map) {
     const snake = map.getSnakeInfoForId(playerId);
+
     if (snake.isAlive()) {
         const pos = translatePosition(snake.getPositions()[0], map.getWidth());
         return { x: pos.x, y: pos.y, alive: snake.isAlive() };
     }
+
     return { x: 0, y: 0, alive: false };
 }
 
@@ -251,18 +265,18 @@ function positionsToCoords(positions, mapWidth) {
  * @returns {array&lt;item>} The ordered array with the closest item at the end.
  */
 function sortByClosestTo(items, coordinate) {
-    const distanceItem = [];
+    const distanceItems = [];
 
     items.forEach((item) => {
-        distanceItem.push({
-            d: getManhattanDistance(coordinate, { x: item.x, y: item.y }),
+        distanceItems.push({
+            d: getManhattanDistance(coordinate, item),
             item
         });
     });
 
-    distanceItem.sort((a, b) => b.d - a.d);
+    distanceItems.sort((a, b) => a.d - b.d);
 
-    return distanceItem.map(di => di.item);
+    return distanceItems.map(di => di.item);
 }
 
 /**
@@ -294,31 +308,6 @@ function listCoordinatesContainingObstacle(coordinate, map) {
 }
 
 /**
- * Get the coordinates of all snakes.
- * Note: You probably want to filter out your own snake.
- *
- * @param {GameMap} map The game map.
- * @returns {object} snakeCoordinates Snake coordinates indexed by playerId.
- * @return {array&lt;coordinate>} snakeCoordinates.playerId The coordinates of the
- * snake in question.
- */
-function getSnakesCoordinates(map, excludeIds) {
-    const snakeInfos = map.getSnakeInfos();
-    const snakeCoords = [];
-
-    snakeInfos.forEach((snakeInfo) => {
-        if (!excludeIds || excludeIds.indexOf(snakeInfo.getId()) === -1) {
-            const coords = positionsToCoords(snakeInfo.getPositions(),
-                                             map.getWidth());
-
-            snakeCoords[snakeInfo.getId()] = coords;
-        }
-    });
-
-    return snakeCoords;
-}
-
-/**
  * Get the coordinates of a specific snake.
  *
  * @param {string} playerId The snake to retrieve.
@@ -333,18 +322,43 @@ function getSnakeCoordinates(playerId, map) {
 }
 
 /**
+ * Get the coordinates of all snakes.
+ * Note: You probably want to filter out your own snake.
+ *
+ * @param {GameMap} map The game map.
+ * @param {array&lt;string>} excludeIds Snake ids to exclude.
+ * @returns {object} snakeCoordinates Snake coordinates indexed by playerId.
+ * @return {array&lt;coordinate>} snakeCoordinates.playerId The coordinates of the
+ * snake in question.
+ */
+function getSnakesCoordinates(map, excludeIds) {
+    const snakeInfos = map.getSnakeInfos();
+    const snakeCoords = {};
+
+    snakeInfos.forEach((snakeInfo) => {
+        const snakeId = snakeInfo.getId();
+
+        if (!excludeIds || excludeIds.includes(snakeId) === false) {
+            snakeCoords[snakeId] = getSnakeCoordinates(snakeId, map);
+        }
+    });
+
+    return snakeCoords;
+}
+
+/**
  * Check if the coordinate is within a square, ne.x|y, sw.x|y.
  *
  * @param {coordinate} coordinate The coordinate to check.
- * @param {coordinate} neCoordinate North east coordinate.
- * @param {coordinate} swCoordinate South west coordinate.
+ * @param {coordinate} nwCoordinate North west coordinate.
+ * @param {coordinate} seCoordinate South east coordinate.
  * @returns {boolean} True if within.
  */
-function isWithinSquare(coordinate, neCoordinate, swCoordinate) {
-    return coordinate.x &lt; neCoordinate.x ||
-        coordinate.x > swCoordinate.x ||
-        coordinate.y &lt; swCoordinate.y ||
-        coordinate.y > neCoordinate.y;
+function isWithinSquare(coordinate, nwCoordinate, seCoordinate) {
+    return coordinate.x >= nwCoordinate.x &amp;&amp;
+        coordinate.y >= nwCoordinate.y &amp;&amp;
+    coordinate.x &lt;= seCoordinate.x &amp;&amp;
+        coordinate.y &lt;= seCoordinate.y;
 }
 
 /**
@@ -395,7 +409,7 @@ function getTileInDirection(direction, snakeHeadPosition, map) {
  * @param {GameMap} map The game map.
  * @returns {boolean} True if movement will not result in death.
  */
-function canIMoveInDirection(direction, snakeHeadPosition, map) {
+function canSnakeMoveInDirection(direction, snakeHeadPosition, map) {
     const tile = getTileInDirection(direction, snakeHeadPosition, map);
 
     return tile.content !== 'outofbounds' &amp;&amp;
@@ -404,7 +418,7 @@ function canIMoveInDirection(direction, snakeHeadPosition, map) {
         tile.content !== 'obstacle';
 }
 
-exports.canIMoveInDirection = canIMoveInDirection;
+exports.canSnakeMoveInDirection = canSnakeMoveInDirection;
 exports.getEuclidianDistance = getEuclidianDistance;
 exports.getManhattanDistance = getManhattanDistance;
 exports.getOccupiedMapTiles = getOccupiedMapTiles;
@@ -435,13 +449,13 @@ exports.translatePositions = translatePositions;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GameMap.html">GameMap</a></li><li><a href="Mamba.html">Mamba</a></li><li><a href="SnakeInfos.html">SnakeInfos</a></li></ul><h3>Global</h3><ul><li><a href="global.html#canIMoveInDirection">canIMoveInDirection</a></li><li><a href="global.html#getEuclidianDistance">getEuclidianDistance</a></li><li><a href="global.html#getManhattanDistance">getManhattanDistance</a></li><li><a href="global.html#getOccupiedMapTiles">getOccupiedMapTiles</a></li><li><a href="global.html#getSnakeCoordinates">getSnakeCoordinates</a></li><li><a href="global.html#getSnakeLength">getSnakeLength</a></li><li><a href="global.html#getSnakePosition">getSnakePosition</a></li><li><a href="global.html#getSnakesCoordinates">getSnakesCoordinates</a></li><li><a href="global.html#getTileAt">getTileAt</a></li><li><a href="global.html#getTileInDirection">getTileInDirection</a></li><li><a href="global.html#isCoordinateOutOfBounds">isCoordinateOutOfBounds</a></li><li><a href="global.html#isTileAvailableForMovementTo">isTileAvailableForMovementTo</a></li><li><a href="global.html#isWithinSquare">isWithinSquare</a></li><li><a href="global.html#listCoordinatesContainingFood">listCoordinatesContainingFood</a></li><li><a href="global.html#listCoordinatesContainingObstacle">listCoordinatesContainingObstacle</a></li><li><a href="global.html#positionsToCoords">positionsToCoords</a></li><li><a href="global.html#sortByClosestTo">sortByClosestTo</a></li><li><a href="global.html#translateCoordinate">translateCoordinate</a></li><li><a href="global.html#translateCoordinates">translateCoordinates</a></li><li><a href="global.html#translatePosition">translatePosition</a></li><li><a href="global.html#translatePositions">translatePositions</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-MapUtils.html">MapUtils</a></li></ul><h3>Classes</h3><ul><li><a href="GameMap.html">GameMap</a></li><li><a href="Mamba.html">Mamba</a></li><li><a href="SnakeInfos.html">SnakeInfos</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Oct 29 2017 01:01:11 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Nov 02 2017 15:52:42 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

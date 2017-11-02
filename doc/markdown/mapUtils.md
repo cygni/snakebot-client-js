@@ -1,14 +1,13 @@
-# Global
+# MapUtils
 
-
+MapUtils.
 
 
 
 * * *
 
-### getManhattanDistance(startCoord, goalCoord) 
+### MapUtils.getManhattanDistance(startCoord, goalCoord) 
 
-S
 Calculates the Manhattan (or cab/grid) distance from point a to point b.
 Note that Manhattan distance will not walk diagonally.
 
@@ -21,7 +20,7 @@ Note that Manhattan distance will not walk diagonally.
 **Returns**: `number`, Distance in map units.
 
 
-### getEuclidianDistance(startCoord, goalCoord) 
+### MapUtils.getEuclidianDistance(startCoord, goalCoord) 
 
 Calculates the euclidian distance from point a to point b.
 Note that eculidan distance will walk diagonally.
@@ -35,7 +34,7 @@ Note that eculidan distance will walk diagonally.
 **Returns**: `number`, Distance in map units.
 
 
-### translatePosition(position, mapWidth) 
+### MapUtils.translatePosition(position, mapWidth) 
 
 Converts a position in the flattened single array representation
 of the Map to a MapCoordinate.
@@ -49,7 +48,7 @@ of the Map to a MapCoordinate.
 **Returns**: `coordinate`, Coordinate of the position.
 
 
-### translatePositions(positions, map) 
+### MapUtils.translatePositions(positions, map) 
 
 Converts an array of positions in the flattened single array representation
 of the Map to an array of coordinates { x: number, y: number}.
@@ -63,7 +62,7 @@ of the Map to an array of coordinates { x: number, y: number}.
 **Returns**: `array.&lt;coordinate&gt;`, Array of coordinates
 
 
-### translateCoordinate(coordinate, mapWidth) 
+### MapUtils.translateCoordinate(coordinate, mapWidth) 
 
 Converts a MapCoordinate to the same position in the flattened
 single array representation of the Map.
@@ -77,7 +76,7 @@ single array representation of the Map.
 **Returns**: `number`, Flattened single array position.
 
 
-### translateCoordinates(coordinates, map) 
+### MapUtils.translateCoordinates(coordinates, map) 
 
 Converts a MapCoordinate to the same position in the flattened
 single array representation of the Map.
@@ -91,7 +90,7 @@ single array representation of the Map.
 **Returns**: `array.&lt;number&gt;`, Array of flattened single array positions.
 
 
-### getSnakePosition(playerId, map) 
+### MapUtils.getSnakePosition(playerId, map) 
 
 Find where the head of the snake is on the map.
 
@@ -104,7 +103,7 @@ Find where the head of the snake is on the map.
 **Returns**: `snakeheadcoordinate`, If the snake is dead, then x and y is set to 0.
 
 
-### getSnakeLength(playerId, map) 
+### MapUtils.getSnakeLength(playerId, map) 
 
 Get the length of the snake with a specific id.
 
@@ -117,7 +116,7 @@ Get the length of the snake with a specific id.
 **Returns**: `number`, The length of the snake.
 
 
-### isCoordinateOutOfBounds(coordinate, map) 
+### MapUtils.isCoordinateOutOfBounds(coordinate, map) 
 
 Check if a coordinate is outside of the game map.
 
@@ -130,7 +129,7 @@ Check if a coordinate is outside of the game map.
 **Returns**: `boolean`, True if coordinate is out of bounds.
 
 
-### getOccupiedMapTiles(map) 
+### MapUtils.getOccupiedMapTiles(map) 
 
 Get all occupied map tiles and the content
 [ food | obstacle | snakehead | snakebody | snaketail ]
@@ -144,7 +143,7 @@ the key.
 **Returns**: `tile`, tiles.POSITION the tile at position.
 
 
-### getTileAt(coordinate, map) 
+### MapUtils.getTileAt(coordinate, map) 
 
 Get the tile content at the given coordinate
 [food | obstacle | snakehead | snakebody | snaketail | outofbounds].
@@ -158,7 +157,7 @@ Get the tile content at the given coordinate
 **Returns**: `tile`, The tile in question.
 
 
-### positionsToCoords(positions, mapWidth) 
+### MapUtils.positionsToCoords(positions, mapWidth) 
 
 Converts an array of positions to an array of coordinates.
 
@@ -171,7 +170,7 @@ Converts an array of positions to an array of coordinates.
 **Returns**: `array.&lt;coordinate&gt;`, Array of coordinates.
 
 
-### sortByClosestTo(items, coordinate) 
+### MapUtils.sortByClosestTo(items, coordinate) 
 
 Sorts the items in the array from closest to farthest
 in relation to the given coordinate using Manhattan distance.
@@ -185,7 +184,7 @@ in relation to the given coordinate using Manhattan distance.
 **Returns**: `array.&lt;item&gt;`, The ordered array with the closest item at the end.
 
 
-### listCoordinatesContainingFood(coordinate, map) 
+### MapUtils.listCoordinatesContainingFood(coordinate, map) 
 
 Get all food on the map sorted by distance to the coordinate.
 
@@ -198,7 +197,7 @@ Get all food on the map sorted by distance to the coordinate.
 **Returns**: `array.&lt;coordinate&gt;`, Array of food coordinates.
 
 
-### listCoordinatesContainingObstacle(coordinate, map) 
+### MapUtils.listCoordinatesContainingObstacle(coordinate, map) 
 
 Get all obstacles on the map sorted by distance to the coordinate.
 
@@ -211,21 +210,7 @@ Get all obstacles on the map sorted by distance to the coordinate.
 **Returns**: `array.&lt;coordinate&gt;`, Array of obstacle coordinates.
 
 
-### getSnakesCoordinates(map) 
-
-Get the coordinates of all snakes.
-Note: You probably want to filter out your own snake.
-
-**Parameters**
-
-**map**: `GameMap`, The game map.
-
-**Returns**: `object`, snakeCoordinates Snake coordinates indexed by playerId.
-**Returns**: `array.&lt;coordinate&gt;`, snakeCoordinates.playerId The coordinates of the
-snake in question.
-
-
-### getSnakeCoordinates(playerId, map) 
+### MapUtils.getSnakeCoordinates(playerId, map) 
 
 Get the coordinates of a specific snake.
 
@@ -238,7 +223,23 @@ Get the coordinates of a specific snake.
 **Returns**: `array.&lt;coordinate&gt;`, The coordinates of the snake in question.
 
 
-### isWithinSquare(coordinate, neCoordinate, swCoordinate) 
+### MapUtils.getSnakesCoordinates(map, excludeIds) 
+
+Get the coordinates of all snakes.
+Note: You probably want to filter out your own snake.
+
+**Parameters**
+
+**map**: `GameMap`, The game map.
+
+**excludeIds**: `array.&lt;string&gt;`, Snake ids to exclude.
+
+**Returns**: `object`, snakeCoordinates Snake coordinates indexed by playerId.
+**Returns**: `array.&lt;coordinate&gt;`, snakeCoordinates.playerId The coordinates of the
+snake in question.
+
+
+### MapUtils.isWithinSquare(coordinate, nwCoordinate, seCoordinate) 
 
 Check if the coordinate is within a square, ne.x|y, sw.x|y.
 
@@ -246,14 +247,14 @@ Check if the coordinate is within a square, ne.x|y, sw.x|y.
 
 **coordinate**: `coordinate`, The coordinate to check.
 
-**neCoordinate**: `coordinate`, North east coordinate.
+**nwCoordinate**: `coordinate`, North west coordinate.
 
-**swCoordinate**: `coordinate`, South west coordinate.
+**seCoordinate**: `coordinate`, South east coordinate.
 
 **Returns**: `boolean`, True if within.
 
 
-### isTileAvailableForMovementTo(coordinate, map) 
+### MapUtils.isTileAvailableForMovementTo(coordinate, map) 
 
 Converts a MapCoordinate to the same position in the flattened
 single array representation of the Map.
@@ -268,7 +269,7 @@ single array representation of the Map.
 result in death.
 
 
-### getTileInDirection(direction, snakeHeadPosition, map) 
+### MapUtils.getTileInDirection(direction, snakeHeadPosition, map) 
 
 Converts a MapCoordinate to the same position in the flattened
 single array representation of the Map.
@@ -284,7 +285,7 @@ single array representation of the Map.
 **Returns**: `tile`, Tile in the selected direction related to the snakes head.
 
 
-### canIMoveInDirection(direction, snakeHeadPosition, map) 
+### MapUtils.canSnakeMoveInDirection(direction, snakeHeadPosition, map) 
 
 Checks if the snake will die when moving in the direction in question
 
