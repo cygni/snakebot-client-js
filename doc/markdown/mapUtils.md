@@ -210,11 +210,7 @@ Get all obstacles on the map sorted by distance to the coordinate.
 **Returns**: `array.&lt;coordinate&gt;`, Array of obstacle coordinates.
 
 
-<<<<<<< HEAD
 ### MapUtils.getSnakeCoordinates(playerId, map) 
-=======
-### getSnakeCoordinates(playerId, map) 
->>>>>>> e52cffad7bfde6a2b2362a59863c2f8eb5e4e1ee
 
 Get the coordinates of a specific snake.
 
@@ -227,11 +223,7 @@ Get the coordinates of a specific snake.
 **Returns**: `array.&lt;coordinate&gt;`, The coordinates of the snake in question.
 
 
-<<<<<<< HEAD
 ### MapUtils.getSnakesCoordinates(map, excludeIds) 
-=======
-### getSnakesCoordinates(map, excludeIds) 
->>>>>>> e52cffad7bfde6a2b2362a59863c2f8eb5e4e1ee
 
 Get the coordinates of all snakes.
 Note: You probably want to filter out your own snake.
@@ -247,11 +239,7 @@ Note: You probably want to filter out your own snake.
 snake in question.
 
 
-<<<<<<< HEAD
 ### MapUtils.isWithinSquare(coordinate, nwCoordinate, seCoordinate) 
-=======
-### isWithinSquare(coordinate, nwCoordinate, seCoordinate) 
->>>>>>> e52cffad7bfde6a2b2362a59863c2f8eb5e4e1ee
 
 Check if the coordinate is within a square, ne.x|y, sw.x|y.
 
