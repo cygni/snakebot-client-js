@@ -242,6 +242,7 @@ describe('Map utils', () => {
             },
             m)).to.be.true;
 
+        //head
         expect(mapUtils.isTileAvailableForMovementTo(
             {
                 x: 5,
@@ -249,6 +250,7 @@ describe('Map utils', () => {
             },
             m)).to.be.false;
 
+        //body
         expect(mapUtils.isTileAvailableForMovementTo(
             {
                 x: 6,
@@ -256,12 +258,13 @@ describe('Map utils', () => {
             },
             m)).to.be.false;
 
+        //tail
         expect(mapUtils.isTileAvailableForMovementTo(
             {
                 x: 7,
                 y: 5
             },
-            m)).to.be.true;
+            m)).to.be.false;
     });
 
 

@@ -345,10 +345,8 @@ function isWithinSquare(coordinate, nwCoordinate, seCoordinate) {
 function isTileAvailableForMovementTo(coordinate, map) {
     const tile = getTileAt(coordinate, map);
 
-    return tile.content !== 'outofbounds' &&
-        tile.content !== 'snakehead' &&
-        tile.content !== 'snakebody' &&
-        tile.content !== 'obstacle';
+    return tile.content === '' ||
+        tile.content === 'food';
 }
 
 /**
