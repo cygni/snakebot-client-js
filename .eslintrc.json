@@ -1,0 +1,22 @@
+{
+  "extends": ["eslint:recommended", "prettier", "plugin:import/recommended"],
+  "plugins": ["prettier"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "settings": {
+    "import/extensions": [".js", ".mjs", ".json"]
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "import/no-commonjs": "error",
+    "import/no-extraneous-dependencies": "warn",
+    "import/no-nodejs-modules": "error",
+    "import/extensions": ["error", "always", { "ignorePackages": true }]
+  }
+}

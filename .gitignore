@@ -19,6 +19,9 @@ out
 # OSX
 .DS_Store
 
-snakebot-js/node_modules
+# Lockfiles
+yarn.lock
+package-lock.json
 
-doc/html
+# Misc
+yarn-error.log
