@@ -1,47 +1,34 @@
 {
-    "name": "snake-cli",
-    "version": "0.1.0",
-    "description": "Another snake client",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/cygni/snakebot-client-js.git"
-    },
-    "scripts": {
-        "lint": "eslint ./",
-        "test": "nyc mocha",
-        "doc": "jsdoc ./domain/** -d doc/html; jsdox ./domain/** --output doc/markdown"
-    },
-    "dependencies": {
-        "bindings": "^1.2.1",
-        "bufferutil": "^1.2.1",
-        "chai": "^4.1.2",
-        "commander": "^2.9.0",
-        "dateformat": "^1.0.12",
-        "dot": "^1.0.3",
-        "jsdox": "^0.4.10",
-        "json-socket": "0.2.0",
-        "minimist": "^1.2.0",
-        "mkdirp": "^0.5.1",
-        "mocha": "^4.0.1",
-        "nan": "^2.2.0",
-        "nyc": "^11.2.1",
-        "open": "0.0.5",
-        "options": "0.0.6",
-        "performance-now": "^0.2.0",
-        "string_decoder": "^0.10.31",
-        "uglifyjs": "^2.4.10",
-        "ultron": "^1.0.2",
-        "utf-8-validate": "^1.2.1",
-        "ws": "^1.0.1",
-        "yarn": "^1.2.1"
-    },
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "babel-eslint": "^8.0.1",
-        "eslint": "^4.10.0",
-        "eslint-config-airbnb-base": "^12.1.0",
-        "eslint-plugin-import": "^2.8.0",
-        "jsdoc": "^3.5.5"
-    }
+  "name": "snakebot-client-js",
+  "version": "2.0.0",
+  "description": "Cygni snakebot client in modern JavaScript",
+  "author": "Max Davidson <max.davidson@cygni.se>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cygni/snakebot-client-js.git"
+  },
+  "module": "./src/index.mjs",
+  "browser": "./src/index.mjs",
+  "bin": {
+    "snake": "./bin/snake.js"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .js,.mjs",
+    "format": "prettier --write **/*.{json,js,mjs}",
+    "test": "mocha --require esm **/*.test.mjs"
+  },
+  "dependencies": {
+    "commander": "^2.15.1",
+    "esm": "^3.0.15",
+    "ws": "^5.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "mocha": "^5.0.5",
+    "prettier": "^1.11.1"
+  }
 }
