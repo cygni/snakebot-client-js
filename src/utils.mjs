@@ -29,9 +29,9 @@ const directionDeltas = Object.freeze({
 });
 
 export class Coordinate {
-  static fromPosition(position, mapWidth) {
-    const x = position % mapWidth;
-    const y = (position - x) / mapWidth;
+  static fromPosition(position, { width }) {
+    const x = position % width;
+    const y = (position - x) / width;
     return new Coordinate(x, y);
   }
 
@@ -55,7 +55,11 @@ export class Coordinate {
     return Math.abs(x1 - x0) + Math.abs(y1 - y0);
   }
 
-  toPosition({ width }) {
+  toPosition({ width, height }) {
+    if (this.isOutOfBounds({ width, height })) {
+      throw new RangeError('The coordinate must be within the bounds in order to convert to position');
+    }
+
     const { x, y } = this;
     return x + y * width;
   }

@@ -7,9 +7,19 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Run tests",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": ["--ui", "tdd", "--require", "esm", "--no-timeouts", "--colors", "${workspaceFolder}/**/*.test.mjs"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**/*.js", "${workspaceFolder}/node_modules/mocha/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Launch snakebot",
       "program": "${workspaceFolder}/bin/snake.mjs",
       "runtimeArgs": ["--experimental-modules"],
+      "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**/*.js"]
     }
   ]
