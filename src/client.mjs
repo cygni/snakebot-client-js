@@ -56,10 +56,11 @@ export function createClient({
       if (!supportedGameModes.has(gameMode)) {
         logger.error(`Unsupported gameMode: ${gameMode}`);
         ws.close();
+      } else {
+        logger.info(`Player ${snake.name} was successfully registered`);
+        logger.info(`Game mode: ${gameMode}`);
+        sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
       }
-      logger.info(`Player ${snake.name} was successfully registered`);
-      logger.info(`Game mode: ${gameMode}`);
-      sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
     },
 
     [MessageType.InvalidPlayerName]() {
