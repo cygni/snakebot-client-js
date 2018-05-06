@@ -76,55 +76,60 @@ describe('Coordinate', () => {
   });
 
   it('determines if it is out of bounds', () => {
-    const width = 4;
-    const height = 3;
-    const map = { width, height };
+    const mapWidth = 4;
+    const mapHeight = 3;
 
-    assert.strictEqual(new Coordinate(0, -1).isOutOfBounds(map), true);
-    assert.strictEqual(new Coordinate(0, 0).isOutOfBounds(map), false);
-    assert.strictEqual(new Coordinate(0, 1).isOutOfBounds(map), false);
+    assert.strictEqual(new Coordinate(0, -1).isOutOfBounds(mapWidth, mapHeight), true);
+    assert.strictEqual(new Coordinate(0, 0).isOutOfBounds(mapWidth, mapHeight), false);
+    assert.strictEqual(new Coordinate(0, 1).isOutOfBounds(mapWidth, mapHeight), false);
 
-    assert.strictEqual(new Coordinate(-1, 0).isOutOfBounds(map), true);
-    assert.strictEqual(new Coordinate(0, 0).isOutOfBounds(map), false);
-    assert.strictEqual(new Coordinate(1, 0).isOutOfBounds(map), false);
+    assert.strictEqual(new Coordinate(-1, 0).isOutOfBounds(mapWidth, mapHeight), true);
+    assert.strictEqual(new Coordinate(0, 0).isOutOfBounds(mapWidth, mapHeight), false);
+    assert.strictEqual(new Coordinate(1, 0).isOutOfBounds(mapWidth, mapHeight), false);
 
-    assert.strictEqual(new Coordinate(width - 1, height - 1).isOutOfBounds(map), false);
-    assert.strictEqual(new Coordinate(width - 1, height + 0).isOutOfBounds(map), true);
-    assert.strictEqual(new Coordinate(width - 1, height + 1).isOutOfBounds(map), true);
+    assert.strictEqual(new Coordinate(mapWidth - 1, mapHeight - 1).isOutOfBounds(mapWidth, mapHeight), false);
+    assert.strictEqual(new Coordinate(mapWidth - 1, mapHeight + 0).isOutOfBounds(mapWidth, mapHeight), true);
+    assert.strictEqual(new Coordinate(mapWidth - 1, mapHeight + 1).isOutOfBounds(mapWidth, mapHeight), true);
 
-    assert.strictEqual(new Coordinate(width - 1, height - 1).isOutOfBounds(map), false);
-    assert.strictEqual(new Coordinate(width + 0, height - 1).isOutOfBounds(map), true);
-    assert.strictEqual(new Coordinate(width + 1, height - 1).isOutOfBounds(map), true);
+    assert.strictEqual(new Coordinate(mapWidth - 1, mapHeight - 1).isOutOfBounds(mapWidth, mapHeight), false);
+    assert.strictEqual(new Coordinate(mapWidth + 0, mapHeight - 1).isOutOfBounds(mapWidth, mapHeight), true);
+    assert.strictEqual(new Coordinate(mapWidth + 1, mapHeight - 1).isOutOfBounds(mapWidth, mapHeight), true);
   });
 
   it('converts to a map position', () => {
-    const width = 3;
-    const height = 4;
-    const map = { width, height };
+    const mapWidth = 3;
+    const mapHeight = 4;
 
     // It throws if it's out of bounds
-    assert.throws(() => new Coordinate(0, -1).toPosition(map));
-    assert.throws(() => new Coordinate(0, height).toPosition(map));
-    assert.throws(() => new Coordinate(-1, 0).toPosition(map));
-    assert.throws(() => new Coordinate(width, 0).toPosition(map));
+    assert.throws(() => new Coordinate(0, -1).toPosition(mapWidth, mapHeight));
+    assert.throws(() => new Coordinate(0, mapHeight).toPosition(mapWidth, mapHeight));
+    assert.throws(() => new Coordinate(-1, 0).toPosition(mapWidth, mapHeight));
+    assert.throws(() => new Coordinate(mapWidth, 0).toPosition(mapWidth, mapHeight));
 
-    assert.strictEqual(new Coordinate(0, 0).toPosition(map), 0);
-    assert.strictEqual(new Coordinate(width - 1, 0).toPosition(map), width - 1);
-    assert.strictEqual(new Coordinate(0, 1).toPosition(map), width);
-    assert.strictEqual(new Coordinate(0, height - 1).toPosition(map), (height - 1) * width);
-    assert.strictEqual(new Coordinate(width - 1, height - 1).toPosition(map), width - 1 + (height - 1) * width);
+    assert.strictEqual(new Coordinate(0, 0).toPosition(mapWidth, mapHeight), 0);
+    assert.strictEqual(new Coordinate(mapWidth - 1, 0).toPosition(mapWidth, mapHeight), mapWidth - 1);
+    assert.strictEqual(new Coordinate(0, 1).toPosition(mapWidth, mapHeight), mapWidth);
+    assert.strictEqual(new Coordinate(0, mapHeight - 1).toPosition(mapWidth, mapHeight), (mapHeight - 1) * mapWidth);
+    assert.strictEqual(
+      new Coordinate(mapWidth - 1, mapHeight - 1).toPosition(mapWidth, mapHeight),
+      mapWidth - 1 + (mapHeight - 1) * mapWidth,
+    );
   });
 
   it('creates a coordinate object from a map position', () => {
-    const width = 3;
-    const height = 4;
-    const map = { width, height };
+    const mapWidth = 3;
+    const mapHeight = 4;
 
-    assert.deepStrictEqual(Coordinate.fromPosition(0, map), new Coordinate(0, 0));
-    assert.deepStrictEqual(Coordinate.fromPosition(width - 1, map), new Coordinate(width - 1, 0));
-    assert.deepStrictEqual(Coordinate.fromPosition(width, map), new Coordinate(0, 1));
-    assert.deepStrictEqual(Coordinate.fromPosition((height - 1) * width, map), new Coordinate(0, height - 1));
-    // prettier-ignore
-    assert.deepStrictEqual(Coordinate.fromPosition(width - 1 + (height - 1) * width, map), new Coordinate(width - 1, height - 1));
+    assert.deepStrictEqual(Coordinate.fromPosition(0, mapWidth), new Coordinate(0, 0));
+    assert.deepStrictEqual(Coordinate.fromPosition(mapWidth - 1, mapWidth), new Coordinate(mapWidth - 1, 0));
+    assert.deepStrictEqual(Coordinate.fromPosition(mapWidth, mapWidth), new Coordinate(0, 1));
+    assert.deepStrictEqual(
+      Coordinate.fromPosition((mapHeight - 1) * mapWidth, mapWidth),
+      new Coordinate(0, mapHeight - 1),
+    );
+    assert.deepStrictEqual(
+      Coordinate.fromPosition(mapWidth - 1 + (mapHeight - 1) * mapWidth, mapWidth),
+      new Coordinate(mapWidth - 1, mapHeight - 1),
+    );
   });
 });

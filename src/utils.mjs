@@ -29,9 +29,9 @@ const directionDeltas = Object.freeze({
 });
 
 export class Coordinate {
-  static fromPosition(position, { width }) {
-    const x = position % width;
-    const y = (position - x) / width;
+  static fromPosition(position, mapWidth) {
+    const x = position % mapWidth;
+    const y = (position - x) / mapWidth;
     return new Coordinate(x, y);
   }
 
@@ -40,9 +40,9 @@ export class Coordinate {
     this.y = y;
   }
 
-  isOutOfBounds({ width, height }) {
+  isOutOfBounds(mapWidth, mapHeight) {
     const { x, y } = this;
-    return x < 0 || y < 0 || x >= width || y >= height;
+    return x < 0 || y < 0 || x >= mapWidth || y >= mapHeight;
   }
 
   euclidianDistanceTo({ x: x1, y: y1 }) {
@@ -55,13 +55,13 @@ export class Coordinate {
     return Math.abs(x1 - x0) + Math.abs(y1 - y0);
   }
 
-  toPosition({ width, height }) {
-    if (this.isOutOfBounds({ width, height })) {
+  toPosition(mapWidth, mapHeight) {
+    if (this.isOutOfBounds(mapWidth, mapHeight)) {
       throw new RangeError('The coordinate must be within the bounds in order to convert to position');
     }
 
     const { x, y } = this;
-    return x + y * width;
+    return x + y * mapWidth;
   }
 
   negated() {
@@ -133,11 +133,13 @@ export class GameMap {
   }
 
   getTile(coordinate) {
-    if (coordinate.isOutOfBounds(this)) {
+    const { width, height } = this;
+
+    if (coordinate.isOutOfBounds(width, height)) {
       return obstactleTile;
     }
 
-    const position = coordinate.toPosition(this);
+    const position = coordinate.toPosition(width, height);
     if (this._tiles.has(position)) {
       return this._tiles.get(position);
     }
