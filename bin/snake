@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /* eslint-disable */
 'use strict';
 const esm = require('esm');

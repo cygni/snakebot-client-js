@@ -11,7 +11,7 @@
   "module": "./src/index.mjs",
   "browser": "./src/index.mjs",
   "bin": {
-    "snake": "./bin/snake.js"
+    "snake": "./bin/snake"
   },
   "scripts": {
     "lint": "eslint . --ext .js,.mjs",
