@@ -5,10 +5,10 @@ export const TileType = Object.freeze({
   Snake: Symbol('Snake'),
 });
 
-const emptyTile = { type: TileType.Empty };
-const foodTile = { type: TileType.Food };
-const obstactleTile = { type: TileType.Obstacle };
-const createSnakeTile = snake => ({ type: TileType.Snake, snake });
+const emptyTile = Object.freeze({ type: TileType.Empty });
+const foodTile = Object.freeze({ type: TileType.Food });
+const obstactleTile = Object.freeze({ type: TileType.Obstacle });
+const createSnakeTile = snake => Object.freeze({ type: TileType.Snake, snake });
 
 export const Direction = Object.freeze({
   Up: 'UP',
