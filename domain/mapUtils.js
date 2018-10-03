@@ -407,3 +407,4 @@ exports.translateCoordinate = translateCoordinate;
 exports.translateCoordinates = translateCoordinates;
 exports.translatePosition = translatePosition;
 exports.translatePositions = translatePositions;
+exports.dirDeltas = directionMovementDeltas;

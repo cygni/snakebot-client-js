@@ -7,6 +7,7 @@
         "url": "https://github.com/cygni/snakebot-client-js.git"
     },
     "scripts": {
+        "start": "node snake-cli.js ./snakepit/snakestein-bot.js -u TrocaderoZeroDawn --venue tournament",
         "lint": "eslint ./",
         "test": "nyc mocha",
         "doc": "jsdoc ./domain/** -d doc/html; jsdox ./domain/** --output doc/markdown"
@@ -20,6 +21,7 @@
         "dot": "^1.0.3",
         "jsdox": "^0.4.10",
         "json-socket": "0.2.0",
+        "lodash": "^4.17.11",
         "minimist": "^1.2.0",
         "mkdirp": "^0.5.1",
         "mocha": "^4.0.1",
