@@ -14,6 +14,7 @@ const supportedGameModes = new Set(['TRAINING', 'TOURNAMENT']);
 export function createClient({
   host = 'snake.cygni.se',
   venue = 'training',
+  protocol = 'ws',
   snake = createSnake(),
   logger = console,
   autoStart = true,
@@ -24,7 +25,7 @@ export function createClient({
   let timeout;
   let gameMode;
 
-  const ws = new WebSocketImpl(`ws://${host}/${venue}`);
+  const ws = new WebSocketImpl(`${protocol}://${host}/${venue}`);
 
   logger.info(`WebSocket is connecting`);
 
