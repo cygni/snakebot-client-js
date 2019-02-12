@@ -1,5 +1,5 @@
-import { GameMap } from './utils.mjs';
-import { createSnake } from './snake.mjs';
+import { GameMap } from './utils.js';
+import { createSnake } from './snake.js';
 import {
   MessageType,
   createClientInfoMessage,
@@ -7,7 +7,7 @@ import {
   createRegisterMoveMessage,
   createRegisterPlayerMessage,
   createStartGameMessage,
-} from './messages.mjs';
+} from './messages.js';
 
 const supportedGameModes = new Set(['TRAINING', 'TOURNAMENT']);
 

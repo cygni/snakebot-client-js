@@ -1,5 +1,5 @@
-import { MessageType } from './messages.mjs';
-import { TileType, Direction } from './utils.mjs';
+import { MessageType } from './messages.js';
+import { TileType, Direction } from './utils.js';
 
 const allDirections = Object.values(Direction);
 

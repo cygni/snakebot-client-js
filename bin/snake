@@ -1,7 +1,14 @@
 #!/usr/bin/env node
-/* eslint-disable */
 'use strict';
-const esm = require('esm');
-const requireWithEsm = esm(module, { mode: 'strict' });
+const commander = require('commander');
+const { createNodeClient } = require('..');
+const pkg = require('../package');
 
-module.exports = requireWithEsm('./snake.mjs');
+const { host, venue } = commander
+  .name(pkg.name)
+  .version(pkg.version)
+  .option('-h, --host [url]', 'Host', 'snake.cygni.se')
+  .option('-v, --venue [name]', 'Venue', 'training')
+  .parse(process.argv);
+
+createNodeClient({ host, venue });

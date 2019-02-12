@@ -1,0 +1,28 @@
+{
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "env": {
+    "browser": true,
+    "node": false
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "import/no-commonjs": "error",
+    "import/no-extraneous-dependencies": "warn",
+    "import/no-nodejs-modules": "error",
+    "import/extensions": ["error", "always", { "ignorePackages": true }]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.js"],
+      "rules": {
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": false }],
+        "import/no-nodejs-modules": "off"
+      },
+      "env": {
+        "mocha": true
+      }
+    }
+  ]
+}

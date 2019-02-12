@@ -1,6 +1,19 @@
-/* eslint-disable */
 'use strict';
-const esm = require('esm');
-const requireWithEsm = esm(module, { mode: 'strict' });
+const WebSocket = require('ws');
+const snakebot = require('esm')(module)('./src');
+const pkg = require('./package');
 
-module.exports = requireWithEsm('./index.mjs');
+const clientInfo = {
+  clientVersion: pkg.version,
+  // OS doesn't really matter for JavaScript, so specify that we're using Node
+  operatingSystem: 'Node.js',
+  operatingSystemVersion: process.versions.node,
+};
+
+module.exports = {
+  ...snakebot,
+
+  createNodeClient(options) {
+    return snakebot.createClient({ WebSocket, clientInfo, ...options });
+  },
+};
