@@ -1,20 +1,18 @@
 const DateFormat = require('dateformat');
-const GameSettings = require('./domain/mamba/gameSettings.js');
 const JsonSocket = require('json-socket');
+const { performance } = require('perf_hooks');
+const Net = require('net');
+const open = require('opn');
+const argv = require('minimist')(process.argv.slice(2));
 
 const Mamba = require('./domain/mamba-client.js');
-const Net = require('net');
-const argv = require('minimist')(process.argv.slice(2));
-const now = require('performance-now');
-const open = require('open');
+const GameSettings = require('./domain/mamba/gameSettings.js');
 
 const Colors = { yellow: '\x1b[1m\x1b[33m', red: '\x1b[1m\x1b[31m', reset: '\x1b[0m' };
 
 let snakeBot = null;
 let gameInfo = null;
 let gameLink = null;
-const renderer = null;
-
 
 function logError(message, err) {
     console.log(`${Colors.red + DateFormat(new Date(), 'HH:MM:ss.l')} - ERROR - ${message}${Colors.reset}`, err);
@@ -128,9 +126,9 @@ function prepareNewGame() {
  * @param onResponse call back when response received
  */
 function handleGameUpdate(mapUpdateEvent, onResponse) {
-    const start = now();
+    const start = performance.now();
     snakeBot.gameStateChanged(mapUpdateEvent, gameInfo.getPlayerId(), (response) => {
-        response.debugData.executionTime = (now() - start).toFixed(3);
+        response.debugData.executionTime = (performance.now() - start).toFixed(3);
         client.moveSnake(response.direction, mapUpdateEvent.getGameTick());
         if (onResponse) {
             onResponse(response.debugData);

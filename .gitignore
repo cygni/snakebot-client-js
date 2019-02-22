@@ -19,6 +19,7 @@ out
 # OSX
 .DS_Store
 
-snakebot-js/node_modules
-
 doc/html
+
+*.log
+yarn.lock

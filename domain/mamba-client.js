@@ -10,7 +10,6 @@
  */
 function Mamba(host, port, eventListener, verboseLogging) {
     const WebSocket = require('ws');
-    const StringDecoder = require('string_decoder').StringDecoder;
     const DateFormat = require('dateformat');
     const EventBus = require('./mamba/eventBus.js');
     const RegisterPlayer = require('./mamba/registerPlayer.js');
@@ -36,7 +35,6 @@ function Mamba(host, port, eventListener, verboseLogging) {
 
     const HEART_BEAT_MS = 20 * 1000;
 
-    const decoder = new StringDecoder('utf8');
     const eventBus = EventBus.new();
     let ws = null;
 
@@ -69,17 +67,17 @@ function Mamba(host, port, eventListener, verboseLogging) {
             postConnect();
         });
 
-        ws.on('onerror', () => {
+        ws.on('error', () => {
             errorConnect();
         });
 
-        ws.on('onclose', (err) => {
+        ws.on('close', (err) => {
             console.log(err);
             errorConnect();
         });
 
-        ws.on('message', (data, buffer) => {
-            const json = decodeJson(buffer);
+        ws.on('message', (data) => {
+            const json = decodeJson(data);
             if (json.type === HeartBeatResponse.type) {
                 return; // Heart beats kept outside the game logic state machine.
             }
@@ -206,8 +204,8 @@ function Mamba(host, port, eventListener, verboseLogging) {
         return getCurrentState();
     }
 
-    function decodeJson(payload) {
-        const json = JSON.parse(decoder.write(payload.buffer));
+    function decodeJson(data) {
+        const json = JSON.parse(data.toString());
         logDump(json);
         return json;
     }
