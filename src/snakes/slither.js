@@ -1,19 +1,28 @@
-import { MessageType } from './messages.js';
-import { TileType, Direction } from './utils.js';
+import { MessageType } from '../messages.js';
+import { TileType, Direction } from '../utils.js';
 
 const allDirections = Object.values(Direction);
 
+/**
+ * @template T
+ * @param {ArrayLike<T>} items
+ * @returns {T}
+ */
 function randomItem(items) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-class MySnake {
+export default class Slither {
   constructor() {
     // The snake must have a name
-    this.name = 'snoken';
+    this.name = 'Slither';
   }
 
   // This method is required
+  /**
+   * @param {import('../utils').GameMap} gameMap
+   * @returns {Direction}
+   */
   getNextMove(gameMap) {
     const currentCoordinate = gameMap.playerSnake.headCoordinate;
 
@@ -46,8 +55,4 @@ class MySnake {
         break;
     }
   }
-}
-
-export function createSnake() {
-  return new MySnake();
 }

@@ -1,5 +1,4 @@
-import { GameMap } from './utils.js';
-import { createSnake } from './snake.js';
+import { GameMode, GameMap } from './utils.js';
 import {
   MessageType,
   createClientInfoMessage,
@@ -9,25 +8,30 @@ import {
   createStartGameMessage,
 } from './messages.js';
 
-const supportedGameModes = new Set(['TRAINING', 'TOURNAMENT']);
+const HEARTBEAT_INTERVAL = 5000;
+const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 
 export function createClient({
   host = 'snake.cygni.se',
   venue = 'training',
-  protocol = 'ws',
-  snake = createSnake(),
+  protocol = 'ws:',
+  snake,
   logger = console,
   autoStart = true,
   WebSocket: WebSocketImpl = WebSocket,
   clientInfo,
   gameSettings,
-} = {}) {
-  let timeout;
-  let gameMode;
+}) {
+  if (snake == null) {
+    throw new Error('You must specify a snake to use!');
+  }
 
-  const ws = new WebSocketImpl(`${protocol}://${host}/${venue}`);
+  const ws = new WebSocketImpl(`${protocol}//${host}/${venue}`);
 
   logger.info(`WebSocket is connecting`);
+
+  let heartbeatTimeout;
+  let gameMode;
 
   ws.addEventListener('open', handleOpen);
   ws.addEventListener('close', handleClose);
@@ -38,27 +42,31 @@ export function createClient({
     ws.send(JSON.stringify(message));
   }
 
+  function closeSocket() {
+    if (ws.readyState !== ws.CLOSED || ws.readyState !== ws.CLOSING) {
+      ws.close();
+    }
+  }
+
   function handleOpen() {
     logger.info(`WebSocket is open`);
     sendMessage(createClientInfoMessage(clientInfo));
-    logger.info(`Registering ${snake.name}`);
+    logger.info(`Registering player ${snake.name}`);
     sendMessage(createRegisterPlayerMessage(snake.name, gameSettings));
   }
 
   const messageHandlers = {
     [MessageType.HeartbeatResponse]({ receivingPlayerId }) {
-      timeout = setTimeout(() => {
-        sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
-      }, 5000);
+      heartbeatTimeout = setTimeout(sendMessage, HEARTBEAT_INTERVAL, createHeartbeatRequestMessage(receivingPlayerId));
     },
 
     [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode }) {
       gameMode = _gameMode;
-      if (!supportedGameModes.has(gameMode)) {
-        logger.error(`Unsupported gameMode: ${gameMode}`);
-        ws.close();
+      if (!SUPPORTED_GAME_MODES.has(gameMode)) {
+        logger.error(`Unsupported game mode: ${gameMode}`);
+        closeSocket();
       } else {
-        logger.info(`Player ${snake.name} was successfully registered`);
+        logger.info(`Player ${snake.name} was successfully registered!`);
         logger.info(`Game mode: ${gameMode}`);
         sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
       }
@@ -66,38 +74,40 @@ export function createClient({
 
     [MessageType.InvalidPlayerName]() {
       logger.info(`The player name ${snake.name} was invalid`);
+      closeSocket();
     },
 
     [MessageType.GameLink]({ url }) {
-      logger.info(`Game is ready`, { url });
-      if (autoStart && gameMode === 'TRAINING') {
+      logger.info(`Game is ready:`, url);
+      if (autoStart && gameMode === GameMode.Training) {
         sendMessage(createStartGameMessage());
       }
     },
 
     [MessageType.GameStarting]() {
-      logger.info(`Game is starting.`);
+      logger.info(`Game is starting`);
     },
 
     [MessageType.GameResult]() {
-      logger.info(`Game result is in.`);
+      logger.info(`Game result is in`);
     },
 
     [MessageType.GameEnded]({ playerWinnerName }) {
-      logger.info(`Game has ended. The winner is ${playerWinnerName}!`);
-      if (gameMode === 'TRAINING') {
-        ws.close();
+      logger.info(`Game has ended. The winner was ${playerWinnerName}!`);
+      if (gameMode === GameMode.Training) {
+        closeSocket();
       }
     },
 
     [MessageType.TournamentEnded]({ playerWinnerName }) {
-      logger.info(`Tournament has ended. The winner is ${playerWinnerName}!`);
-      ws.close();
+      logger.info(`Tournament has ended. The winner was ${playerWinnerName}!`);
+      closeSocket();
     },
 
-    async [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }) {
+    [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }) {
+      // logger.debug(`Game turn #${gameTick}`);
       const gameMap = new GameMap(map, receivingPlayerId);
-      const direction = await snake.getNextMove(gameMap, gameId, gameTick);
+      const direction = snake.getNextMove(gameMap, gameId, gameTick);
       sendMessage(createRegisterMoveMessage(direction, receivingPlayerId, gameId, gameTick));
     },
   };
@@ -124,7 +134,7 @@ export function createClient({
 
   function handleClose({ code, reason, wasClean }) {
     logger.info(`WebSocket is closed`, { code, reason, wasClean });
-    clearTimeout(timeout);
+    clearTimeout(heartbeatTimeout);
     ws.removeEventListener('open', handleOpen);
     ws.removeEventListener('close', handleClose);
     ws.removeEventListener('error', handleError);

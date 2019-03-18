@@ -1,14 +1,20 @@
 #!/usr/bin/env node
 'use strict';
+const path = require('path');
 const commander = require('commander');
 const { createNodeClient } = require('..');
-const pkg = require('../package');
+const pkg = require('../package.json');
 
-const { host, venue } = commander
+const defaultSnake = require.resolve('../src/snakes/slither.js');
+
+const { host, venue, snake } = commander
   .name(pkg.name)
   .version(pkg.version)
   .option('-h, --host [url]', 'Host', 'snake.cygni.se')
   .option('-v, --venue [name]', 'Venue', 'training')
+  .option('-s, --snake [path]', 'Snake', path.relative(process.cwd(), defaultSnake))
   .parse(process.argv);
 
-createNodeClient({ host, venue });
+const snakePath = path.resolve(process.cwd(), snake);
+
+createNodeClient({ host, venue, snakePath });

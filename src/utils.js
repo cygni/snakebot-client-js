@@ -1,3 +1,10 @@
+/**
+ * @typedef {{ type: TileType, snake?: Snake }} Tile
+ * @typedef {{ id: string, name: string, positions: number[] }} SnakeInfo
+ * @typedef {{ width: number, height: number, foodPositions: number[], obstaclePositions: number[], snakeInfos: SnakeInfo[] }} RawMap
+ */
+
+/** @enum {symbol} */
 export const TileType = Object.freeze({
   Empty: Symbol('Empty'),
   Food: Symbol('Food'),
@@ -8,13 +15,22 @@ export const TileType = Object.freeze({
 const emptyTile = Object.freeze({ type: TileType.Empty });
 const foodTile = Object.freeze({ type: TileType.Food });
 const obstactleTile = Object.freeze({ type: TileType.Obstacle });
+
+/** @param {Snake} snake */
 const createSnakeTile = snake => Object.freeze({ type: TileType.Snake, snake });
 
+/** @enum {string} */
 export const Direction = Object.freeze({
   Up: 'UP',
   Down: 'DOWN',
   Left: 'LEFT',
   Right: 'RIGHT',
+});
+
+/** @enum {string} */
+export const GameMode = Object.freeze({
+  Training: 'TRAINING',
+  Tournament: 'TOURNAMENT',
 });
 
 export function noop() {
@@ -29,32 +45,63 @@ const directionDeltas = Object.freeze({
 });
 
 export class Coordinate {
+  /**
+   * @param {number} position
+   * @param {number} mapWidth
+   * @returns {Coordinate}
+   */
   static fromPosition(position, mapWidth) {
     const x = position % mapWidth;
     const y = (position - x) / mapWidth;
     return new Coordinate(x, y);
   }
 
+  /**
+   * @param {number} x
+   * @param {number} y
+   */
   constructor(x, y) {
     this.x = x;
     this.y = y;
   }
 
+  /**
+   * Whether this coordinate is out of bounds
+   * @param {number} mapWidth
+   * @param {number} mapHeight
+   * @returns {boolean}
+   */
   isOutOfBounds(mapWidth, mapHeight) {
     const { x, y } = this;
     return x < 0 || y < 0 || x >= mapWidth || y >= mapHeight;
   }
 
-  euclidianDistanceTo({ x: x1, y: y1 }) {
+  /**
+   * @param {Coordinate} otherCoordinate
+   * @returns {number}
+   */
+  euclidianDistanceTo(otherCoordinate) {
     const { x: x0, y: y0 } = this;
+    const { x: x1, y: y1 } = otherCoordinate;
     return Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
   }
 
-  manhattanDistanceTo({ x: x1, y: y1 }) {
+  /**
+   * @param {Coordinate} otherCoordinate
+   * @returns {number}
+   */
+  manhattanDistanceTo(otherCoordinate) {
     const { x: x0, y: y0 } = this;
+    const { x: x1, y: y1 } = otherCoordinate;
     return Math.abs(x1 - x0) + Math.abs(y1 - y0);
   }
 
+  /**
+   * Convert this Coordinate to an integer position
+   * @param {number} mapWidth
+   * @param {number} mapHeight
+   * @returns {number}
+   */
   toPosition(mapWidth, mapHeight) {
     if (this.isOutOfBounds(mapWidth, mapHeight)) {
       throw new RangeError('The coordinate must be within the bounds in order to convert to position');
@@ -64,18 +111,39 @@ export class Coordinate {
     return x + y * mapWidth;
   }
 
+  /**
+   * Returns the
+   * @returns {Coordinate}
+   */
   negated() {
     const { x, y } = this;
     return new Coordinate(-x, -y);
   }
 
-  translatedByDelta({ x: dx, y: dy }) {
+  /**
+   * Returns a new coordinate translated by the provided delta
+   * @param {{ x: number, y: number }} delta
+   * @returns {Coordinate}
+   */
+  translatedByDelta(delta) {
     const { x, y } = this;
+    const { x: dx, y: dy } = delta;
     return new Coordinate(x + dx, y + dy);
   }
 
+  /**
+   * Returns a new coordinate translated by the provided direction
+   * @param {Direction} direction
+   * @returns {Coordinate}
+   */
   translatedByDirection(direction) {
-    return this.translatedByDelta(directionDeltas[direction]);
+    const directionDelta = directionDeltas[direction];
+
+    if (directionDelta === undefined) {
+      throw new TypeError(`The direction "${direction}" is invalid`);
+    }
+
+    return this.translatedByDelta(directionDelta);
   }
 }
 
@@ -88,10 +156,20 @@ class Snake {
     return this.coordinates.length;
   }
 
+  /**
+   * @param {SnakeInfo} snakeInfo
+   * @param {number} mapWidth
+   */
   static fromSnakeInfo({ id, name, positions }, mapWidth) {
-    return new Snake(id, name, positions.map(position => Coordinate.fromPosition(position, mapWidth)));
+    const coordinates = positions.map(position => Coordinate.fromPosition(position, mapWidth));
+    return new Snake(id, name, coordinates);
   }
 
+  /**
+   * @param {string} id
+   * @param {string} name
+   * @param {Coordinate[]} coordinates
+   */
   constructor(id, name, coordinates) {
     this.id = id;
     this.name = name;
@@ -104,8 +182,14 @@ export class GameMap {
     return this.snakes.get(this.playerId);
   }
 
+  /**
+   * @param {RawMap} map
+   * @param {string} playerId
+   */
   constructor(map, playerId) {
+    /** @type {Map<string, Snake>} */
     const snakes = new Map();
+    /** @type {Map<number, Tile>} */
     const tiles = new Map();
 
     for (const foodPosition of map.foodPositions) {
@@ -129,9 +213,13 @@ export class GameMap {
     this.width = map.width;
     this.height = map.height;
     this.snakes = snakes;
-    this._tiles = tiles;
+    this.tiles = tiles;
   }
 
+  /**
+   * @param {Coordinate} coordinate
+   * @returns {Tile}
+   */
   getTile(coordinate) {
     const { width, height } = this;
 
@@ -140,10 +228,12 @@ export class GameMap {
     }
 
     const position = coordinate.toPosition(width, height);
-    if (this._tiles.has(position)) {
-      return this._tiles.get(position);
+    const tile = this.tiles.get(position);
+
+    if (tile === undefined) {
+      return emptyTile;
     }
 
-    return emptyTile;
+    return tile;
   }
 }

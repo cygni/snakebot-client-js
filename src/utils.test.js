@@ -39,6 +39,7 @@ describe('Coordinate', () => {
 
     const coordinate = new Coordinate(x, -y);
 
+    // @ts-ignore
     assert.throws(() => coordinate.translatedByDelta(undefined));
 
     const translatedCoordinate = coordinate.translatedByDelta({ x, y });
@@ -51,6 +52,7 @@ describe('Coordinate', () => {
   it('translates the coordinate by direction', () => {
     const coordinate = new Coordinate(0, 0);
 
+    // @ts-ignore
     assert.throws(() => coordinate.translatedByDirection(undefined));
 
     assert.deepEqual(coordinate.translatedByDirection(Direction.Up), new Coordinate(0, -1));
