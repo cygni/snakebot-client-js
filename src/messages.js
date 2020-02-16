@@ -33,7 +33,7 @@ export function createClientInfoMessage({
   return {
     type: MessageType.ClientInfo,
     language: 'JavaScript',
-    languageVersion: 'ES2018',
+    languageVersion: 'ES2020',
     clientVersion,
     operatingSystem,
     operatingSystemVersion,

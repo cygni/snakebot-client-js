@@ -2,12 +2,21 @@
   "root": true,
   "extends": ["eslint:recommended", "prettier", "plugin:import/recommended"],
   "plugins": ["prettier"],
-  "parserOptions": {
-    "ecmaVersion": 2018
-  },
+  "parser": "babel-eslint",
   "env": {
     "es6": true,
     "node": true,
     "browser": false
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "import/extensions": [
+      "error",
+      "always",
+      {
+        "ignorePackages": true
+      }
+    ],
+    "import/no-commonjs": "error"
   }
 }

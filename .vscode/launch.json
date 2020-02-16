@@ -1,15 +1,12 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
       "type": "node",
       "request": "launch",
       "name": "Run tests",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
-      "args": ["--ui", "tdd", "--require", "esm", "--no-timeouts", "--colors", "${workspaceFolder}/**/*.test.js"],
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "args": ["--experimental-modules", "--no-timeouts", "--colors"],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**/*.js", "${workspaceFolder}/node_modules/mocha/**/*.js"]
     },
@@ -17,7 +14,9 @@
       "type": "node",
       "request": "launch",
       "name": "Launch snakebot",
-      "program": "${workspaceFolder}/bin/snake",
+      "program": "${workspaceFolder}/snake-cli.js",
+      "args": ["${workspaceFolder}/src/snakes/slither.js"],
+      "runtimeArgs": ["--experimental-modules"],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**/*.js"]
     }

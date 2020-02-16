@@ -12,13 +12,13 @@ const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 
 export function createClient({
-  host = 'snake.cygni.se',
+  host = 'ws://snake.cygni.se',
   venue = 'training',
-  protocol = 'ws:',
   snake,
   logger = console,
   autoStart = true,
   WebSocket: WebSocketImpl = WebSocket,
+  onGameReady,
   clientInfo,
   gameSettings,
 }) {
@@ -26,7 +26,7 @@ export function createClient({
     throw new Error('You must specify a snake to use!');
   }
 
-  const ws = new WebSocketImpl(`${protocol}//${host}/${venue}`);
+  const ws = new WebSocketImpl(new URL(venue, host).href);
 
   logger.info(`WebSocket is connecting`);
 
@@ -42,8 +42,8 @@ export function createClient({
     ws.send(JSON.stringify(message));
   }
 
-  function closeSocket() {
-    if (ws.readyState !== ws.CLOSED || ws.readyState !== ws.CLOSING) {
+  function close() {
+    if (ws.readyState !== ws.CLOSED && ws.readyState !== ws.CLOSING) {
       ws.close();
     }
   }
@@ -51,8 +51,8 @@ export function createClient({
   function handleOpen() {
     logger.info(`WebSocket is open`);
     sendMessage(createClientInfoMessage(clientInfo));
-    logger.info(`Registering player ${snake.name}`);
-    sendMessage(createRegisterPlayerMessage(snake.name, gameSettings));
+    logger.info(`Registering player ${snake.SNAKE_NAME}`);
+    sendMessage(createRegisterPlayerMessage(snake.SNAKE_NAME, gameSettings));
   }
 
   const messageHandlers = {
@@ -64,23 +64,27 @@ export function createClient({
       gameMode = _gameMode;
       if (!SUPPORTED_GAME_MODES.has(gameMode)) {
         logger.error(`Unsupported game mode: ${gameMode}`);
-        closeSocket();
+        close();
       } else {
-        logger.info(`Player ${snake.name} was successfully registered!`);
+        logger.info(`Player ${snake.SNAKE_NAME} was successfully registered!`);
         logger.info(`Game mode: ${gameMode}`);
         sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
       }
     },
 
     [MessageType.InvalidPlayerName]() {
-      logger.info(`The player name ${snake.name} was invalid`);
-      closeSocket();
+      logger.info(`The player name ${snake.SNAKE_NAME} was invalid`);
+      close();
     },
 
     [MessageType.GameLink]({ url }) {
       logger.info(`Game is ready:`, url);
       if (autoStart && gameMode === GameMode.Training) {
         sendMessage(createStartGameMessage());
+      } else {
+        onGameReady(() => {
+          sendMessage(createStartGameMessage());
+        });
       }
     },
 
@@ -95,13 +99,13 @@ export function createClient({
     [MessageType.GameEnded]({ playerWinnerName }) {
       logger.info(`Game has ended. The winner was ${playerWinnerName}!`);
       if (gameMode === GameMode.Training) {
-        closeSocket();
+        close();
       }
     },
 
     [MessageType.TournamentEnded]({ playerWinnerName }) {
       logger.info(`Tournament has ended. The winner was ${playerWinnerName}!`);
-      closeSocket();
+      close();
     },
 
     [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }) {
@@ -126,7 +130,7 @@ export function createClient({
   }
 
   function handleError(error) {
-    if (error.message) {
+    if (error.message != null) {
       logger.error(error.message);
     }
     logger.info(`WebSocket is closing`);
@@ -142,9 +146,6 @@ export function createClient({
   }
 
   return {
-    ws,
-    startGame() {
-      sendMessage(createStartGameMessage());
-    },
+    close,
   };
 }

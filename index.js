@@ -1,23 +1,10 @@
-'use strict';
-const WebSocket = require('ws');
-const requireWithEsm = require('esm')(module);
+import fs from 'fs';
+import process from 'process';
+import WebSocket from 'ws';
 
-/** @type {import('./src')} */
-const snakebot = requireWithEsm('./src');
-const pkg = require('./package.json');
+import { createClient } from './src/index.js';
 
-function getDefaultExport(mod) {
-  return typeof mod === 'object' && mod !== null && mod.default !== undefined ? mod.default : mod;
-}
-
-function getSnake(snakePath) {
-  if (typeof snakePath === 'string') {
-    const Snake = getDefaultExport(requireWithEsm(snakePath));
-    if (typeof Snake === 'function') {
-      return new Snake();
-    }
-  }
-}
+const pkg = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
 const clientInfo = Object.freeze({
   clientVersion: pkg.version,
@@ -26,11 +13,13 @@ const clientInfo = Object.freeze({
   operatingSystemVersion: process.versions.node,
 });
 
-module.exports = {
-  ...snakebot,
+export * from './src/index.js';
 
-  createNodeClient({ snakePath, snake = getSnake(snakePath), ...options }) {
+export function createNodeClient(options) {
+  return createClient({
     // @ts-ignore
-    return snakebot.createClient({ WebSocket, clientInfo, snake, ...options });
-  },
-};
+    WebSocket,
+    clientInfo,
+    ...options,
+  });
+}
