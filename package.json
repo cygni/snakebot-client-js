@@ -9,6 +9,9 @@
     "url": "https://github.com/cygni/snakebot-client-js.git"
   },
   "private": true,
+  "engines": {
+    "node": ">=12.11.0"
+  },
   "type": "module",
   "main": "index.js",
   "browser": "src/index.js",
