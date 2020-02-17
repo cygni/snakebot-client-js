@@ -108,10 +108,10 @@ export function createClient({
       close();
     },
 
-    [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }) {
+    async [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }) {
       // logger.debug(`Game turn #${gameTick}`);
       const gameMap = new GameMap(map, receivingPlayerId);
-      const direction = snake.getNextMove(gameMap, gameId, gameTick);
+      const direction = await snake.getNextMove(gameMap, gameId, gameTick);
       sendMessage(createRegisterMoveMessage(direction, receivingPlayerId, gameId, gameTick));
     },
   };

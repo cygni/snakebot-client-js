@@ -15,7 +15,6 @@
       "request": "launch",
       "name": "Launch snakebot",
       "program": "${workspaceFolder}/snake-cli.js",
-      "args": ["${workspaceFolder}/src/snakes/slither.js"],
       "runtimeArgs": ["--experimental-modules"],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**/*.js"]

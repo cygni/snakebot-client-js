@@ -1,6 +1,6 @@
-import { MessageType } from '../messages.js';
-import { TileType, Direction } from '../utils.js';
+import { TileType, Direction, MessageType } from '../src/index.js';
 
+/** @ */
 const allDirections = Object.values(Direction);
 
 /**
@@ -15,8 +15,8 @@ function randomItem(items) {
 export const SNAKE_NAME = 'Slither';
 
 /**
- * @param {import('../utils').GameMap} gameMap
- * @returns {Direction}
+ * @param {import('../src/index.js').GameMap} gameMap
+ * @returns {Direction | Promise<Direction>}
  */
 export function getNextMove(gameMap) {
   const currentCoordinate = gameMap.playerSnake.headCoordinate;

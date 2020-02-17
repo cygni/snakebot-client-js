@@ -1,5 +1,6 @@
 #!/usr/bin/env node --experimental-modules --unhandled-rejections=strict
 import { promises as fs } from 'fs';
+import url from 'url';
 import path from 'path';
 import process from 'process';
 import readline from 'readline';
@@ -7,9 +8,10 @@ import commander from 'commander';
 
 import { createNodeClient } from './index.js';
 
-async function run(relativeSnakePath, { host, venue, autostart }) {
-  const snakePath = path.resolve(process.cwd(), relativeSnakePath);
-  const snake = await import(snakePath);
+const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
+
+async function run(snakePath = defaultSnakePath, { host, venue, autostart }) {
+  const snake = await import(path.resolve(snakePath));
 
   const client = createNodeClient({
     host,
@@ -41,7 +43,7 @@ async function run(relativeSnakePath, { host, venue, autostart }) {
     .storeOptionsAsProperties(false)
     .passCommandToAction(false)
     .version(pkg.version)
-    .arguments('<snake-path>')
+    .arguments('[snake-path]')
     .option('--host [url]', 'The server to connect to', 'ws://snake.cygni.se')
     .option('--venue [name]', 'Which venue to use', 'training')
     .option('--autostart', 'Automatically start the game', true)
