@@ -1,6 +1,5 @@
 import { TileType, Direction, MessageType } from '../src/index.js';
 
-/** @ */
 const allDirections = Object.values(Direction);
 
 /**

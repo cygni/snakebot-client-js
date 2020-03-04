@@ -6,7 +6,8 @@
       "request": "launch",
       "name": "Run tests",
       "program": "${workspaceFolder}/node_modules/.bin/_mocha",
-      "args": ["--experimental-modules", "--no-timeouts", "--colors"],
+      "args": ["--no-timeouts", "--colors"],
+      "runtimeArgs": ["--experimental-modules"],
       "internalConsoleOptions": "openOnSessionStart",
       "skipFiles": ["<node_internals>/**/*.js", "${workspaceFolder}/node_modules/mocha/**/*.js"]
     },

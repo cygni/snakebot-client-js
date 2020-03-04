@@ -19,9 +19,6 @@ out
 # OSX
 .DS_Store
 
-# Lockfiles
-yarn.lock
-package-lock.json
-
 # Misc
+yarn.lock
 yarn-error.log
