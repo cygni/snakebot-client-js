@@ -9,6 +9,7 @@ const Mamba = require('./domain/mamba-client.js');
 const GameSettings = require('./domain/mamba/gameSettings.js');
 
 const Colors = { yellow: '\x1b[1m\x1b[33m', red: '\x1b[1m\x1b[31m', reset: '\x1b[0m' };
+const helo='world';
 
 let snakeBot = null;
 let gameInfo = null;
