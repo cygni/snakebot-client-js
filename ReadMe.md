@@ -4,8 +4,8 @@ This a Snake Client written in javascript (ECMAScript 5).
 
 ## Requirements
 
-* Node.js >= 8.5.0 
-* npm >= 3.5.3
+* Node.js >= 16.15.1 
+* npm >= 8.11.0
 * Snake Server (local or remote)
 
 ## Installation
