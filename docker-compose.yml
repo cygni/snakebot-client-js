@@ -1,0 +1,12 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  snakebot-web:
+    image: dolvur/snakebot-web:latest
+    ports:
+      - "8090:80"
+    links:
+      - snakebot-server
+  snakebot-server:
+    image: dolvur/snakebot-server:latest
+    ports:
+      - "8080:8080"
