@@ -24,7 +24,7 @@ export function getNextMove(gameMap) {
     const nextCoordinate = currentCoordinate.translatedByDirection(direction);
     const nextTile = gameMap.getTile(nextCoordinate);
 
-    switch (nextTile.type) {
+    switch (nextTile) {
       case TileType.Empty:
       case TileType.Food:
         return true;
@@ -35,10 +35,12 @@ export function getNextMove(gameMap) {
 
   // Bad luck!
   if (safeDirections.length === 0) {
+    console.log('No safe directions!');
     return Direction.Down;
   }
 
-  return randomItem(safeDirections);
+  const choice = randomItem(safeDirections);
+  return choice;
 }
 
 // This handler is optional
