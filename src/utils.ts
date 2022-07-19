@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * @typedef {{ type: TileType, snake?: Snake }} Tile
  * @typedef {{ id: string, name: string, positions: number[] }} SnakeInfo

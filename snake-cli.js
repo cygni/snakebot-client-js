@@ -8,7 +8,8 @@ import commander from 'commander';
 
 import { createNodeClient } from './index.js';
 
-const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
+// const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
+const defaultSnakePath = './snakepit/slither.js';
 
 async function run(snakePath = defaultSnakePath, { host, venue, autostart }) {
   const snake = await import(path.resolve(snakePath));
@@ -37,12 +38,12 @@ async function run(snakePath = defaultSnakePath, { host, venue, autostart }) {
 }
 
 (async () => {
-  const pkg = JSON.parse(await fs.readFile(new URL('./package.json', import.meta.url), 'utf8'));
+  // const pkg = JSON.parse(await fs.readFile(new URL('./package.json', import.meta.url), 'utf8'));
 
   const program = commander
     .storeOptionsAsProperties(false)
     .passCommandToAction(false)
-    .version(pkg.version)
+    // .version(pkg.version)
     .arguments('[snake-path]')
     .option('--host [url]', 'The server to connect to', 'wss://snake.cygni.se')
     .option('--venue [name]', 'Which venue to use', 'training')

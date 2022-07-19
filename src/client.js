@@ -1,4 +1,4 @@
-import { GameMode, GameMap } from './utils.js';
+import { GameMode, GameMap } from './utils';
 import {
   MessageType,
   createClientInfoMessage,
@@ -63,6 +63,7 @@ export function createClient({
     [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode }) {
       gameMode = _gameMode;
       if (!SUPPORTED_GAME_MODES.has(gameMode)) {
+        console.log(`Unsupported game mode: ${gameMode}`);
         logger.error(`Unsupported game mode: ${gameMode}`);
         close();
       } else {
