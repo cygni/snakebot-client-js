@@ -44,7 +44,7 @@ async function run(snakePath = defaultSnakePath, { host, venue, autostart }) {
     .passCommandToAction(false)
     .version(pkg.version)
     .arguments('[snake-path]')
-    .option('--host [url]', 'The server to connect to', 'ws://snake.cygni.se')
+    .option('--host [url]', 'The server to connect to', 'wss://snake.cygni.se')
     .option('--venue [name]', 'Which venue to use', 'training')
     .option('--autostart', 'Automatically start the game', true)
     .option('--no-autostart', 'Do not automatically start the game')
