@@ -1,12 +1,13 @@
 version: "3.9"  # optional since v1.27.0
 services:
-  snakebot-web:
-    image: dolvur/snakebot-web:latest
-    ports:
-      - "8090:80"
-    links:
-      - snakebot-server
   snakebot-server:
-    image: dolvur/snakebot-server:latest
+    image: cygni/snakebot:latest
     ports:
       - "8080:8080"
+  snakebot-web:
+    image: cygni/snakebot-reactclient:latest
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://localhost:8080
+    ports:
+      - "8090:80"
