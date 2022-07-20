@@ -11,13 +11,15 @@ import {
   createStartGameMessage,
 } from './messages';
 import colors from 'colors';
+import { GameSettings } from './types';
 
 const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 
-type SnakeImplementation = {
+export type SnakeImplementation = {
   getNextMove: (gameMap: GameMap, gameId: string, gameTick: number) => Direction;
   onMessage?: (message: any) => void;
+  gameSettings: GameSettings;
 }
 
 export type ClientInfo = {
@@ -36,7 +38,7 @@ export type ClientOptions = {
   WebSocket: typeof WebSocket;
   onGameReady: (startGame: ()=>void) => void;
   clientInfo: ClientInfo;
-  gameSettings?: any;
+  gameSettings: GameSettings;
 };
 
 export function createClient({
@@ -89,7 +91,7 @@ export function createClient({
       heartbeatTimeout = setTimeout(sendMessage, HEARTBEAT_INTERVAL, createHeartbeatRequestMessage(receivingPlayerId));
     },
 
-    [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode }: { receivingPlayerId: string, gameMode: GameMode }) {
+    [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode, gameSettings: _gameSettings }: { receivingPlayerId: string, gameMode: GameMode, gameSettings: GameSettings }) {
       gameMode = _gameMode;
       if (!SUPPORTED_GAME_MODES.has(gameMode)) {
         logger.error(colors.red(`Unsupported game mode: ${gameMode}`));
@@ -97,6 +99,9 @@ export function createClient({
       } else {
         logger.info(colors.green(`Player ${name} was successfully registered!`));
         logger.info('Game mode:', colors.blue.bold(gameMode));
+        logger.info('Updated game settings from server');
+        gameSettings = _gameSettings; // Update game settings with the ones from the server
+        snake.gameSettings = gameSettings; // Update the snake's local game settings
         sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
       }
     },

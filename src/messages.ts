@@ -1,4 +1,5 @@
 import { ClientInfo } from "./client";
+import { GameSettings } from "./types";
 import type { Direction } from "./utils";
 
 export enum MessageType {
@@ -51,7 +52,7 @@ export function createRegisterMoveMessage(direction: Direction, receivingPlayerI
   return { type: MessageType.RegisterMove, direction, receivingPlayerId, gameId, gameTick };
 }
 
-export function createRegisterPlayerMessage(playerName: string, gameSettings = {}) {
+export function createRegisterPlayerMessage(playerName: string, gameSettings: GameSettings = {}) {
   return { type: MessageType.RegisterPlayer, playerName, gameSettings };
 }
 

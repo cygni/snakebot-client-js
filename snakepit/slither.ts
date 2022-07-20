@@ -1,4 +1,5 @@
 import { TileType, Direction, MessageType } from '../src/index';
+import { GameSettings } from '../src/types';
 import type { GameMap } from '../src/utils';
 
 const allDirections = Object.values(Direction);
@@ -41,3 +42,10 @@ export function onMessage(message: any) {
       break;
   }
 }
+
+// Settings ommitted are set to default values from the server, change this if you want to override them
+export const gameSettings: GameSettings = {
+  // maxNoofPlayers: 2,
+  // obstaclesEnabled: false,
+  // ...
+};

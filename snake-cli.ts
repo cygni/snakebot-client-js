@@ -2,9 +2,10 @@ import path from 'path';
 import process from 'process';
 import readline from 'readline';
 import { program } from 'commander';
-import { createClient } from './src/index';
+import { createClient, GameMode } from './src/index';
 import WebSocket from 'ws';
 import colors from 'colors';
+import { SnakeImplementation } from './src/client';
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
 const defaultServerUrl = 'wss://snake.cygni.se';
@@ -24,10 +25,13 @@ console.log('Starting snake with options:', options);
 
 // Running the client
 (async () => {
-  console.log("Hi", colors.green(process.env.USER || 'friend'), "and welcome to the snake pit!");
-  const snake = await import(path.resolve(options.snake));
   const clientVer = process.env.npm_package_version || 'unknown';
+  const snake: SnakeImplementation = await import(path.resolve(options.snake));
+  console.log("Hi", colors.green(process.env.USER || 'friend'), "and welcome to the snake pit!");
   console.log("Using client version", colors.red.underline(clientVer));
+  if (options.venue.toUpperCase() === GameMode.Training) {
+    console.log("Overwriting training game settings with", colors.red.underline(JSON.stringify(snake.gameSettings)));
+  }
 
   const client = createClient({
     name: options.name,
@@ -42,7 +46,7 @@ console.log('Starting snake with options:', options);
       operatingSystem: 'Node.js',
       operatingSystemVersion: process.versions.node,
     },
-    gameSettings: {},
+    gameSettings: snake.gameSettings,
 
     onGameReady: (startGame) => {
       const rl = readline.createInterface({
