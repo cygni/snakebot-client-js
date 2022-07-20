@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "format": "prettier --write **/*.{js,json,md}",
     "test": "ts-mocha",
-    "start": "ts-node snake-cli.js"
+    "start": "ts-node snake-cli.ts"
   },
   "dependencies": {
     "commander": "^4.1.1",

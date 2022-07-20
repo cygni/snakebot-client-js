@@ -35,7 +35,7 @@ export type ClientOptions = {
   WebSocket: typeof WebSocket;
   onGameReady: (startGame: ()=>void) => void;
   clientInfo: any;
-  gameSettings: any;
+  gameSettings?: any;
 };
 
 export function createClient({
