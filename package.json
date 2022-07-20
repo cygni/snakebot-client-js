@@ -1,8 +1,9 @@
 {
   "name": "snakebot-client-js",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Cygni snakebot client in modern JavaScript",
-  "author": "Max Davidson <max.davidson@cygni.se>",
+  "contributors": ["Max Davidson <max.davidson@cygni.se>",
+                   "Daniel Karlsson <daniel.karlsson@cygni.se>"],
   "license": "MIT",
   "repository": {
     "type": "git",

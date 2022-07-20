@@ -24,7 +24,10 @@ console.log('Starting snake with options:', options);
 
 // Running the client
 (async () => {
+  console.log("Hi", colors.green(process.env.USER || 'friend'), "and welcome to the snake pit!");
   const snake = await import(path.resolve(options.snake));
+  const clientVer = process.env.npm_package_version || 'unknown';
+  console.log("Using client version", colors.red.underline(clientVer));
 
   const client = createClient({
     name: options.name,
@@ -35,6 +38,7 @@ console.log('Starting snake with options:', options);
     autoStart: options.autostart,
     WebSocket: WebSocket,
     clientInfo: {
+      clientVersion: clientVer,
       operatingSystem: 'Node.js',
       operatingSystemVersion: process.versions.node,
     },

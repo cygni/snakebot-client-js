@@ -21,9 +21,9 @@ type SnakeImplementation = {
 }
 
 export type ClientInfo = {
-  // clientVersion?: string;
-  operatingSystem?: string;
-  operatingSystemVersion?: string;
+  clientVersion: string;
+  operatingSystem: string;
+  operatingSystemVersion: string;
 }
 
 export type ClientOptions = {
@@ -35,7 +35,7 @@ export type ClientOptions = {
   autoStart: boolean;
   WebSocket: typeof WebSocket;
   onGameReady: (startGame: ()=>void) => void;
-  clientInfo: any;
+  clientInfo: ClientInfo;
   gameSettings?: any;
 };
 

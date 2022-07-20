@@ -7,7 +7,7 @@ function randomItem<Type>(items: Type[]) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-export function getNextMove(gameMap: GameMap) {
+export function getNextMove(gameMap: GameMap, gameId: string, gameTick: number) {
   const currentCoordinate = gameMap.playerSnake.headCoordinate;
 
   const safeDirections = allDirections.filter(direction => {

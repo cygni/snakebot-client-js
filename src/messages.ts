@@ -1,3 +1,4 @@
+import { ClientInfo } from "./client";
 import type { Direction } from "./utils";
 
 export enum MessageType {
@@ -28,10 +29,10 @@ export enum MessageType {
 };
 
 export function createClientInfoMessage({
-  clientVersion = null,
-  operatingSystem = null,
-  operatingSystemVersion = null,
-} = {}) {
+  clientVersion,
+  operatingSystem,
+  operatingSystemVersion,
+}: ClientInfo) {
   return {
     type: MessageType.ClientInfo,
     language: 'JavaScript',
