@@ -6,13 +6,13 @@ import {
   createRegisterMoveMessage,
   createRegisterPlayerMessage,
   createStartGameMessage,
-} from './messages.js';
+} from './messages';
 
 const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 
 export function createClient({
-  host = 'ws://snake.cygni.se',
+  host = 'wss://snake.cygni.se',
   venue = 'training',
   snake,
   logger = console,
