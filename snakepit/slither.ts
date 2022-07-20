@@ -7,8 +7,6 @@ function randomItem<Type>(items: Type[]) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-export const SNAKE_NAME = 'Slither';
-
 export function getNextMove(gameMap: GameMap) {
   const currentCoordinate = gameMap.playerSnake.headCoordinate;
 

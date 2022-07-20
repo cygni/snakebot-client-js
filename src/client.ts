@@ -10,12 +10,12 @@ import {
   createRegisterPlayerMessage,
   createStartGameMessage,
 } from './messages';
+import colors from 'colors';
 
 const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 
 type SnakeImplementation = {
-  SNAKE_NAME: string;
   getNextMove: (gameMap: GameMap, gameId: string, gameTick: number) => Direction;
   onMessage?: (message: any) => void;
 }
@@ -27,6 +27,7 @@ export type ClientInfo = {
 }
 
 export type ClientOptions = {
+  name: string;
   host: string;
   venue: string;
   snake: SnakeImplementation;
@@ -39,12 +40,13 @@ export type ClientOptions = {
 };
 
 export function createClient({
-  host = 'wss://snake.cygni.se',
-  venue = 'training',
+  name,
+  host,
+  venue,
   snake,
-  logger = console,
-  autoStart = true,
-  WebSocket: WebSocketImpl = WebSocket,
+  logger,
+  autoStart,
+  WebSocket,
   onGameReady,
   clientInfo,
   gameSettings,
@@ -53,9 +55,9 @@ export function createClient({
     throw new Error('You must specify a snake to use!');
   }
 
-  const ws = new WebSocketImpl(new URL(venue, host).href);
+  const ws = new WebSocket(new URL(venue, host).href);
 
-  logger.info(`WebSocket is connecting`);
+  logger.info('WebSocket is', colors.yellow('connecting'));
 
   let heartbeatTimeout: NodeJS.Timeout;
   let gameMode: GameMode;
@@ -76,10 +78,10 @@ export function createClient({
   }
 
   function handleOpen() {
-    logger.info(`WebSocket is open`);
+    logger.info('WebSocket is', colors.green('open'));
     sendMessage(createClientInfoMessage(clientInfo));
-    logger.info(`Registering player ${snake.SNAKE_NAME}`);
-    sendMessage(createRegisterPlayerMessage(snake.SNAKE_NAME, gameSettings));
+    logger.info('Registering player:', colors.magenta.bold(name));
+    sendMessage(createRegisterPlayerMessage(name, gameSettings));
   }
 
   const messageHandlers: {[type: string]: any} = {
@@ -90,22 +92,22 @@ export function createClient({
     [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode }: { receivingPlayerId: string, gameMode: GameMode }) {
       gameMode = _gameMode;
       if (!SUPPORTED_GAME_MODES.has(gameMode)) {
-        logger.error(`Unsupported game mode: ${gameMode}`);
+        logger.error(colors.red(`Unsupported game mode: ${gameMode}`));
         close();
       } else {
-        logger.info(`Player ${snake.SNAKE_NAME} was successfully registered!`);
-        logger.info(`Game mode: ${gameMode}`);
+        logger.info(colors.green(`Player ${name} was successfully registered!`));
+        logger.info('Game mode:', colors.blue.bold(gameMode));
         sendMessage(createHeartbeatRequestMessage(receivingPlayerId));
       }
     },
 
     [MessageType.InvalidPlayerName]() {
-      logger.info(`The player name ${snake.SNAKE_NAME} was invalid`);
+      logger.info(colors.red(`The player name ${name} was invalid`));
       close();
     },
 
     [MessageType.GameLink]({ url }: { url: string }) {
-      logger.info(`Game is ready:`, url);
+      logger.info('Game is ready:', colors.cyan.bold.underline(url));
       if (autoStart && gameMode === GameMode.Training) {
         sendMessage(createStartGameMessage());
       } else {
@@ -116,22 +118,22 @@ export function createClient({
     },
 
     [MessageType.GameStarting]() {
-      logger.info(`Game is starting`);
+      logger.info(colors.rainbow('Game is starting'));
     },
 
     [MessageType.GameResult]() {
-      logger.info(`Game result is in`);
+      logger.info('Game result is in');
     },
 
     [MessageType.GameEnded]({ playerWinnerName }: { playerWinnerName: string }) {
-      logger.info(`Game has ended. The winner was ${playerWinnerName}!`);
+      logger.info('Game has ended. The winner was', colors.bgBlue(playerWinnerName));
       if (gameMode === GameMode.Training) {
         close();
       }
     },
 
     [MessageType.TournamentEnded]({ playerWinnerName }: { playerWinnerName: string }) {
-      logger.info(`Tournament has ended. The winner was ${playerWinnerName}!`);
+      logger.info('Tournament has ended. The winner was', colors.bgYellow(playerWinnerName));
       close();
     },
 

@@ -21,7 +21,8 @@
     "start": "ts-node snake-cli.ts"
   },
   "dependencies": {
-    "commander": "^4.1.1",
+    "colors": "^1.4.0",
+    "commander": "^9.4.0",
     "ws": "^7.2.1"
   },
   "devDependencies": {

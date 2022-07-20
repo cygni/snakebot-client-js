@@ -1,30 +1,52 @@
 import path from 'path';
 import process from 'process';
 import readline from 'readline';
-import commander from 'commander';
-
-import { createNodeClient } from './index';
+import { program } from 'commander';
+import { createClient } from './src/index';
+import WebSocket from 'ws';
+import colors from 'colors';
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
+const defaultServerUrl = 'wss://snake.cygni.se';
 const defaultSnakePath = './snakepit/slither';
+const defaultSnakeName = 'Slither';
 
-async function run(snakePath = defaultSnakePath, { host, venue, autostart }: { host: string, venue: string, autostart: boolean }) {
-  const snake = await import(path.resolve(snakePath));
-  console.log("Snake loaded:", snake);
+program
+  .option('-h, --host <host>', 'Hostname of the server', defaultServerUrl)
+  .option('-v, --venue <venue>', 'Venue name', 'training')
+  .option('-n, --name <name>', 'Name of the snake', defaultSnakeName)
+  .option('-s, --snake <path>', 'Path to the snake file', defaultSnakePath)
+  .option('-a, --autostart', 'Auto start the game', true);
 
-  const client = createNodeClient({
+program.parse(process.argv);
+const options = program.opts();
+console.log('Starting snake with options:', options);
+
+// Running the client
+(async () => {
+  const snake = await import(path.resolve(options.snake));
+
+  const client = createClient({
+    name: options.name,
+    host: options.host,
+    venue: options.venue,
+    snake: snake,
     logger: console,
-    host,
-    venue,
-    snake,
-    autoStart: autostart,
-    onGameReady(startGame) {
+    autoStart: options.autostart,
+    WebSocket: WebSocket,
+    clientInfo: {
+      operatingSystem: 'Node.js',
+      operatingSystemVersion: process.versions.node,
+    },
+    gameSettings: {},
+
+    onGameReady: (startGame) => {
       const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
       });
 
-      rl.question('Start game? (y/n) ', answer => {
+      rl.question(('Start game? ' + '('+ colors.green('y') + '/'+ colors.red('n') + '): '), answer => {
         rl.close();
         if (answer === '' || answer.startsWith('y')) {
           startGame();
@@ -34,21 +56,4 @@ async function run(snakePath = defaultSnakePath, { host, venue, autostart }: { h
       });
     },
   });
-}
-
-(async () => {
-  // const pkg = JSON.parse(await fs.readFile(new URL('./package.json', import.meta.url), 'utf8'));
-
-  const program = commander
-    .storeOptionsAsProperties(false)
-    .passCommandToAction(false)
-    // .version(pkg.version)
-    .arguments('[snake-path]')
-    .option('--host [url]', 'The server to connect to', 'wss://snake.cygni.se')
-    .option('--venue [name]', 'Which venue to use', 'training')
-    .option('--autostart', 'Automatically start the game', true)
-    .option('--no-autostart', 'Do not automatically start the game')
-    .action(run);
-
-  await program.parseAsync(process.argv);
 })();
