@@ -9,7 +9,7 @@ import commander from 'commander';
 import { createNodeClient } from './index.js';
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
-const defaultSnakePath = './snakepit/slither.js';
+const defaultSnakePath = './snakepit/slither';
 
 async function run(snakePath = defaultSnakePath, { host, venue, autostart }) {
   const snake = await import(path.resolve(snakePath));

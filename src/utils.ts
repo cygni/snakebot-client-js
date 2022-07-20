@@ -170,7 +170,7 @@ export class GameMap {
   }
 
   get playerSnake() {
-    return this.snakes.get(this.playerId);
+    return this.snakes.get(this.playerId)!;
   }
 
   getTile(coordinate: Coordinate) {
