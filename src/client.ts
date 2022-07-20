@@ -20,13 +20,13 @@ type SnakeImplementation = {
   onMessage?: (message: any) => void;
 }
 
-type ClientInfo = {
-  clientVersion?: string;
+export type ClientInfo = {
+  // clientVersion?: string;
   operatingSystem?: string;
   operatingSystemVersion?: string;
 }
 
-type ClientOptions = {
+export type ClientOptions = {
   host: string;
   venue: string;
   snake: SnakeImplementation;

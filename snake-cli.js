@@ -6,7 +6,7 @@ import process from 'process';
 import readline from 'readline';
 import commander from 'commander';
 
-import { createNodeClient } from './index.js';
+import { createNodeClient } from './index';
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
 const defaultSnakePath = './snakepit/slither';

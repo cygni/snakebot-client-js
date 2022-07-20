@@ -1,5 +1,5 @@
-import { TileType, Direction, MessageType } from '../src/index.js';
-import type { GameMap } from '../src/utils.js';
+import { TileType, Direction, MessageType } from '../src/index';
+import type { GameMap } from '../src/utils';
 
 const allDirections = Object.values(Direction);
 
