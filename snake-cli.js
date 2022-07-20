@@ -1,6 +1,3 @@
-#!/usr/bin/env node --experimental-modules --unhandled-rejections=strict
-import { promises as fs } from 'fs';
-import url from 'url';
 import path from 'path';
 import process from 'process';
 import readline from 'readline';

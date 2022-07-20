@@ -1,4 +1,3 @@
-import fs from 'fs';
 import process from 'process';
 import WebSocket from 'ws';
 import type { ClientInfo, ClientOptions } from './src/client';
