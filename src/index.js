@@ -1,3 +1,3 @@
-export { createClient } from './client.js';
+export { createClient } from './client';
 export { MessageType } from './messages';
 export * from './utils';

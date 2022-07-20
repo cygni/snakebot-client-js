@@ -13,6 +13,7 @@ const defaultSnakePath = './snakepit/slither';
 
 async function run(snakePath = defaultSnakePath, { host, venue, autostart }) {
   const snake = await import(path.resolve(snakePath));
+  console.log("Snake loaded:", snake);
 
   const client = createNodeClient({
     host,
