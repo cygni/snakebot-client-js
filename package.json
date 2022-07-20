@@ -17,7 +17,7 @@
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --write **/*.{js,json,md}",
-    "test": "ts-mocha",
+    "test": "ts-mocha -p ./tsconfig.json test/utils.ts ",
     "start": "ts-node snake-cli.ts"
   },
   "dependencies": {
