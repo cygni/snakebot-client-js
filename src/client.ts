@@ -1,4 +1,7 @@
-import { GameMode, GameMap } from './utils.js';
+import { GameMode, GameMap, RawMap } from './utils';
+import type { Direction } from './utils';
+import WebSocket from 'ws';
+import { URL } from 'url';
 import {
   MessageType,
   createClientInfoMessage,
@@ -6,13 +9,37 @@ import {
   createRegisterMoveMessage,
   createRegisterPlayerMessage,
   createStartGameMessage,
-} from './messages.js';
+} from './messages';
 
 const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 
+type SnakeImplementation = {
+  SNAKE_NAME: string;
+  getNextMove: (gameMap: GameMap, gameId: string, gameTick: number) => Direction;
+  onMessage?: (message: any) => void;
+}
+
+export type ClientInfo = {
+  // clientVersion?: string;
+  operatingSystem?: string;
+  operatingSystemVersion?: string;
+}
+
+export type ClientOptions = {
+  host: string;
+  venue: string;
+  snake: SnakeImplementation;
+  logger: Console;
+  autoStart: boolean;
+  WebSocket: typeof WebSocket;
+  onGameReady: (startGame: ()=>void) => void;
+  clientInfo: any;
+  gameSettings?: any;
+};
+
 export function createClient({
-  host = 'ws://snake.cygni.se',
+  host = 'wss://snake.cygni.se',
   venue = 'training',
   snake,
   logger = console,
@@ -21,7 +48,7 @@ export function createClient({
   onGameReady,
   clientInfo,
   gameSettings,
-}) {
+}: ClientOptions) {
   if (snake == null) {
     throw new Error('You must specify a snake to use!');
   }
@@ -30,15 +57,15 @@ export function createClient({
 
   logger.info(`WebSocket is connecting`);
 
-  let heartbeatTimeout;
-  let gameMode;
+  let heartbeatTimeout: NodeJS.Timeout;
+  let gameMode: GameMode;
 
   ws.addEventListener('open', handleOpen);
   ws.addEventListener('close', handleClose);
   ws.addEventListener('error', handleError);
   ws.addEventListener('message', handleMessage);
 
-  function sendMessage(message) {
+  function sendMessage(message: any) {
     ws.send(JSON.stringify(message));
   }
 
@@ -55,12 +82,12 @@ export function createClient({
     sendMessage(createRegisterPlayerMessage(snake.SNAKE_NAME, gameSettings));
   }
 
-  const messageHandlers = {
-    [MessageType.HeartbeatResponse]({ receivingPlayerId }) {
+  const messageHandlers: {[type: string]: any} = {
+    [MessageType.HeartbeatResponse]({ receivingPlayerId }: { receivingPlayerId: string }) {
       heartbeatTimeout = setTimeout(sendMessage, HEARTBEAT_INTERVAL, createHeartbeatRequestMessage(receivingPlayerId));
     },
 
-    [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode }) {
+    [MessageType.PlayerRegistered]({ receivingPlayerId, gameMode: _gameMode }: { receivingPlayerId: string, gameMode: GameMode }) {
       gameMode = _gameMode;
       if (!SUPPORTED_GAME_MODES.has(gameMode)) {
         logger.error(`Unsupported game mode: ${gameMode}`);
@@ -77,7 +104,7 @@ export function createClient({
       close();
     },
 
-    [MessageType.GameLink]({ url }) {
+    [MessageType.GameLink]({ url }: { url: string }) {
       logger.info(`Game is ready:`, url);
       if (autoStart && gameMode === GameMode.Training) {
         sendMessage(createStartGameMessage());
@@ -96,19 +123,19 @@ export function createClient({
       logger.info(`Game result is in`);
     },
 
-    [MessageType.GameEnded]({ playerWinnerName }) {
+    [MessageType.GameEnded]({ playerWinnerName }: { playerWinnerName: string }) {
       logger.info(`Game has ended. The winner was ${playerWinnerName}!`);
       if (gameMode === GameMode.Training) {
         close();
       }
     },
 
-    [MessageType.TournamentEnded]({ playerWinnerName }) {
+    [MessageType.TournamentEnded]({ playerWinnerName }: { playerWinnerName: string }) {
       logger.info(`Tournament has ended. The winner was ${playerWinnerName}!`);
       close();
     },
 
-    async [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }) {
+    async [MessageType.MapUpdate]({ map, receivingPlayerId, gameId, gameTick }: { map: RawMap, receivingPlayerId: string, gameId: string, gameTick: number }) {
       // logger.debug(`Game turn #${gameTick}`);
       const gameMap = new GameMap(map, receivingPlayerId);
       const direction = await snake.getNextMove(gameMap, gameId, gameTick);
@@ -116,9 +143,10 @@ export function createClient({
     },
   };
 
-  function handleMessage({ data }) {
+  function handleMessage({ data }: { data: string }) {
     const message = JSON.parse(data);
-    const messageHandler = messageHandlers[message.type];
+    const messageType: MessageType = message.type;
+    const messageHandler = messageHandlers[messageType];
 
     if (messageHandler !== undefined) {
       messageHandler(message);
@@ -129,14 +157,14 @@ export function createClient({
     }
   }
 
-  function handleError(error) {
+  function handleError({ error }: { error: Error }) {
     if (error.message != null) {
       logger.error(error.message);
     }
     logger.info(`WebSocket is closing`);
   }
 
-  function handleClose({ code, reason, wasClean }) {
+  function handleClose({ code, reason, wasClean }: { code: number, reason: string, wasClean: boolean }) {
     logger.info(`WebSocket is closed`, { code, reason, wasClean });
     clearTimeout(heartbeatTimeout);
     ws.removeEventListener('open', handleOpen);

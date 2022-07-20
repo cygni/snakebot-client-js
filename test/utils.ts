@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Direction, Coordinate } from '../src/utils.js';
+import { Direction, Coordinate } from '../src/utils';
 
 describe('Direction', () => {
   it('has the correct directions', () => {
