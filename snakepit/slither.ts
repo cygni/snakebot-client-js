@@ -2,6 +2,7 @@ import { TileType, Direction, MessageType } from '../src/index';
 import { GameSettings } from '../src/types';
 import type { GameMap } from '../src/utils';
 import { snakeConsole as console } from '../src/client';
+import { GameStartingEventMessage, Message, SnakeDeadEventMessage } from '../src/messages';
 
 const allDirections = Object.values(Direction);
 
@@ -36,10 +37,15 @@ export function getNextMove(gameMap: GameMap, gameId: string, gameTick: number) 
 }
 
 // This handler is optional
-export function onMessage(message: any) {
+export function onMessage(message: Message) {
   switch (message.type) {
     case MessageType.GameStarting:
+      message = message as GameStartingEventMessage; // Cast to correct type
       // Reset snake state here
+      break;
+    case MessageType.SnakeDead:
+      message = message as SnakeDeadEventMessage; // Cast to correct type
+      // Check how many snakes are left and switch strategy
       break;
   }
 }
