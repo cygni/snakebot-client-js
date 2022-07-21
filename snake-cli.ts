@@ -17,7 +17,8 @@ program
   .option('-v, --venue <venue>', 'Venue name', 'training')
   .option('-n, --name <name>', 'Name of the snake', defaultSnakeName)
   .option('-s, --snake <path>', 'Path to the snake file', defaultSnakePath)
-  .option('-a, --autostart', 'Auto start the game', true);
+  .option('-a, --autostart', 'Auto start the game', true)
+  .option('-sp, --spoiler', 'Show the results', false);
 
 program.parse(process.argv);
 const options = program.opts();
@@ -40,6 +41,7 @@ console.log('Starting snake with options:', options);
     snake: snake,
     logger: console,
     autoStart: options.autostart,
+    spoiler: options.spoiler,
     WebSocket: WebSocket,
     clientInfo: {
       clientVersion: clientVer,

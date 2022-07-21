@@ -1,6 +1,6 @@
 import { ClientInfo } from "./client";
 import { GameSettings } from "./types";
-import type { Direction } from "./utils";
+import type { Direction, GameMode, RawMap } from "./utils";
 
 export enum MessageType {
   // Exceptions
@@ -44,6 +44,7 @@ export function createClientInfoMessage({
   };
 }
 
+// Update these functions to use types
 export function createHeartbeatRequestMessage(receivingPlayerId: string) {
   return { type: MessageType.HeartbeatRequest, receivingPlayerId };
 }
@@ -59,3 +60,96 @@ export function createRegisterPlayerMessage(playerName: string, gameSettings: Ga
 export function createStartGameMessage() {
   return { type: MessageType.StartGame };
 }
+
+/** Message type definitions */
+export type Message = {
+  type: MessageType;
+  receivingPlayerId: string;
+  timestamp: number;
+};
+
+export interface HeartBeatResponseMessage extends Message {
+  type: MessageType.HeartbeatResponse;
+}
+
+export interface PlayerRegisteredMessage extends Message {
+  type: MessageType.PlayerRegistered;
+  gameId: string;
+  name: string;
+  gameSettings: GameSettings;
+  gameMode: GameMode;
+}
+
+export interface GameLinkEventMessage extends Message {
+  type: MessageType.GameLink;
+  url: string;
+};
+
+export interface GameStartingEventMessage extends Message {
+  type: MessageType.GameStarting;
+  gameId: string;
+  noofPlayers: number;
+  width: number;
+  height: number;
+  gameSettings: GameSettings;
+}
+
+export interface MapUpdateEventMessage extends Message {
+  type: MessageType.MapUpdate;
+  gameTick: number;
+  gameId: string;
+  map: RawMap;
+}
+
+export interface SnakeDeadEventMessage extends Message {
+  type: MessageType.SnakeDead;
+  deathReason: string;
+  playerId: string;
+  x: number;
+  y: number;
+  gameId: string;
+  gameTick: number;
+}
+
+export type PlayerRank = {
+  playerName: string;
+  playerId: string;
+  rank: number;
+  points: number;
+  alive: boolean;
+}
+
+export interface GameResultEventMessage extends Message {
+  type: MessageType.GameResult;
+  gameId: string;
+  playerRanks: PlayerRank[];
+}
+
+export interface GameEndedEventMessage extends Message {
+  type: MessageType.GameEnded;
+  playerWinnerId: string;
+  playerWinnerName: string;
+  gameId: string;
+  gameTick: number;
+  map: RawMap;
+}
+
+export interface InvalidPlayerNameMessage extends Message {
+  type: MessageType.InvalidPlayerName;
+  reasonCode: string;
+}
+
+export type GameResult = {
+  name: string;
+  playerId: string;
+  points: number;
+}
+
+export interface TournamentEndedMessage extends Message {
+  type: MessageType.TournamentEnded;
+  playerWinnerId: string;
+  gameId: string;
+  gameResult: GameResult;
+  tournamentName: string;
+  tournamentId: string;
+};

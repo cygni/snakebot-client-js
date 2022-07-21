@@ -1,20 +1,18 @@
-export type Tile = {
-  type: TileType;
-  snake?: Snake;
-};
-
 export type SnakeInfo = {
-  id: string;
   name: string;
+  points: number;
   positions: number[];
+  tailProtectedForGameTicks: number;
+  id: string;
 };
 
 export type RawMap = {
   width: number;
   height: number;
+  worldTick: number;
+  snakeInfos: SnakeInfo[];
   foodPositions: number[];
   obstaclePositions: number[];
-  snakeInfos: SnakeInfo[];
 };
 
 export enum TileType {
