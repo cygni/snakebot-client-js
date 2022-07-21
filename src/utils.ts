@@ -81,6 +81,12 @@ export class Coordinate {
     return Math.abs(x1 - x0) + Math.abs(y1 - y0);
   }
 
+  deltaTo(otherCoordinate: Coordinate) {
+    const { x: x0, y: y0 } = this;
+    const { x: x1, y: y1 } = otherCoordinate;
+    return { x: x1 - x0, y: y1 - y0 };
+  }
+
   toPosition(mapWidth: number, mapHeight: number) {
     if (this.isOutOfBounds(mapWidth, mapHeight)) {
       throw new RangeError('The coordinate must be within the bounds in order to convert to position');
@@ -110,16 +116,22 @@ export class Coordinate {
 class Snake {
   id: string;
   name: string;
+  direction: Direction;
   coordinates: Coordinate[];
 
-  constructor(id: string, name: string, coordinates: Coordinate[]) {
+  constructor(id: string, name: string, direction: Direction, coordinates: Coordinate[]) {
     this.id = id;
     this.name = name;
+    this.direction = direction;
     this.coordinates = coordinates;
   }
 
   get headCoordinate() {
     return this.coordinates[0];
+  }
+
+  get tailCoordinate() {
+    return this.coordinates[this.coordinates.length - 1];
   }
 
   get length() {
@@ -129,7 +141,21 @@ class Snake {
   static fromSnakeInfo(snakeInfo: SnakeInfo, mapWidth: number) {
     const { id, name, positions } = snakeInfo;
     const coordinates = positions.map(position => Coordinate.fromPosition(position, mapWidth));
-    return new Snake(id, name, coordinates);
+    // Calculate the direction of the snake
+    let direction = Direction.Up;
+    if (coordinates.length > 1) {
+      const delta = coordinates[1].deltaTo(coordinates[0]);
+      if (delta.x === 1) {
+        direction = Direction.Right;
+      } else if (delta.x === -1) {
+        direction = Direction.Left;
+      } else if (delta.y === 1) {
+        direction = Direction.Down;
+      } else if (delta.y === -1) {
+        direction = Direction.Up;
+      }
+    }
+    return new Snake(id, name, direction, coordinates);
   }
 }
 
