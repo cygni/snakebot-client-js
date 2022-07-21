@@ -34,6 +34,12 @@ export enum Direction {
   Right = 'RIGHT',
 }
 
+export enum RelativeDirection {
+  Forward = 'FORWARD',
+  Left = 'LEFT',
+  Right = 'RIGHT',
+}
+
 function getDirectionDelta(direction: Direction): { x: number; y: number } {
   switch (direction) {
     case Direction.Up:
@@ -125,6 +131,41 @@ class Snake {
     this.direction = direction;
     this.coordinates = coordinates;
   }
+
+  /** Returns an absolute direction based on a relative direction */
+  relativeToAbsolute(relativeDirection: RelativeDirection) {
+    switch (relativeDirection) {
+      case RelativeDirection.Forward:
+        return this.direction;
+      case RelativeDirection.Left:
+        switch (this.direction) {
+          case Direction.Up:
+            return Direction.Left;
+          case Direction.Down:
+            return Direction.Right;
+          case Direction.Left:
+            return Direction.Down;
+          case Direction.Right:
+            return Direction.Up;
+          default:
+            throw new Error(`Unknown direction: ${this.direction}`);
+        }
+      case RelativeDirection.Right:
+        switch (this.direction) {
+          case Direction.Up:
+            return Direction.Right;
+          case Direction.Down:
+            return Direction.Left;
+          case Direction.Left:
+            return Direction.Up;
+          case Direction.Right:
+            return Direction.Down;
+          default:
+            throw new Error(`Unknown direction: ${this.direction}`);
+        }
+      }
+    }
+
 
   get headCoordinate() {
     return this.coordinates[0];
