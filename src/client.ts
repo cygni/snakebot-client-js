@@ -27,9 +27,9 @@ import type {
   TournamentEndedMessage,
 } from './messages';
 
-
 const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
+export let snakeConsole = {} as Console;
 
 export type SnakeImplementation = {
   getNextMove: (gameMap: GameMap, gameId: string, gameTick: number) => Direction;
@@ -73,6 +73,9 @@ export function createClient({
   if (snake == null) {
     throw new Error('You must specify a snake to use!');
   }
+
+  // Update snakeConsole to use the given logger
+  snakeConsole = logger;
 
   const ws = new WebSocket(new URL(venue, host).href);
 
@@ -174,6 +177,21 @@ export function createClient({
     } else {
       logger.info(colors.green(`Player ${name} was successfully registered!`));
       logger.info('Game mode:', colors.blue.bold(gameMode));
+      
+      // Don't spoil if we are in a tournament
+      if (gameMode === GameMode.Tournament && !spoiler) {
+        logger.info(colors.yellow(`Disabling logs to prevent spoilers`));
+        logger = {
+          log: () => {},
+          error: () => {},
+          warn: () => {},
+          info: () => {},
+        } as Console;
+
+        // Prevent the snake from logging
+        snakeConsole = logger;
+      }
+
       logger.info('Updated game settings from server');
       gameSettings = message.gameSettings; // Update game settings with the ones from the server
       snake.gameSettings = message.gameSettings; // Update the snake's local game settings

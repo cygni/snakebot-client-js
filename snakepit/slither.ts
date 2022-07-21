@@ -1,6 +1,7 @@
 import { TileType, Direction, MessageType } from '../src/index';
 import { GameSettings } from '../src/types';
 import type { GameMap } from '../src/utils';
+import { snakeConsole as console } from '../src/client';
 
 const allDirections = Object.values(Direction);
 
