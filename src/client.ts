@@ -11,7 +11,7 @@ import {
   createStartGameMessage,
 } from './messages';
 import colors from 'colors';
-import { GameSettings } from './types';
+import type { GameSettings } from './types';
 
 import type {
   Message,
@@ -32,9 +32,9 @@ const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 export let snakeConsole = {} as Console;
 
 export type SnakeImplementation = {
-  getNextMove: (gameMap: GameMap, gameId: string, gameTick: number) => Direction;
+  getNextMove: (gameMap: GameMap, gameSettings: GameSettings, gameTick: number) => Direction;
   onMessage?: (message: any) => void;
-  gameSettings: GameSettings;
+  trainingGameSettings: GameSettings;
 }
 
 export type ClientInfo = {
@@ -191,10 +191,6 @@ export function createClient({
         // Prevent the snake from logging
         snakeConsole = logger;
       }
-
-      logger.info('Updated game settings from server');
-      gameSettings = message.gameSettings; // Update game settings with the ones from the server
-      snake.gameSettings = message.gameSettings; // Update the snake's local game settings
       sendMessage(createHeartbeatRequestMessage(message.receivingPlayerId));
     }
   }
@@ -216,12 +212,14 @@ export function createClient({
 
   function gameStartingEvent(message: GameStartingEventMessage) {
     logger.info(colors.rainbow('Game is starting'));
+    logger.info('Received updated game settings from server');
+    gameSettings = message.gameSettings; // Update game settings with the ones from the server
   }
 
   async function mapUpdateEvent({map, receivingPlayerId, gameId, gameTick}: MapUpdateEventMessage) {
     // logger.debug(`Game turn #${gameTick}`);
     const gameMap = new GameMap(map, receivingPlayerId);
-    const direction = snake.getNextMove(gameMap, gameId, gameTick);
+    const direction = snake.getNextMove(gameMap, gameSettings, gameTick);
     sendMessage(createRegisterMoveMessage(direction, receivingPlayerId, gameId, gameTick));
   }
 

@@ -30,8 +30,9 @@ console.log('Starting snake with options:', options);
   const snake: SnakeImplementation = await import(path.resolve(options.snake));
   console.log("Hi", colors.green(process.env.USER || 'friend'), "and welcome to the snake pit!");
   console.log("Using client version", colors.red.underline(clientVer));
+  console.log("To display options, type", colors.yellow("npm start -- --help"));
   if (options.venue.toUpperCase() === GameMode.Training) {
-    console.log("Overwriting training game settings with", colors.red.underline(JSON.stringify(snake.gameSettings)));
+    console.log("Overwriting training game settings with", colors.red.underline(JSON.stringify(snake.trainingGameSettings)));
   }
 
   const client = createClient({
@@ -48,7 +49,7 @@ console.log('Starting snake with options:', options);
       operatingSystem: 'Node.js',
       operatingSystemVersion: process.versions.node,
     },
-    gameSettings: snake.gameSettings,
+    gameSettings: snake.trainingGameSettings,
 
     onGameReady: (startGame) => {
       const rl = readline.createInterface({
