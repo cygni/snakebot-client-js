@@ -16,7 +16,7 @@ export function getNextMove(gameMap: GameMap, gameId: string, gameTick: number) 
 
   const safeDirections = allDirections.filter(direction => {
     const nextCoordinate = currentCoordinate.translatedByDirection(direction);
-    const nextTile = gameMap.getTile(nextCoordinate);
+    const nextTile = gameMap.getTileType(nextCoordinate);
 
     switch (nextTile) {
       case TileType.Empty:

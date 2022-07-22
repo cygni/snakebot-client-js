@@ -238,7 +238,7 @@ export class GameMap {
     return this.snakes.get(this.playerId)!;
   }
 
-  getTile(coordinate: Coordinate) {
+  getTileType(coordinate: Coordinate) {
     const { width, height } = this;
 
     if (coordinate.isOutOfBounds(width, height)) {
@@ -246,13 +246,13 @@ export class GameMap {
     }
 
     const position = coordinate.toPosition(width, height);
-    const tile = this.tiles.get(position);
+    const tileType = this.tiles.get(position);
 
-    if (tile === undefined) {
+    if (tileType === undefined) {
       // console.error(`No tile found at position ${position}`);
       return TileType.Empty;
     }
 
-    return tile;
+    return tileType;
   }
 }
