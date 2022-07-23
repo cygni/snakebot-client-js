@@ -53,7 +53,7 @@ export function createRegisterMoveMessage(direction: Direction, receivingPlayerI
   return { type: MessageType.RegisterMove, direction, receivingPlayerId, gameId, gameTick };
 }
 
-export function createRegisterPlayerMessage(playerName: string, gameSettings: GameSettings = {}) {
+export function createRegisterPlayerMessage(playerName: string, gameSettings = {} as GameSettings) {
   return { type: MessageType.RegisterPlayer, playerName, gameSettings };
 }
 

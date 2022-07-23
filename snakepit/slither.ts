@@ -11,7 +11,7 @@ function randomItem<Type>(items: Type[]) {
   return items[Math.floor(Math.random() * items.length)];
 }
 
-export function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {
+export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {
   const currentCoordinate = gameMap.playerSnake.headCoordinate;
 
   const safeDirections = allDirections.filter(direction => {
@@ -52,8 +52,8 @@ export function onMessage(message: Message) {
 }
 
 // Settings ommitted are set to default values from the server, change this if you want to override them
-export const trainingGameSettings: GameSettings = {
+export const trainingGameSettings = {
   // maxNoofPlayers: 2,
   // obstaclesEnabled: false,
   // ...
-};
+} as GameSettings;

@@ -32,7 +32,7 @@ const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
 export let snakeConsole = {} as Console;
 
 export type SnakeImplementation = {
-  getNextMove: (gameMap: GameMap, gameSettings: GameSettings, gameTick: number) => Direction;
+  getNextMove: (gameMap: GameMap, gameSettings: GameSettings, gameTick: number) => Promise<Direction>;
   onMessage?: (message: any) => void;
   trainingGameSettings: GameSettings;
 }
@@ -77,6 +77,7 @@ export function createClient({
   // Update snakeConsole to use the given logger
   snakeConsole = logger;
 
+  let prevTimestamp = 0;
   const ws = new WebSocket(new URL(venue, host).href);
 
   logger.info('WebSocket is', colors.yellow('connecting'));
@@ -212,15 +213,22 @@ export function createClient({
 
   function gameStartingEvent(message: GameStartingEventMessage) {
     logger.info(colors.rainbow('Game is starting'));
-    logger.info('Received updated game settings from server');
+    logger.info(colors.blue.bold('Received updated game settings from server:'), colors.blue(JSON.stringify(message.gameSettings)));
     gameSettings = message.gameSettings; // Update game settings with the ones from the server
+    prevTimestamp = message.timestamp;
   }
 
-  async function mapUpdateEvent({map, receivingPlayerId, gameId, gameTick}: MapUpdateEventMessage) {
+  async function mapUpdateEvent({map, receivingPlayerId, gameId, gameTick, timestamp}: MapUpdateEventMessage) {
     // logger.debug(`Game turn #${gameTick}`);
     const gameMap = new GameMap(map, receivingPlayerId);
-    const direction = snake.getNextMove(gameMap, gameSettings, gameTick);
+    
+    const timestampDiff = timestamp - prevTimestamp;
+    if (timestampDiff >= gameSettings.timeInMsPerTick) {
+      logger.warn(colors.yellow(`Last move might've took too long to calculate (approx ${timestampDiff}ms)!`));
+    }
+    const direction = await snake.getNextMove(gameMap, gameSettings, gameTick);
     sendMessage(createRegisterMoveMessage(direction, receivingPlayerId, gameId, gameTick));
+    prevTimestamp = timestamp;
   }
 
   function snakeDeadEvent(message: SnakeDeadEventMessage) {
