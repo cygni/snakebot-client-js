@@ -3,7 +3,8 @@
   "version": "3.0.0",
   "description": "Cygni snakebot client in modern JavaScript",
   "contributors": ["Max Davidson <max.davidson@cygni.se>",
-                   "Daniel Karlsson <daniel.karlsson@cygni.se>"],
+                   "Daniel Karlsson <daniel.karlsson@cygni.se>",
+                   "Sebastian Helin <sebastian.helin@cygni.se>"],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -11,7 +12,7 @@
   },
   "private": true,
   "engines": {
-    "node": ">=12.11.0"
+    "node": ">=16.15.0"
   },
   "main": "index.js",
   "browser": "src/index.js",

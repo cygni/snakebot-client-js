@@ -1,27 +1,11 @@
-import { TileType, Direction, MessageType } from '../src/index';
+import { Direction, MessageType } from '../src/index';
 import { GameSettings } from '../src/types';
 import { GameMap, RelativeDirection } from '../src/utils';
 import { snakeConsole as console } from '../src/client';
 import { GameStartingEventMessage, Message, SnakeDeadEventMessage } from '../src/messages';
 
-const allDirections = Object.values(Direction);
-const allRelativeDirections = Object.values(RelativeDirection);
-
-function randomItem<Type>(items: Type[]) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {
-  const safeDirections = allDirections.filter(direction => gameMap.playerSnake.canMoveInDirection(direction));
-
-  // Bad luck!
-  if (safeDirections.length === 0) {
-    console.log('No safe directions!');
-    return Direction.Down;
-  }
-
-  const choice = randomItem(safeDirections);
-  return choice;
+  return Direction.Down;
 }
 
 // This handler is optional

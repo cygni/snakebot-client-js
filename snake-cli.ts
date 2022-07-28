@@ -8,7 +8,7 @@ import colors from 'colors';
 import { SnakeImplementation } from './src/client';
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
-const defaultServerUrl = 'wss://snake.cygni.se';
+const defaultServerUrl = 'https://snake.cygni.se';
 const defaultSnakePath = './snakepit/slither';
 const defaultSnakeName = 'Slither';
 
