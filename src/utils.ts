@@ -73,14 +73,14 @@ export class Coordinate {
     this.x = x;
     this.y = y;
   }
-  
+
   /**
-  * Converts a position in the flattened single array representation
-  * of the Map to a 2D Coordinate.
-  * @param position The position in the flattened array.
-  * @param mapWidth The width of the map.
-  * @returns A new Coordinate of the position.
-  */
+   * Converts a position in the flattened single array representation
+   * of the Map to a 2D Coordinate.
+   * @param position The position in the flattened array.
+   * @param mapWidth The width of the map.
+   * @returns A new Coordinate of the position.
+   */
   static fromPosition(position: number, mapWidth: number) {
     const x = position % mapWidth;
     const y = (position - x) / mapWidth;
@@ -93,7 +93,7 @@ export class Coordinate {
    * @param southeast Coordinate of the southeast corner.
    * @returns True if this coordinate is within the square.
    */
-  isWithinSquare(northwest: {x: number, y: number}, southeast: {x: number, y: number}) {
+  isWithinSquare(northwest: { x: number; y: number }, southeast: { x: number; y: number }) {
     const { x: x0, y: y0 } = this;
     const { x: x1, y: y1 } = northwest;
     const { x: x2, y: y2 } = southeast;
@@ -101,11 +101,11 @@ export class Coordinate {
   }
 
   /**
-  * Check if a coordinate is outside of the game map.
-  * @param mapHeight Height of the map.
-  * @param mapWidth Width of the map.
-  * @return True if coordinate is out of bounds.
-  */
+   * Check if a coordinate is outside of the game map.
+   * @param mapHeight Height of the map.
+   * @param mapWidth Width of the map.
+   * @return True if coordinate is out of bounds.
+   */
   isOutOfBounds(mapWidth: number, mapHeight: number) {
     const { x, y } = this;
     return x < 0 || y < 0 || x >= mapWidth || y >= mapHeight;
@@ -124,11 +124,11 @@ export class Coordinate {
   }
 
   /**
-  * Calculates the Manhattan (or cab/grid) distance from this point to another point.
-  * Note that Manhattan distance will not walk diagonally.
-  * @param otherCoordinate Coordinate of the position.
-  * @return Distance in map units.
-  */
+   * Calculates the Manhattan (or cab/grid) distance from this point to another point.
+   * Note that Manhattan distance will not walk diagonally.
+   * @param otherCoordinate Coordinate of the position.
+   * @return Distance in map units.
+   */
   manhattanDistanceTo(otherCoordinate: Coordinate) {
     const { x: x0, y: y0 } = this;
     const { x: x1, y: y1 } = otherCoordinate;
@@ -148,12 +148,12 @@ export class Coordinate {
   }
 
   /**
-  * Calculates this coordinate's position in the flattened
-  * single array representation of the Map.
-  * @param mapWidth The width of the map.
-  * @param mapHeight The height of the map.
-  * @returns Position in the flattened array.
-  */
+   * Calculates this coordinate's position in the flattened
+   * single array representation of the Map.
+   * @param mapWidth The width of the map.
+   * @param mapHeight The height of the map.
+   * @returns Position in the flattened array.
+   */
   toPosition(mapWidth: number, mapHeight: number) {
     if (this.isOutOfBounds(mapWidth, mapHeight)) {
       throw new RangeError('The coordinate must be within the bounds in order to convert to position');
@@ -248,8 +248,8 @@ class Snake {
           default:
             throw new Error(`Unknown direction: ${this.direction}`);
         }
-      }
     }
+  }
 
   get headCoordinate() {
     return this.coordinates[0];
