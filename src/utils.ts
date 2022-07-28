@@ -40,6 +40,11 @@ export enum RelativeDirection {
   Right = 'RIGHT',
 }
 
+/**
+ * Converts a direction to a representation in coordinates.
+ * @param direction A direction to convert to corresponding delta coordinates
+ * @returns An object containing x and y coordinates.
+ */
 function getDirectionDelta(direction: Direction): { x: number; y: number } {
   switch (direction) {
     case Direction.Up:
@@ -55,6 +60,11 @@ function getDirectionDelta(direction: Direction): { x: number; y: number } {
   }
 }
 
+/**
+ * A 2D coordinate in the game map.
+ * @param x The x coordinate.
+ * @param y The y coordinate.
+ */
 export class Coordinate {
   x: number;
   y: number;
@@ -63,36 +73,87 @@ export class Coordinate {
     this.x = x;
     this.y = y;
   }
-
+  
+  /**
+  * Converts a position in the flattened single array representation
+  * of the Map to a 2D Coordinate.
+  * @param position The position in the flattened array.
+  * @param mapWidth The width of the map.
+  * @returns A new Coordinate of the position.
+  */
   static fromPosition(position: number, mapWidth: number) {
     const x = position % mapWidth;
     const y = (position - x) / mapWidth;
     return new Coordinate(x, y);
   }
 
+  /**
+   * Checks if this coordinate is within a square defined by northwest and southeast coordinates.
+   * @param northwest Coordinate of the northwest corner.
+   * @param southeast Coordinate of the southeast corner.
+   * @returns True if this coordinate is within the square.
+   */
+  isWithinSquare(northwest: {x: number, y: number}, southeast: {x: number, y: number}) {
+    const { x: x0, y: y0 } = this;
+    const { x: x1, y: y1 } = northwest;
+    const { x: x2, y: y2 } = southeast;
+    return x0 >= x1 && x0 <= x2 && y0 >= y1 && y0 <= y2;
+  }
+
+  /**
+  * Check if a coordinate is outside of the game map.
+  * @param mapHeight Height of the map.
+  * @param mapWidth Width of the map.
+  * @return True if coordinate is out of bounds.
+  */
   isOutOfBounds(mapWidth: number, mapHeight: number) {
     const { x, y } = this;
     return x < 0 || y < 0 || x >= mapWidth || y >= mapHeight;
   }
 
+  /**
+   * Calculates the euclidian distance from this point to another point.
+   * Note that eculidan distance will walk diagonally.
+   * @param otherCoordinate Goal coordinate.
+   * @return Distance in map units.
+   */
   euclidianDistanceTo(otherCoordinate: Coordinate) {
     const { x: x0, y: y0 } = this;
     const { x: x1, y: y1 } = otherCoordinate;
     return Math.sqrt(Math.pow(x1 - x0, 2) + Math.pow(y1 - y0, 2));
   }
 
+  /**
+  * Calculates the Manhattan (or cab/grid) distance from this point to another point.
+  * Note that Manhattan distance will not walk diagonally.
+  * @param otherCoordinate Coordinate of the position.
+  * @return Distance in map units.
+  */
   manhattanDistanceTo(otherCoordinate: Coordinate) {
     const { x: x0, y: y0 } = this;
     const { x: x1, y: y1 } = otherCoordinate;
     return Math.abs(x1 - x0) + Math.abs(y1 - y0);
   }
-
+  /**
+   * Calculates the difference between another coordinate and this coordinate. Like manhattanDistanceTo,
+   * but values can be negative to represent a direction. Positive values represent right or down.
+   * Negative values represent left or up.
+   * @param otherCoordinate Coordinate to compare to.
+   * @return An object containing x and y coordinates.
+   */
   deltaTo(otherCoordinate: Coordinate) {
     const { x: x0, y: y0 } = this;
     const { x: x1, y: y1 } = otherCoordinate;
     return { x: x1 - x0, y: y1 - y0 };
   }
 
+  /**
+  * Calculates this coordinate's position in the flattened
+  * single array representation of the Map.
+  * @param mapWidth The width of the map.
+  * @param mapHeight The height of the map.
+  * @returns Position in the flattened array.
+  */
   toPosition(mapWidth: number, mapHeight: number) {
     if (this.isOutOfBounds(mapWidth, mapHeight)) {
       throw new RangeError('The coordinate must be within the bounds in order to convert to position');
@@ -101,18 +162,28 @@ export class Coordinate {
     const { x, y } = this;
     return x + y * mapWidth;
   }
-
+  /**
+   * @return Negated coordinate
+   */
   negated() {
     const { x, y } = this;
     return new Coordinate(-x, -y);
   }
 
+  /**
+   * @param delta Delta to add to this coordinate. Positive values represent right or down. Negative values represent left or up.
+   * @returns A new coordinate that is moved by the given delta.
+   */
   translatedByDelta(delta: { x: number; y: number }) {
     const { x, y } = this;
     const { x: dx, y: dy } = delta;
     return new Coordinate(x + dx, y + dy);
   }
 
+  /**
+   * @param direction Direction to move in.
+   * @returns A new coordinate that is moved by the given direction.
+   */
   translatedByDirection(direction: Direction) {
     const directionDelta = getDirectionDelta(direction);
     return this.translatedByDelta(directionDelta);
@@ -124,15 +195,29 @@ class Snake {
   name: string;
   direction: Direction;
   coordinates: Coordinate[];
+  map: GameMap;
 
-  constructor(id: string, name: string, direction: Direction, coordinates: Coordinate[]) {
+  constructor(id: string, name: string, direction: Direction, coordinates: Coordinate[], map: GameMap) {
     this.id = id;
     this.name = name;
     this.direction = direction;
     this.coordinates = coordinates;
+    this.map = map;
+  }
+  /**
+   * @param direction Desired direction to check
+   * @return True if the snake can move in the given direction.
+   */
+  canMoveInDirection(direction: Direction) {
+    const snakeHead = this.coordinates[0];
+    const nextCoord = snakeHead.translatedByDirection(direction);
+    return this.map.isTileFree(nextCoord);
   }
 
-  /** Returns an absolute direction based on a relative direction */
+  /** Returns an absolute direction based on a relative direction
+   * @param relativeDirection Relative direction to convert
+   * @returns Absolute map direction
+   */
   relativeToAbsolute(relativeDirection: RelativeDirection) {
     switch (relativeDirection) {
       case RelativeDirection.Forward:
@@ -166,7 +251,6 @@ class Snake {
       }
     }
 
-
   get headCoordinate() {
     return this.coordinates[0];
   }
@@ -179,7 +263,7 @@ class Snake {
     return this.coordinates.length;
   }
 
-  static fromSnakeInfo(snakeInfo: SnakeInfo, mapWidth: number) {
+  static fromSnakeInfo(snakeInfo: SnakeInfo, mapWidth: number, map: GameMap) {
     const { id, name, positions } = snakeInfo;
     const coordinates = positions.map(position => Coordinate.fromPosition(position, mapWidth));
     // Calculate the direction of the snake
@@ -196,7 +280,7 @@ class Snake {
         direction = Direction.Up;
       }
     }
-    return new Snake(id, name, direction, coordinates);
+    return new Snake(id, name, direction, coordinates, map);
   }
 }
 
@@ -220,7 +304,7 @@ export class GameMap {
     }
 
     for (const snakeInfo of map.snakeInfos) {
-      const snake = Snake.fromSnakeInfo(snakeInfo, map.width);
+      const snake = Snake.fromSnakeInfo(snakeInfo, map.width, this);
       snakes.set(snakeInfo.id, snake);
       for (const snakePosition of snakeInfo.positions) {
         tiles.set(snakePosition, TileType.Snake);
@@ -238,6 +322,10 @@ export class GameMap {
     return this.snakes.get(this.playerId)!;
   }
 
+  /**
+   * @param coordinate Coordinate to check
+   * @return Type of tile
+   */
   getTileType(coordinate: Coordinate) {
     const { width, height } = this;
 
@@ -254,5 +342,12 @@ export class GameMap {
     }
 
     return tileType;
+  }
+  /**
+   * @param coordinate Coordinate to check
+   * @return True if coordinate is empty or food
+   */
+  isTileFree(coordinate: Coordinate) {
+    return this.getTileType(coordinate) === TileType.Empty || this.getTileType(coordinate) === TileType.Food;
   }
 }

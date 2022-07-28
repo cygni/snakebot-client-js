@@ -12,20 +12,7 @@ function randomItem<Type>(items: Type[]) {
 }
 
 export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {
-  const currentCoordinate = gameMap.playerSnake.headCoordinate;
-
-  const safeDirections = allDirections.filter(direction => {
-    const nextCoordinate = currentCoordinate.translatedByDirection(direction);
-    const nextTile = gameMap.getTileType(nextCoordinate);
-
-    switch (nextTile) {
-      case TileType.Empty:
-      case TileType.Food:
-        return true;
-      default:
-        return false;
-    }
-  });
+  const safeDirections = allDirections.filter(direction => gameMap.playerSnake.canMoveInDirection(direction));
 
   // Bad luck!
   if (safeDirections.length === 0) {
