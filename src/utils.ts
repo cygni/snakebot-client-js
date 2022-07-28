@@ -174,7 +174,7 @@ export class Coordinate {
    * @param delta Delta to add to this coordinate. Positive values represent right or down. Negative values represent left or up.
    * @returns A new coordinate that is moved by the given delta.
    */
-  translatedByDelta(delta: { x: number; y: number }) {
+  translateByDelta(delta: { x: number; y: number }) {
     const { x, y } = this;
     const { x: dx, y: dy } = delta;
     return new Coordinate(x + dx, y + dy);
@@ -184,13 +184,13 @@ export class Coordinate {
    * @param direction Direction to move in.
    * @returns A new coordinate that is moved by the given direction.
    */
-  translatedByDirection(direction: Direction) {
+  translateByDirection(direction: Direction) {
     const directionDelta = getDirectionDelta(direction);
-    return this.translatedByDelta(directionDelta);
+    return this.translateByDelta(directionDelta);
   }
 }
 
-class Snake {
+export class Snake {
   id: string;
   name: string;
   direction: Direction;
@@ -210,7 +210,7 @@ class Snake {
    */
   canMoveInDirection(direction: Direction) {
     const snakeHead = this.coordinates[0];
-    const nextCoord = snakeHead.translatedByDirection(direction);
+    const nextCoord = snakeHead.translateByDirection(direction);
     return this.map.isTileFree(nextCoord);
   }
 
