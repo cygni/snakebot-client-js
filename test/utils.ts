@@ -164,7 +164,7 @@ describe('Coordinate', () => {
     const coordinateB = new Coordinate(3, 4);
     const delta = coordinateA.deltaTo(coordinateB);
     assert.deepEqual(coordinateA.translateByDelta(delta), coordinateB);
-    const coordinateBackAndForth = coordinateA.translateByDelta(coordinateB).translateByDelta(coordinateB.negated())
+    const coordinateBackAndForth = coordinateA.translateByDelta(coordinateB).translateByDelta(coordinateB.negated());
     assert.notEqual(coordinateBackAndForth, coordinateA); // Check that it is a new object
     assert.deepEqual(coordinateBackAndForth, coordinateA);
 
@@ -238,8 +238,16 @@ describe('Map', () => {
   describe('Snake', () => {
     const snake = map.playerSnake;
     it('snake added to map', () => {
-      assert.deepEqual(snake, new Snake(snake1Info.id, snake1Info.name, Direction.Left,
-        snake1Info.positions.map(absPos => Coordinate.fromPosition(absPos, map.width)), map));
+      assert.deepEqual(
+        snake,
+        new Snake(
+          snake1Info.id,
+          snake1Info.name,
+          Direction.Left,
+          snake1Info.positions.map(absPos => Coordinate.fromPosition(absPos, map.width)),
+          map,
+        ),
+      );
 
       assert.equal(snake.id, snake1Info.id);
       assert.equal(snake.name, snake1Info.name);
@@ -307,6 +315,5 @@ describe('Map', () => {
       assert.equal(snake.tailCoordinate, snake.coordinates[snake.coordinates.length - 1]);
       assert.deepEqual(snake.tailCoordinate, new Coordinate(1, 0));
     });
-
   });
 });
