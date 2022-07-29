@@ -73,7 +73,7 @@ export function createClient({
   // Update snakeConsole to use the given logger
   snakeConsole = logger;
 
-  let prevTimestamp = 0;
+  let hasSentDirection = true;
   const ws = new WebSocket(new URL(venue, host).href);
 
   logger.info('WebSocket is', colors.yellow('connecting'));
@@ -213,23 +213,24 @@ export function createClient({
     logger.info(colors.rainbow('Game is starting'));
     logger.info(colors.blue.bold('Received updated game settings from server:'), colors.blue(JSON.stringify(message.gameSettings)));
     gameSettings = message.gameSettings; // Update game settings with the ones from the server
-    prevTimestamp = message.timestamp;
   }
 
   async function mapUpdateEvent({map, receivingPlayerId, gameId, gameTick, timestamp}: MapUpdateEventMessage) {
     // logger.debug(`Game turn #${gameTick}`);
     const gameMap = new GameMap(map, receivingPlayerId);
-    
-    const timestampDiff = timestamp - prevTimestamp;
-    if (timestampDiff >= gameSettings.timeInMsPerTick) {
-      logger.warn(colors.yellow(`Last move might've took too long to calculate (approx ${timestampDiff}ms)!`));
+    if (!hasSentDirection) {
+      logger.warn(colors.red(`Last move took too long to calculate! (gameTick:${gameTick})`));
     }
+    hasSentDirection = false;
     const direction = await snake.getNextMove(gameMap, gameSettings, gameTick);
     sendMessage(createRegisterMoveMessage(direction, receivingPlayerId, gameId, gameTick));
-    prevTimestamp = timestamp;
+    hasSentDirection = true;
   }
 
   function snakeDeadEvent(message: SnakeDeadEventMessage) {
+    if (!hasSentDirection) {
+      logger.warn(colors.red(`Last move took too long to calculate! (gameTick:${message.gameTick})`));
+    }
     if (spoiler) logger.info('Snake died because:', colors.red(message.deathReason));
   }
 
