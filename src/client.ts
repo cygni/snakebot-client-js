@@ -1,6 +1,5 @@
-import { GameMode, GameMap, RawMap } from './utils';
-import type { Direction } from './utils';
 import WebSocket, { MessageEvent } from 'ws';
+import colors from 'colors';
 import { URL } from 'url';
 import {
   MessageType,
@@ -10,9 +9,9 @@ import {
   createRegisterPlayerMessage,
   createStartGameMessage,
 } from './messages';
-import colors from 'colors';
-import type { GameSettings } from './types';
+import { GameMap } from './utils';
 
+import { Direction, GameMode, GameSettings } from './types';
 import type {
   Message,
   HeartBeatResponseMessage,
@@ -25,7 +24,8 @@ import type {
   GameResultEventMessage,
   InvalidPlayerNameMessage,
   TournamentEndedMessage,
-} from './messages';
+  NoActiveTournamentMessage,
+} from './types_messages';
 
 const HEARTBEAT_INTERVAL = 5000;
 const SUPPORTED_GAME_MODES = new Set(Object.values(GameMode));
@@ -84,6 +84,7 @@ export function createClient({
 
   let heartbeatTimeout: NodeJS.Timeout;
   let gameMode: GameMode;
+  let url: string;
 
   ws.addEventListener('open', handleOpen);
   ws.addEventListener('close', handleClose);
@@ -141,6 +142,9 @@ export function createClient({
         break;
       case MessageType.TournamentEnded:
         tournamentEndedEvent(message as TournamentEndedMessage);
+        break;
+      case MessageType.NoActiveTournament:
+        noActiveTournamentEvent(message as TournamentEndedMessage);
         break;
       default:
         logger.warn(colors.bold.red('Unknown Event'), message.type);
@@ -201,7 +205,9 @@ export function createClient({
   }
 
   function gameLinkEvent(message: GameLinkEventMessage) {
-    logger.info('Game is ready:', colors.cyan.bold.underline(message.url));
+    logger.info('Game is ready');
+    url = message.url;
+
     if (autoStart && gameMode === GameMode.Training) {
       sendMessage(createStartGameMessage());
     } else {
@@ -236,7 +242,7 @@ export function createClient({
   }
 
   function gameResultEvent(message: GameResultEventMessage) {
-    logger.info('Game result is in');
+    logger.info('Game result is in: ', colors.cyan.bold.underline(url));
   }
 
   function gameEndedEvent(message: GameEndedEventMessage) {
@@ -251,8 +257,13 @@ export function createClient({
     close();
   }
 
-  function tournamentEndedEvent(message: any) {
+  function tournamentEndedEvent(message: TournamentEndedMessage) {
     logger.info(colors.yellow('Tournament has ended.'));
+    close();
+  }
+
+  function noActiveTournamentEvent(message: NoActiveTournamentMessage) {
+    logger.info(colors.yellow('No active tournament. Closing...'));
     close();
   }
 

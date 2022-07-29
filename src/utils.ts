@@ -1,44 +1,4 @@
-export type SnakeInfo = {
-  name: string;
-  points: number;
-  positions: number[];
-  tailProtectedForGameTicks: number;
-  id: string;
-};
-
-export type RawMap = {
-  width: number;
-  height: number;
-  worldTick: number;
-  snakeInfos: SnakeInfo[];
-  foodPositions: number[];
-  obstaclePositions: number[];
-};
-
-export enum TileType {
-  Empty = 'Empty',
-  Food = 'Food',
-  Obstacle = 'Obstacle',
-  Snake = 'Snake',
-}
-
-export enum GameMode {
-  Training = 'TRAINING',
-  Tournament = 'TOURNAMENT',
-}
-
-export enum Direction {
-  Up = 'UP',
-  Down = 'DOWN',
-  Left = 'LEFT',
-  Right = 'RIGHT',
-}
-
-export enum RelativeDirection {
-  Forward = 'FORWARD',
-  Left = 'LEFT',
-  Right = 'RIGHT',
-}
+import { Direction, RawMap, RelativeDirection, SnakeInfo, TileType } from "./types";
 
 /**
  * Converts a direction to a representation in coordinates.

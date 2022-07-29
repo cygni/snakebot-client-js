@@ -1,8 +1,8 @@
-import { Direction, MessageType } from '../src/index';
-import { GameSettings } from '../src/types';
-import { GameMap, RelativeDirection } from '../src/utils';
 import { snakeConsole as console } from '../src/client';
-import { GameStartingEventMessage, Message, SnakeDeadEventMessage } from '../src/messages';
+import { GameMap } from '../src/utils';
+import { MessageType } from '../src/messages';
+import { GameSettings, Direction, RelativeDirection } from '../src/types';
+import type { GameStartingEventMessage, Message, SnakeDeadEventMessage } from '../src/types_messages';
 
 export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {
   return Direction.Down;

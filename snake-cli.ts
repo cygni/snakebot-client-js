@@ -1,11 +1,11 @@
+import colors from 'colors';
 import path from 'path';
 import process from 'process';
 import readline from 'readline';
 import { program } from 'commander';
-import { createClient, GameMode } from './src/index';
 import WebSocket from 'ws';
-import colors from 'colors';
-import { SnakeImplementation } from './src/client';
+import { createClient, SnakeImplementation } from './src/client';
+import { GameMode } from './src/types';
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
 const defaultServerUrl = 'https://snake.cygni.se';
