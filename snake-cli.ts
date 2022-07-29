@@ -13,12 +13,17 @@ const defaultSnakePath = './snakepit/slither';
 const defaultSnakeName = 'Slither';
 
 program
+  .description('Connect to a snake server and play a game')
+  .name('npm start')
   .option('-h, --host <host>', 'Hostname of the server', defaultServerUrl)
   .option('-v, --venue <venue>', 'Venue name', 'training')
   .option('-n, --name <name>', 'Name of the snake', defaultSnakeName)
   .option('-s, --snake <path>', 'Path to the snake file', defaultSnakePath)
-  .option('-a, --autostart', 'Auto start the game', true)
   .option('-sp, --spoiler', 'Show the results', false);
+
+program.addHelpText('after', `
+  Example:\tnpm start --host http://localhost:8080 --venue training --name Slither --snake ${defaultSnakePath}
+  Or:\t\tnpm start -h http://localhost:8080 -v training -n Slither -s ${defaultSnakePath}`);
 
 program.parse(process.argv);
 const options = program.opts();
@@ -41,7 +46,6 @@ console.log('Starting snake with options:', options);
     venue: options.venue,
     snake: snake,
     logger: console,
-    autoStart: options.autostart,
     spoiler: options.spoiler,
     WebSocket: WebSocket,
     clientInfo: {
@@ -50,21 +54,5 @@ console.log('Starting snake with options:', options);
       operatingSystemVersion: process.versions.node,
     },
     gameSettings: snake.trainingGameSettings,
-
-    onGameReady: (startGame) => {
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-
-      rl.question(('Start game? ' + '('+ colors.green('y') + '/'+ colors.red('n') + '): '), answer => {
-        rl.close();
-        if (answer === '' || answer.startsWith('y')) {
-          startGame();
-        } else {
-          client.close();
-        }
-      });
-    },
   });
 })();

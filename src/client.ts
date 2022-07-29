@@ -49,10 +49,8 @@ export type ClientOptions = {
   venue: string;
   snake: SnakeImplementation;
   logger: Console;
-  autoStart: boolean;
   spoiler: boolean;
   WebSocket: typeof WebSocket;
-  onGameReady: (startGame: ()=>void) => void;
   clientInfo: ClientInfo;
   gameSettings: GameSettings;
 };
@@ -63,10 +61,8 @@ export function createClient({
   venue,
   snake,
   logger,
-  autoStart,
   spoiler,
   WebSocket,
-  onGameReady,
   clientInfo,
   gameSettings,
 }: ClientOptions) {
@@ -208,12 +204,8 @@ export function createClient({
     logger.info('Game is ready');
     url = message.url;
 
-    if (autoStart && gameMode === GameMode.Training) {
+    if (gameMode === GameMode.Training) {
       sendMessage(createStartGameMessage());
-    } else {
-      onGameReady(() => {
-        sendMessage(createStartGameMessage());
-      });
     }
   }
 
