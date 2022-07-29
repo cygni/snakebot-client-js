@@ -1,0 +1,33 @@
+{
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"]
+      }
+    }
+  },
+  "root": true,
+  "extends": ["eslint:recommended", "prettier", "plugin:import/recommended"],
+  "plugins": ["prettier"],
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": false
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "import/extensions": [
+      "error",
+      "always",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "import/no-commonjs": "error"
+  }
+}

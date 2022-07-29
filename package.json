@@ -1,33 +1,46 @@
 {
-    "name": "snake-cli",
-    "version": "0.1.0",
-    "description": "Another snake client",
-    "author": "",
-    "license": "ISC",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/cygni/snakebot-client-js.git"
-    },
-    "scripts": {
-        "test": "nyc mocha",
-        "doc": "jsdoc ./domain/** -d doc/html; jsdox ./domain/** --output doc/markdown"
-    },
-    "dependencies": {
-        "dateformat": "^3.0.3",
-        "json-socket": "^0.3.0",
-        "minimist": "^1.2.0",
-        "opn": "^5.4.0",
-        "ws": "^8.8.0"
-    },
-    "optionalDependencies": {
-        "bufferutil": "^4.0.1",
-        "utf-8-validate": "^5.0.2"
-    },
-    "devDependencies": {
-        "chai": "^4.1.2",
-        "jsdoc": "^3.5.5",
-        "jsdox": "^0.3.0",
-        "mocha": "^6.0.1",
-        "nyc": "^15.1.0"
-    }
+  "name": "snakebot-client-js",
+  "version": "3.0.0",
+  "description": "Cygni snakebot client in modern JavaScript",
+  "contributors": ["Max Davidson <max.davidson@cygni.se>",
+                   "Daniel Karlsson <daniel.karlsson@cygni.se>",
+                   "Sebastian Helin <sebastian.helin@cygni.se>"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cygni/snakebot-client-js.git"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=16.15.0"
+  },
+  "main": "index.js",
+  "browser": "src/index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write **/*.{js,json,md}",
+    "test": "ts-mocha -p ./tsconfig.json test/utils.ts ",
+    "start": "ts-node snake-cli.ts"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^9.4.0",
+    "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "@types/expect": "^24.3.0",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^12.12.6",
+    "@types/ws": "^7.2.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "~6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "mocha": "^7.1.0",
+    "prettier": "~1.19.1",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  }
 }
