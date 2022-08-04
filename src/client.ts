@@ -78,7 +78,7 @@ export function createClient({
 
   let apiEndpoint = venue;
   // If the venue is an arena code, we add '/arena' to the endpoint
-  if (apiEndpoint !== GameMode.Tournament && apiEndpoint !== GameMode.Training) {
+  if (venue.toUpperCase() !== GameMode.Tournament && venue.toUpperCase() !== GameMode.Training) {
     apiEndpoint = 'arena/' + apiEndpoint;
   }
   const ws = new WebSocket(new URL(apiEndpoint, host).href);
