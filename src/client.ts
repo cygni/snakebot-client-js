@@ -75,7 +75,13 @@ export function createClient({
   snakeConsole = logger;
 
   let hasSentDirection = true;
-  const ws = new WebSocket(new URL(venue, host).href);
+
+  let apiEndpoint = venue;
+  // If the venue is an arena code, we add '/arena' to the endpoint
+  if (apiEndpoint !== GameMode.Tournament && apiEndpoint !== GameMode.Training) {
+    apiEndpoint = 'arena/' + apiEndpoint;
+  }
+  const ws = new WebSocket(new URL(apiEndpoint, host).href);
 
   logger.info('WebSocket is', colors.yellow('connecting'));
 
@@ -268,7 +274,7 @@ export function createClient({
   }
 
   function invalidArenaName(message: InvalidPlayerNameMessage) {
-    logger.info(colors.red(`The arena name ${venue} was invalid, reason: ${message.reasonCode}`));
+    logger.info(colors.red(`The arena ${venue} was invalid, reason: ${message.reasonCode}`));
     close();
   }
 
