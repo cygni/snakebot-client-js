@@ -25,6 +25,7 @@ export type SnakeInfo = {
   export enum GameMode {
     Training = 'TRAINING',
     Tournament = 'TOURNAMENT',
+    Arena = 'ARENA',
   }
   
   export enum Direction {

@@ -7,6 +7,8 @@ export enum MessageType {
   InvalidMessage = 'se.cygni.snake.api.exception.InvalidMessage',
   InvalidPlayerName = 'se.cygni.snake.api.exception.InvalidPlayerName',
   NoActiveTournament = 'se.cygni.snake.api.exception.NoActiveTournament',
+  InvalidArenaName = 'se.cygni.snake.api.exception.InvalidArenaName',
+  ArenaIsFull = 'se.cygni.snake.api.exception.ArenaIsFull',
 
   // Responses
   HeartbeatResponse = 'se.cygni.snake.api.response.HeartBeatResponse',
