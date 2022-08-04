@@ -92,3 +92,7 @@ export type Message = {
   };
   
   export type NoActiveTournamentMessage = Message;
+
+  export interface ArenaIsFullMessage extends Message {
+    playersConnected: number;
+  }

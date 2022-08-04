@@ -25,6 +25,7 @@ import type {
   InvalidPlayerNameMessage,
   TournamentEndedMessage,
   NoActiveTournamentMessage,
+  ArenaIsFullMessage,
 } from './types_messages';
 
 const HEARTBEAT_INTERVAL = 5000;
@@ -74,7 +75,13 @@ export function createClient({
   snakeConsole = logger;
 
   let hasSentDirection = true;
-  const ws = new WebSocket(new URL(venue, host).href);
+
+  let apiEndpoint = venue;
+  // If the venue is an arena code, we add '/arena' to the endpoint
+  if (apiEndpoint !== GameMode.Tournament && apiEndpoint !== GameMode.Training) {
+    apiEndpoint = 'arena/' + apiEndpoint;
+  }
+  const ws = new WebSocket(new URL(apiEndpoint, host).href);
 
   logger.info('WebSocket is', colors.yellow('connecting'));
 
@@ -141,6 +148,12 @@ export function createClient({
         break;
       case MessageType.NoActiveTournament:
         noActiveTournamentEvent(message as TournamentEndedMessage);
+        break;
+      case MessageType.InvalidArenaName:
+        invalidArenaName(message as InvalidPlayerNameMessage);
+        break;
+      case MessageType.ArenaIsFull:
+        arenaIsFull(message as ArenaIsFullMessage);
         break;
       default:
         logger.warn(colors.bold.red('Unknown Event'), message.type);
@@ -257,6 +270,16 @@ export function createClient({
 
   function noActiveTournamentEvent(message: NoActiveTournamentMessage) {
     logger.info(colors.yellow('No active tournament. Closing...'));
+    close();
+  }
+
+  function invalidArenaName(message: InvalidPlayerNameMessage) {
+    logger.info(colors.red(`The arena ${venue} was invalid, reason: ${message.reasonCode}`));
+    close();
+  }
+
+  function arenaIsFull(message: ArenaIsFullMessage) {
+    logger.info(colors.red(`The arena ${venue} is full, players connected: ${message.playersConnected}`));
     close();
   }
 
