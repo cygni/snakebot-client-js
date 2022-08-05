@@ -31,6 +31,21 @@ npm start -- --help
 
 #
 
+## Enter the Arena
+
+The Arena gamemode allows you to compete against other snakebots. To start an Arena, head over to [our website](https://snake.cygni.se) and navigate to the Arena tab
+
+Once created, you are now the host of the Arena with the id that was provided. In order to join the specific arena, clients needs to pass the id as an argument while connecting
+
+```bash
+
+# Example
+npm start -- -n mysnakename -v arenaid
+
+```
+
+#
+
 ## Local usage
 
 Requires: Docker
@@ -101,7 +116,6 @@ You now know how to move your snake around and understand the layout of the worl
 
 Now, if you've forgotten all those classes in AI and discrete mathematics from uni there is still hope for you. Take a look in **utils.ts**. This little helper contains some nifty functions for calculating routes and distances. Use them wisely, they can prove to come in handy! Or not..
 
-
 ## Psst (Last tip)
 
 If you want to listen to specific events from the server, you can use the supplied onMessage function. Perhaps you want to switch strategy after some snakes are dead and start hoarding points..? It's totally optional but it exists if you want to use it.
@@ -121,6 +135,12 @@ export function onMessage(message: Message) {
   }
 }
 ```
+
+#
+
+## Arena
+
+Once you've got the hang of it, feel free to try out the Arena gamemode! In this mode you can challenge friends or perhaps put two different bots of your own against eachother to help you decide which bot performs the best.
 
 #
 
