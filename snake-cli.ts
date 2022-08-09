@@ -1,7 +1,6 @@
 import colors from 'colors';
 import path from 'path';
 import process from 'process';
-import readline from 'readline';
 import { program } from 'commander';
 import WebSocket from 'ws';
 import { createClient, SnakeImplementation } from './src/client';

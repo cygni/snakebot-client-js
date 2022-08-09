@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
-import { Direction, Coordinate, RawMap, GameMap, SnakeInfo, Snake, TileType, RelativeDirection } from '../src/utils';
+import { Direction, RawMap, SnakeInfo, TileType, RelativeDirection } from '../src/types';
+import { Coordinate, GameMap, Snake } from '../src/utils';
 
 describe('Direction', () => {
   it('has the correct directions', () => {

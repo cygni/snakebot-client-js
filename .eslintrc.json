@@ -1,33 +1,18 @@
 {
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".ts"]
-      }
-    }
-  },
   "root": true,
-  "extends": ["eslint:recommended", "prettier", "plugin:import/recommended"],
+  "extends": ["eslint:recommended", "prettier", "plugin:@typescript-eslint/recommended"],
   "plugins": ["prettier"],
-  "parser": "babel-eslint",
-  "env": {
-    "es6": true,
-    "node": true,
-    "browser": false
-  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "project": ["./tsconfig.json"] },
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "prettier/prettier": "error",
-    "import/extensions": [
-      "error",
-      "always",
-      "ignorePackages",
+    "@typescript-eslint/strict-boolean-expressions": [
+      2,
       {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
+        "allowString": false,
+        "allowNumber": false
       }
-    ],
-    "import/no-commonjs": "error"
-  }
+    ]
+  },
+  "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
 }
