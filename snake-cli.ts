@@ -15,7 +15,7 @@ program
   .description('Connect to a snake server and play a game')
   .name('npm start')
   .option('-h, --host <host>', 'Hostname of the server', defaultServerUrl)
-  .option('-v, --venue <venue>', 'Venue name', 'training')
+  .option('-v, --venue <venue>', 'Venue name. Possible values: training, arenaID, tournament', 'training')
   .option('-n, --name <name>', 'Name of the snake', defaultSnakeName)
   .option('-s, --snake <path>', 'Path to the snake file', defaultSnakePath)
   .option('-sp, --spoiler', 'Show the results', false);

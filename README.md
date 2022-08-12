@@ -46,6 +46,25 @@ npm start -- -n mysnakename -v arenaid
 
 #
 
+## Enter the Tournament
+
+From time to time, Cygni will host tournaments where you get to compete against other players. If you are a participant of a tournament and wish to connect,
+issue the following command:
+
+```bash
+# Example
+npm start -- -n mysnakename -v tournament
+```
+
+### To connect locally:
+
+```bash
+# Example
+npm start -- -h http://localhost:8080 -n mysnakename -v tournament
+```
+
+#
+
 ## Local usage
 
 Requires: Docker
