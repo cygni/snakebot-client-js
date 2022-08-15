@@ -71,6 +71,9 @@ export function createClient({
     throw new Error('You must specify a snake to use!');
   }
 
+  // Make venue lowercase to match the server's api endpoint
+  venue = venue.toLowerCase();
+
   // Update snakeConsole to use the given logger
   snakeConsole = logger;
 
@@ -274,7 +277,7 @@ export function createClient({
   }
 
   function invalidArenaName(message: InvalidPlayerNameMessage) {
-    logger.info(colors.red(`The arena ${venue} was invalid, reason: ${message.reasonCode}`));
+    logger.info(colors.red(`There is no arena with the code: ${venue}`));
     close();
   }
 
