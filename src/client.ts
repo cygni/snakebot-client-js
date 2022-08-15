@@ -70,19 +70,22 @@ export function createClient({
   if (snake == null) {
     throw new Error('You must specify a snake to use!');
   }
-
-  // Make venue lowercase to match the server's api endpoint
-  venue = venue.toLowerCase();
-
+  
   // Update snakeConsole to use the given logger
   snakeConsole = logger;
-
+  
   let hasSentDirection = true;
-
-  let apiEndpoint = venue;
+  
+  let apiEndpoint;
   // If the venue is an arena code, we add '/arena' to the endpoint
   if (venue.toUpperCase() !== GameMode.Tournament && venue.toUpperCase() !== GameMode.Training) {
-    apiEndpoint = 'arena/' + apiEndpoint;
+    // Make venue uppercase to match the server's api endpoint
+    venue = venue.toUpperCase();
+    apiEndpoint = 'arena/' + venue;
+  } else {
+    // Make venue lowercase to match the server's api endpoint
+    venue = venue.toLowerCase();
+    apiEndpoint = venue;
   }
   const ws = new WebSocket(new URL(apiEndpoint, host).href);
 
