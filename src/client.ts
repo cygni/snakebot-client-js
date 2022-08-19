@@ -143,7 +143,6 @@ export function createClient({
         gameResultEvent(message as GameResultEventMessage);
         break;
       case MessageType.GameEnded:
-        console.log(colors.bgCyan('Game ended'));
         gameEndedEvent(message as GameEndedEventMessage);
         break;
       case MessageType.InvalidPlayerName:
