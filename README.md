@@ -110,7 +110,7 @@ You've already learned the most important lesson: "If my snake doesn't know wher
 #
 
 ```ts
-export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {}
+export async function getNextMove(gameMap: GameMap) {}
 ```
 
 ## Tip #1: Shake that snake!
