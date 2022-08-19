@@ -174,6 +174,26 @@ describe('Coordinate', () => {
     assert.deepEqual(coordinateA.translateByDirection(Direction.Left), new Coordinate(-1, 0));
     assert.deepEqual(coordinateA.translateByDirection(Direction.Right), new Coordinate(1, 0));
   });
+
+  it('calculates the direction to a neighbouring coordinate', () => {
+    const coordinateA = new Coordinate(3, 4);
+
+    let coordinateB = new Coordinate(4, 4);
+    assert.equal(coordinateA.directionTo(coordinateB), Direction.Right);
+    coordinateB = new Coordinate(3, 5);
+    assert.equal(coordinateA.directionTo(coordinateB), Direction.Down);
+    coordinateB = new Coordinate(2, 4);
+    assert.equal(coordinateA.directionTo(coordinateB), Direction.Left);
+    coordinateB = new Coordinate(3, 3);
+    assert.equal(coordinateA.directionTo(coordinateB), Direction.Up);
+
+    coordinateB = new Coordinate(4, 3);
+    assert.throws(() => coordinateA.directionTo(coordinateB));
+    coordinateB = new Coordinate(3, 4);
+    assert.throws(() => coordinateA.directionTo(coordinateB));
+    coordinateB = new Coordinate(3, 6);
+    assert.throws(() => coordinateA.directionTo(coordinateB));
+  });
 });
 
 describe('Map', () => {
@@ -259,7 +279,7 @@ describe('Map', () => {
     });
 
     it('direction calculation', () => {
-      let tempSnakeInfo = { ...snake1Info };
+      const tempSnakeInfo = { ...snake1Info };
       let tempSnake = Snake.fromSnakeInfo(tempSnakeInfo, map.width, map);
       assert.equal(tempSnake.direction, Direction.Left);
 

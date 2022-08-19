@@ -149,6 +149,29 @@ export class Coordinate {
     const directionDelta = getDirectionDelta(direction);
     return this.translateByDelta(directionDelta);
   }
+
+  /**
+   * ONLY works for neighboring coordinates! (No pathfinding here)
+   * @param otherCoordinate Coordinate *neighboring* this coordinate to compare to.
+   * @returns Direction to move to get to the other coordinate.
+   */
+  directionTo(otherCoordinate: Coordinate): Direction {
+    const { x: x0, y: y0 } = this;
+    const { x: x1, y: y1 } = otherCoordinate;
+    const dx = x1 - x0;
+    const dy = y1 - y0;
+    if (dx === 0 && dy === -1) {
+      return Direction.Up;
+    } else if (dx === 0 && dy === 1) {
+      return Direction.Down;
+    } else if (dx === -1 && dy === 0) {
+      return Direction.Left;
+    } else if (dx === 1 && dy === 0) {
+      return Direction.Right;
+    } else {
+      throw new Error(`The coordinate is too far away!, Difference is (${dx}, ${dy})`);
+    }
+  }
 }
 
 export class Snake {
