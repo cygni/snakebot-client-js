@@ -26,6 +26,7 @@ import type {
   TournamentEndedMessage,
   NoActiveTournamentMessage,
   ArenaIsFullMessage,
+  InvalidMessage,
 } from './types_messages';
 
 const HEARTBEAT_INTERVAL = 5000;
@@ -142,6 +143,7 @@ export function createClient({
         gameResultEvent(message as GameResultEventMessage);
         break;
       case MessageType.GameEnded:
+        console.log(colors.bgCyan('Game ended'));
         gameEndedEvent(message as GameEndedEventMessage);
         break;
       case MessageType.InvalidPlayerName:
@@ -158,6 +160,9 @@ export function createClient({
         break;
       case MessageType.ArenaIsFull:
         arenaIsFull(message as ArenaIsFullMessage);
+        break;
+      case MessageType.InvalidMessage:
+        invalidMessage(message as InvalidMessage);
         break;
       default:
         logger.warn(colors.bold.red('Unknown Event'), message.type);
@@ -201,8 +206,8 @@ export function createClient({
         logger.info(colors.yellow(`Disabling logs to prevent spoilers`));
         logger = {
           log: () => {},
-          error: () => {},
-          warn: () => {},
+          error: logger.error,
+          warn: logger.warn,
           info: () => {},
         } as Console;
 
@@ -277,6 +282,10 @@ export function createClient({
   function arenaIsFull(message: ArenaIsFullMessage) {
     logger.info(colors.red(`The arena ${venue} is full, players connected: ${message.playersConnected}`));
     close();
+  }
+
+  function invalidMessage(message: InvalidMessage) {
+    logger.warn(colors.red(message.errorMessage));
   }
 
   return {

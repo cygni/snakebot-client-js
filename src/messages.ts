@@ -29,7 +29,7 @@ export enum MessageType {
   RegisterPlayer = 'se.cygni.snake.api.request.RegisterPlayer',
   RegisterMove = 'se.cygni.snake.api.request.RegisterMove',
   HeartbeatRequest = 'se.cygni.snake.api.request.HeartBeatRequest',
-};
+}
 
 export function createClientInfoMessage({
   clientVersion,

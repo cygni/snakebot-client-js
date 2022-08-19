@@ -20,7 +20,7 @@ export type Message = {
   export interface GameLinkEventMessage extends Message {
     type: MessageType.GameLink;
     url: string;
-  };
+  }
   
   export interface GameStartingEventMessage extends Message {
     type: MessageType.GameStarting;
@@ -89,10 +89,15 @@ export type Message = {
     gameResult: GameResult;
     tournamentName: string;
     tournamentId: string;
-  };
+  }
   
   export type NoActiveTournamentMessage = Message;
 
   export interface ArenaIsFullMessage extends Message {
     playersConnected: number;
+  }
+
+  export interface InvalidMessage extends Message {
+    errorMessage: string;
+    receivedMessage: string;
   }
