@@ -101,23 +101,21 @@ To unleash your snake into the testing grounds, issue the following command in y
 npm start
 ```
 
-**_There's a problem though, your snake will always slam into the wall! Hisss!_**
+**_As you notice, your snake is just turning in random directions and needs your help to find a better path!_**
 
 ## Improving your snake
 
-You've already learned the most important lesson: "If my snake can't turn it will hurt". Your next step is to figure out how to keep your snake safe with some serious thinking. As of now, your snakes brain is barely the size of a peanut and resides in the method shown below.
+You've already learned the most important lesson: "If my snake doesn't know where to go it will hurt". Your next step is to figure out how to keep your snake safe with some serious thinking. As of now, your snakes brain is barely the size of a peanut and resides in the method shown below.
 
 #
 
 ```ts
-export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {
-  return Direction.Down;
-}
+export async function getNextMove(gameMap: GameMap, gameSettings: GameSettings, gameTick: number) {}
 ```
 
 ## Tip #1: Shake that snake!
 
-The first action recommended to take is probably to get familiar with how to wriggle that slimy worm of yours in another direction. To issue commands to your snake you have to return a direction. The direction is a string and consists of enums < UP | DOWN | LEFT | RIGHT >. Remember that you can only make one move per game tick, so no bullet time or any other Matrix tricks buddy! Also keep in mind that in the event of failing to returning a direction within the time limit of 250ms, your snake will automatically return the latest direction it was heading to.
+To issue commands to your snake you have to return a direction. The direction is a string and consists of enums < UP | DOWN | LEFT | RIGHT >. Remember that you can only make one move per game tick, so no bullet time or any other Matrix tricks buddy! Also keep in mind that in the event of failing to returning a direction within the time limit of 250ms, your snake will automatically return the latest direction it was heading to.
 
 #
 

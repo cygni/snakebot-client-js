@@ -1,4 +1,5 @@
 import { Direction, RawMap, RelativeDirection, SnakeInfo, TileType } from "./types";
+import { GameSettings } from "./types";
 
 /**
  * Converts a direction to a representation in coordinates.
@@ -250,8 +251,10 @@ export class GameMap {
   height: number;
   snakes: Map<string, Snake>;
   tiles: Map<number, TileType>;
+  gameSettings: GameSettings;
+  gameTick: number;
 
-  constructor(map: RawMap, playerId: string) {
+  constructor(map: RawMap, playerId: string, gameSettings: GameSettings, gameTick: number) {
     const snakes = new Map<string, Snake>();
     const tiles = new Map<number, TileType>();
 
@@ -276,6 +279,8 @@ export class GameMap {
     this.height = map.height;
     this.snakes = snakes;
     this.tiles = tiles;
+    this.gameSettings = gameSettings;
+    this.gameTick = gameTick;
   }
 
   get playerSnake() {

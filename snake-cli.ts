@@ -30,9 +30,9 @@ console.log('Starting snake with options:', options);
 
 // Running the client
 (async () => {
-  const clientVer = process.env.npm_package_version || 'unknown';
+  const clientVer = process.env.npm_package_version ?? 'unknown';
   const snake: SnakeImplementation = await import(path.resolve(options.snake));
-  console.log("Hi", colors.green(process.env.USER || 'friend'), "and welcome to the snake pit!");
+  console.log("Hi", colors.green(process.env.USER ?? 'friend'), "and welcome to the snake pit!");
   console.log("Using client version", colors.red.underline(clientVer));
   console.log("To display options, type", colors.yellow("npm start -- --help"));
   if (options.venue.toUpperCase() === GameMode.Training) {
