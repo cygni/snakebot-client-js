@@ -1,13 +1,12 @@
-import { snakeConsole as console } from '../src/client';
-import { GameMap } from '../src/utils';
-import { MessageType } from '../src/messages';
-import { GameSettings, Direction, RelativeDirection, TileType } from '../src/types';
-import type { GameStartingEventMessage, Message, SnakeDeadEventMessage } from '../src/types_messages';
+import { MessageType } from "../src/messages.js";
+import { Direction, TileType, type GameSettings } from "../src/types.js";
+import type { Message } from "../src/types_messages.js";
+import type { GameMap } from "../src/utils.js";
 
 const allDirections = Object.values(Direction); // [Direction.Up, Direction.Down, Direction.Left, Direction.Right];
 
 // Get random item in array
-function getRandomItem<T>(array: T[]): T {
+function getRandomItem<T>(array: readonly T[]): T | undefined {
   return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -18,10 +17,10 @@ function getRandomItem<T>(array: T[]): T {
  */
 export async function getNextMove(gameMap: GameMap): Promise<Direction> {
   const myHeadPosition = gameMap.playerSnake.headCoordinate; // Coordinate of my snake's head
-  const possibleMoves = allDirections.filter(direction => gameMap.playerSnake.canMoveInDirection(direction)); //Filters safe directions to move in
+  const possibleMoves = allDirections.filter((direction) => gameMap.playerSnake.canMoveInDirection(direction)); //Filters safe directions to move in
 
   // If there are no safe moves, bad luck!
-  if (possibleMoves.length === 0){
+  if (possibleMoves.length === 0) {
     return Direction.Down;
   }
 
@@ -34,7 +33,7 @@ export async function getNextMove(gameMap: GameMap): Promise<Direction> {
   }
 
   // Otherwise, choose a random direction
-  return getRandomItem(possibleMoves);
+  return getRandomItem(possibleMoves)!;
 }
 
 /**
@@ -44,19 +43,17 @@ export async function getNextMove(gameMap: GameMap): Promise<Direction> {
 export function onMessage(message: Message) {
   switch (message.type) {
     case MessageType.GameStarting:
-      message = message as GameStartingEventMessage; // Cast to correct type
       // Reset snake state here
       break;
     case MessageType.SnakeDead:
-      message = message as SnakeDeadEventMessage; // Cast to correct type
       // Check how many snakes are left and switch strategy
       break;
   }
 }
 
 // Settings ommitted are set to default values from the server, change this if you want to override them
-export const trainingGameSettings = {
+export const trainingGameSettings: Partial<GameSettings> = {
   // maxNoofPlayers: 2,
   // obstaclesEnabled: false,
   // ...
-} as GameSettings;
+};
