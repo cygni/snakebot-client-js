@@ -22,6 +22,7 @@
     "test": "node --loader ts-node/esm --no-warnings --enable-source-maps node_modules/mocha/bin/_mocha test/utils.ts",
     "start": "node --loader ts-node/esm --no-warnings --enable-source-maps snake-cli.ts",
     "build": "tsc",
+    "check-types": "tsc --noEmit",
     "check-formatting": "prettier --check ."
   },
   "dependencies": {
