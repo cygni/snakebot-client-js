@@ -1,18 +1,18 @@
-import { strict as assert } from 'assert';
-import { Direction, RawMap, SnakeInfo, TileType, RelativeDirection } from '../src/types';
-import { Coordinate, GameMap, Snake } from '../src/utils';
+import assert from "node:assert/strict";
+import { Direction, RelativeDirection, TileType, type RawMap, type SnakeInfo } from "../src/types.js";
+import { Coordinate, GameMap, Snake } from "../src/utils.js";
 
-describe('Direction', () => {
-  it('has the correct directions', () => {
-    assert.equal(Direction.Up, 'UP');
-    assert.equal(Direction.Down, 'DOWN');
-    assert.equal(Direction.Left, 'LEFT');
-    assert.equal(Direction.Right, 'RIGHT');
+describe("Direction", () => {
+  it("has the correct directions", () => {
+    assert.equal(Direction.Up, "UP");
+    assert.equal(Direction.Down, "DOWN");
+    assert.equal(Direction.Left, "LEFT");
+    assert.equal(Direction.Right, "RIGHT");
   });
 });
 
-describe('Coordinate', () => {
-  it('creates a coordinate object from x and y', () => {
+describe("Coordinate", () => {
+  it("creates a coordinate object from x and y", () => {
     const x = 1;
     const y = 2;
 
@@ -22,7 +22,7 @@ describe('Coordinate', () => {
     assert.equal(coordinate.y, y);
   });
 
-  it('negates the coordinate', () => {
+  it("negates the coordinate", () => {
     const x = 1;
     const y = 2;
 
@@ -34,13 +34,13 @@ describe('Coordinate', () => {
     assert.equal(negatedCoordinate.y, -y);
   });
 
-  it('translates the coordinate by delta', () => {
+  it("translates the coordinate by delta", () => {
     const x = 1;
     const y = 2;
 
     const coordinate = new Coordinate(x, -y);
 
-    // @ts-ignore
+    // @ts-expect-error - It should throw
     assert.throws(() => coordinate.translateByDelta(undefined));
 
     const translatedCoordinate = coordinate.translateByDelta({ x, y });
@@ -50,10 +50,10 @@ describe('Coordinate', () => {
     assert.equal(translatedCoordinate.y, 0);
   });
 
-  it('translates the coordinate by direction', () => {
+  it("translates the coordinate by direction", () => {
     const coordinate = new Coordinate(0, 0);
 
-    // @ts-ignore
+    // @ts-expect-error - It should throw
     assert.throws(() => coordinate.translateByDirection(undefined));
 
     assert.deepEqual(coordinate.translateByDirection(Direction.Up), new Coordinate(0, -1));
@@ -62,7 +62,7 @@ describe('Coordinate', () => {
     assert.deepEqual(coordinate.translateByDirection(Direction.Right), new Coordinate(1, 0));
   });
 
-  it('computes the euclidian distance', () => {
+  it("computes the euclidian distance", () => {
     const coordinateA = new Coordinate(0, 0);
     const coordinateB = new Coordinate(3, 4);
 
@@ -70,7 +70,7 @@ describe('Coordinate', () => {
     assert.equal(coordinateB.euclidianDistanceTo(coordinateA), 5);
   });
 
-  it('computes the manhattan distance', () => {
+  it("computes the manhattan distance", () => {
     const coordinateA = new Coordinate(0, 0);
     const coordinateB = new Coordinate(3, 4);
 
@@ -78,7 +78,7 @@ describe('Coordinate', () => {
     assert.equal(coordinateB.manhattanDistanceTo(coordinateA), 7);
   });
 
-  it('computes the delta to another coordinate', () => {
+  it("computes the delta to another coordinate", () => {
     const coordinateA = new Coordinate(0, 0);
     const coordinateB = new Coordinate(3, 4);
 
@@ -86,7 +86,7 @@ describe('Coordinate', () => {
     assert.deepEqual(coordinateB.deltaTo(coordinateA), { x: -3, y: -4 });
   });
 
-  it('checks if it is within square', () => {
+  it("checks if it is within square", () => {
     let northwest = new Coordinate(2, 2);
     const southeast = new Coordinate(3, 3);
 
@@ -105,7 +105,7 @@ describe('Coordinate', () => {
     assert.equal(new Coordinate(1, 3).isWithinSquare(northwest, southeast), true);
   });
 
-  it('determines if it is out of bounds', () => {
+  it("determines if it is out of bounds", () => {
     const mapWidth = 4;
     const mapHeight = 3;
 
@@ -126,7 +126,7 @@ describe('Coordinate', () => {
     assert.equal(new Coordinate(mapWidth + 1, mapHeight - 1).isOutOfBounds(mapWidth, mapHeight), true);
   });
 
-  it('converts to a map position', () => {
+  it("converts to a map position", () => {
     const mapWidth = 3;
     const mapHeight = 4;
 
@@ -146,7 +146,7 @@ describe('Coordinate', () => {
     );
   });
 
-  it('creates a coordinate object from a map position', () => {
+  it("creates a coordinate object from a map position", () => {
     const mapWidth = 3;
     const mapHeight = 4;
 
@@ -160,7 +160,7 @@ describe('Coordinate', () => {
     );
   });
 
-  it('translates a coordinate', () => {
+  it("translates a coordinate", () => {
     const coordinateA = new Coordinate(0, 0);
     const coordinateB = new Coordinate(3, 4);
     const delta = coordinateA.deltaTo(coordinateB);
@@ -175,7 +175,7 @@ describe('Coordinate', () => {
     assert.deepEqual(coordinateA.translateByDirection(Direction.Right), new Coordinate(1, 0));
   });
 
-  it('calculates the direction to a neighbouring coordinate', () => {
+  it("calculates the direction to a neighbouring coordinate", () => {
     const coordinateA = new Coordinate(3, 4);
 
     let coordinateB = new Coordinate(4, 4);
@@ -196,13 +196,13 @@ describe('Coordinate', () => {
   });
 });
 
-describe('Map', () => {
+describe("Map", () => {
   const snake1Info: SnakeInfo = {
-    name: 'snake1-name',
+    name: "snake1-name",
     points: 7,
     positions: [0, 1],
     tailProtectedForGameTicks: 3,
-    id: 'player-id',
+    id: "player-id",
   };
 
   const rawMap: RawMap = {
@@ -214,12 +214,12 @@ describe('Map', () => {
     obstaclePositions: [4, 5],
   };
 
-  const map = new GameMap(rawMap, 'player-id');
+  const map = new GameMap(rawMap, "player-id");
 
-  it('creates a map', () => {
+  it("creates a map", () => {
     assert.equal(map.width, 3);
     assert.equal(map.height, 4);
-    assert.equal(map.playerId, 'player-id');
+    assert.equal(map.playerId, "player-id");
     assert.equal(map.snakes.size, 1);
 
     // Check that the snake is correct
@@ -228,7 +228,7 @@ describe('Map', () => {
     assert.equal(map.playerSnake, map.snakes.get(snake1Info.id));
   });
 
-  it('check tiletype', () => {
+  it("check tiletype", () => {
     assert.equal(map.getTileType(new Coordinate(0, 0)), TileType.Snake);
     assert.equal(map.getTileType(new Coordinate(1, 0)), TileType.Snake);
     assert.equal(map.getTileType(new Coordinate(2, 0)), TileType.Food);
@@ -249,23 +249,23 @@ describe('Map', () => {
     assert.equal(map.getTileType(new Coordinate(3, 0)), TileType.Obstacle);
   });
 
-  it('check tile free', () => {
+  it("check tile free", () => {
     assert.equal(map.isTileFree(new Coordinate(0, 0)), false); // Snake
     assert.equal(map.isTileFree(new Coordinate(2, 0)), true); // Food
     assert.equal(map.isTileFree(new Coordinate(1, 1)), false); // Obstacle
     assert.equal(map.isTileFree(new Coordinate(0, 2)), true); // Empty
   });
 
-  describe('Snake', () => {
+  describe("Snake", () => {
     const snake = map.playerSnake;
-    it('snake added to map', () => {
+    it("snake added to map", () => {
       assert.deepEqual(
         snake,
         new Snake(
           snake1Info.id,
           snake1Info.name,
           Direction.Left,
-          snake1Info.positions.map(absPos => Coordinate.fromPosition(absPos, map.width)),
+          snake1Info.positions.map((absPos) => Coordinate.fromPosition(absPos, map.width)),
           map,
         ),
       );
@@ -278,7 +278,7 @@ describe('Map', () => {
       assert.equal(snake.length, 2);
     });
 
-    it('direction calculation', () => {
+    it("direction calculation", () => {
       const tempSnakeInfo = { ...snake1Info };
       let tempSnake = Snake.fromSnakeInfo(tempSnakeInfo, map.width, map);
       assert.equal(tempSnake.direction, Direction.Left);
@@ -296,14 +296,14 @@ describe('Map', () => {
       assert.equal(tempSnake.direction, Direction.Down);
     });
 
-    it('can move in direction', () => {
+    it("can move in direction", () => {
       assert.equal(snake.canMoveInDirection(Direction.Down), true);
       assert.equal(snake.canMoveInDirection(Direction.Up), false);
       assert.equal(snake.canMoveInDirection(Direction.Left), false);
       assert.equal(snake.canMoveInDirection(Direction.Right), false);
     });
 
-    it('convert relative direction to absolute', () => {
+    it("convert relative direction to absolute", () => {
       snake.direction = Direction.Left;
       assert.equal(snake.relativeToAbsolute(RelativeDirection.Forward), Direction.Left);
       assert.equal(snake.relativeToAbsolute(RelativeDirection.Left), Direction.Down);
@@ -327,12 +327,12 @@ describe('Map', () => {
       snake.direction = Direction.Left; // Back to original direction
     });
 
-    it('head coordinate first coordinate', () => {
+    it("head coordinate first coordinate", () => {
       assert.equal(snake.headCoordinate, snake.coordinates[0]);
       assert.deepEqual(snake.headCoordinate, new Coordinate(0, 0));
     });
 
-    it('tail coordinate last coordinate', () => {
+    it("tail coordinate last coordinate", () => {
       assert.equal(snake.tailCoordinate, snake.coordinates[snake.coordinates.length - 1]);
       assert.deepEqual(snake.tailCoordinate, new Coordinate(1, 0));
     });

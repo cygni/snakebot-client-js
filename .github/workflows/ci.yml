@@ -1,0 +1,41 @@
+name: CI
+
+on: [push]
+
+env:
+  FORCE_COLOR: 3
+  NODE_OPTIONS: "--max-old-space-size=5376" # 75% of 7GB
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Analyze & Test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/gallium
+          check-latest: true
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run check-formatting
+
+      - name: Run type-check
+        run: npm run check-types -- --pretty false
+
+      - name: Run tests
+        run: npm run test

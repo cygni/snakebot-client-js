@@ -1,45 +1,40 @@
-import { ClientInfo } from "./client";
-import { GameSettings } from "./types";
-import type { Direction } from "./types";
+import type { ClientInfo } from "./client.js";
+import type { Direction, GameSettings } from "./types.js";
 
 export enum MessageType {
   // Exceptions
-  InvalidMessage = 'se.cygni.snake.api.exception.InvalidMessage',
-  InvalidPlayerName = 'se.cygni.snake.api.exception.InvalidPlayerName',
-  NoActiveTournament = 'se.cygni.snake.api.exception.NoActiveTournament',
-  InvalidArenaName = 'se.cygni.snake.api.exception.InvalidArenaName',
-  ArenaIsFull = 'se.cygni.snake.api.exception.ArenaIsFull',
+  InvalidMessage = "se.cygni.snake.api.exception.InvalidMessage",
+  InvalidPlayerName = "se.cygni.snake.api.exception.InvalidPlayerName",
+  NoActiveTournament = "se.cygni.snake.api.exception.NoActiveTournament",
+  InvalidArenaName = "se.cygni.snake.api.exception.InvalidArenaName",
+  ArenaIsFull = "se.cygni.snake.api.exception.ArenaIsFull",
 
   // Responses
-  HeartbeatResponse = 'se.cygni.snake.api.response.HeartBeatResponse',
-  PlayerRegistered = 'se.cygni.snake.api.response.PlayerRegistered',
+  HeartbeatResponse = "se.cygni.snake.api.response.HeartBeatResponse",
+  PlayerRegistered = "se.cygni.snake.api.response.PlayerRegistered",
 
   // Events
-  GameLink = 'se.cygni.snake.api.event.GameLinkEvent',
-  GameStarting = 'se.cygni.snake.api.event.GameStartingEvent',
-  MapUpdate = 'se.cygni.snake.api.event.MapUpdateEvent',
-  SnakeDead = 'se.cygni.snake.api.event.SnakeDeadEvent',
-  GameResult = 'se.cygni.snake.api.event.GameResultEvent',
-  GameEnded = 'se.cygni.snake.api.event.GameEndedEvent',
-  TournamentEnded = 'se.cygni.snake.api.event.TournamentEndedEvent',
+  GameLink = "se.cygni.snake.api.event.GameLinkEvent",
+  GameStarting = "se.cygni.snake.api.event.GameStartingEvent",
+  MapUpdate = "se.cygni.snake.api.event.MapUpdateEvent",
+  SnakeDead = "se.cygni.snake.api.event.SnakeDeadEvent",
+  GameResult = "se.cygni.snake.api.event.GameResultEvent",
+  GameEnded = "se.cygni.snake.api.event.GameEndedEvent",
+  TournamentEnded = "se.cygni.snake.api.event.TournamentEndedEvent",
 
   // Requests
-  ClientInfo = 'se.cygni.snake.api.request.ClientInfo',
-  StartGame = 'se.cygni.snake.api.request.StartGame',
-  RegisterPlayer = 'se.cygni.snake.api.request.RegisterPlayer',
-  RegisterMove = 'se.cygni.snake.api.request.RegisterMove',
-  HeartbeatRequest = 'se.cygni.snake.api.request.HeartBeatRequest',
+  ClientInfo = "se.cygni.snake.api.request.ClientInfo",
+  StartGame = "se.cygni.snake.api.request.StartGame",
+  RegisterPlayer = "se.cygni.snake.api.request.RegisterPlayer",
+  RegisterMove = "se.cygni.snake.api.request.RegisterMove",
+  HeartbeatRequest = "se.cygni.snake.api.request.HeartBeatRequest",
 }
 
-export function createClientInfoMessage({
-  clientVersion,
-  operatingSystem,
-  operatingSystemVersion,
-}: ClientInfo) {
+export function createClientInfoMessage({ clientVersion, operatingSystem, operatingSystemVersion }: ClientInfo) {
   return {
     type: MessageType.ClientInfo,
-    language: 'JavaScript',
-    languageVersion: 'ES2020',
+    language: "JavaScript",
+    languageVersion: "ES2022",
     clientVersion,
     operatingSystem,
     operatingSystemVersion,
@@ -51,7 +46,12 @@ export function createHeartbeatRequestMessage(receivingPlayerId: string) {
   return { type: MessageType.HeartbeatRequest, receivingPlayerId };
 }
 
-export function createRegisterMoveMessage(direction: Direction, receivingPlayerId: string, gameId: string, gameTick: number) {
+export function createRegisterMoveMessage(
+  direction: Direction,
+  receivingPlayerId: string,
+  gameId: string,
+  gameTick: number,
+) {
   return { type: MessageType.RegisterMove, direction, receivingPlayerId, gameId, gameTick };
 }
 

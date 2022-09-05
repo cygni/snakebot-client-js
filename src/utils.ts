@@ -1,5 +1,5 @@
-import { Direction, RawMap, RelativeDirection, SnakeInfo, TileType } from "./types";
-import { GameSettings } from "./types";
+import type { GameSettings } from "./types.js";
+import { Direction, RelativeDirection, TileType, type RawMap, type SnakeInfo } from "./types.js";
 
 /**
  * Converts a direction to a representation in coordinates.
@@ -117,7 +117,7 @@ export class Coordinate {
    */
   toPosition(mapWidth: number, mapHeight: number) {
     if (this.isOutOfBounds(mapWidth, mapHeight)) {
-      throw new RangeError('The coordinate must be within the bounds in order to convert to position');
+      throw new RangeError("The coordinate must be within the bounds in order to convert to position");
     }
 
     const { x, y } = this;
@@ -249,7 +249,7 @@ export class Snake {
 
   static fromSnakeInfo(snakeInfo: SnakeInfo, mapWidth: number, map: GameMap) {
     const { id, name, positions } = snakeInfo;
-    const coordinates = positions.map(position => Coordinate.fromPosition(position, mapWidth));
+    const coordinates = positions.map((position) => Coordinate.fromPosition(position, mapWidth));
     // Calculate the direction of the snake
     let direction = Direction.Up;
     if (coordinates.length > 1) {
@@ -269,15 +269,15 @@ export class Snake {
 }
 
 export class GameMap {
-  playerId: string;
-  width: number;
-  height: number;
-  snakes: Map<string, Snake>;
-  tiles: Map<number, TileType>;
-  gameSettings: GameSettings;
-  gameTick: number;
+  readonly playerId: string;
+  readonly width: number;
+  readonly height: number;
+  readonly snakes: Map<string, Snake>;
+  readonly tiles: Map<number, TileType>;
+  readonly gameSettings?: GameSettings;
+  readonly gameTick?: number;
 
-  constructor(map: RawMap, playerId: string, gameSettings: GameSettings, gameTick: number) {
+  constructor(map: RawMap, playerId: string, gameSettings?: GameSettings, gameTick?: number) {
     const snakes = new Map<string, Snake>();
     const tiles = new Map<number, TileType>();
 
