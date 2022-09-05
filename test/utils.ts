@@ -40,7 +40,7 @@ describe("Coordinate", () => {
 
     const coordinate = new Coordinate(x, -y);
 
-    // @ts-ignore
+    // @ts-expect-error - It should throw
     assert.throws(() => coordinate.translateByDelta(undefined));
 
     const translatedCoordinate = coordinate.translateByDelta({ x, y });
@@ -53,7 +53,7 @@ describe("Coordinate", () => {
   it("translates the coordinate by direction", () => {
     const coordinate = new Coordinate(0, 0);
 
-    // @ts-ignore
+    // @ts-expect-error - It should throw
     assert.throws(() => coordinate.translateByDirection(undefined));
 
     assert.deepEqual(coordinate.translateByDirection(Direction.Up), new Coordinate(0, -1));
