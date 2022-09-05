@@ -6,7 +6,7 @@ import { createClient, type SnakeImplementation } from "./src/client.js";
 import { GameMode } from "./src/types.js";
 
 // const defaultSnakePath = url.fileURLToPath(new URL('./snakepit/slither.js', import.meta.url));
-const defaultServerUrl = "https://snake.cygni.se";
+const defaultServerUrl = "wss://snake.cygni.se";
 const defaultSnakePath = "./snakepit/slither";
 const defaultSnakeName = "Slither";
 
