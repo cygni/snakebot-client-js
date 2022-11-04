@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Direction, RawMap, SnakeInfo, TileType, RelativeDirection } from '../src/types';
+import { Direction, RawMap, SnakeInfo, TileType, RelativeDirection, GameSettings } from '../src/types';
 import { Coordinate, GameMap, Snake } from '../src/utils';
 
 describe('Direction', () => {
@@ -40,6 +40,7 @@ describe('Coordinate', () => {
 
     const coordinate = new Coordinate(x, -y);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     assert.throws(() => coordinate.translateByDelta(undefined));
 
@@ -53,6 +54,7 @@ describe('Coordinate', () => {
   it('translates the coordinate by direction', () => {
     const coordinate = new Coordinate(0, 0);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     assert.throws(() => coordinate.translateByDirection(undefined));
 
@@ -214,7 +216,7 @@ describe('Map', () => {
     obstaclePositions: [4, 5],
   };
 
-  const map = new GameMap(rawMap, 'player-id');
+  const map = new GameMap(rawMap, 'player-id', {} as GameSettings, 0);
 
   it('creates a map', () => {
     assert.equal(map.width, 3);
@@ -265,7 +267,7 @@ describe('Map', () => {
           snake1Info.id,
           snake1Info.name,
           Direction.Left,
-          snake1Info.positions.map(absPos => Coordinate.fromPosition(absPos, map.width)),
+          snake1Info.positions.map((absPos) => Coordinate.fromPosition(absPos, map.width)),
           map,
         ),
       );

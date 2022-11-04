@@ -1,5 +1,5 @@
-import { Direction, RawMap, RelativeDirection, SnakeInfo, TileType } from "./types";
-import { GameSettings } from "./types";
+import { Direction, RawMap, RelativeDirection, SnakeInfo, TileType } from './types';
+import { GameSettings } from './types';
 
 /**
  * Converts a direction to a representation in coordinates.
@@ -249,7 +249,7 @@ export class Snake {
 
   static fromSnakeInfo(snakeInfo: SnakeInfo, mapWidth: number, map: GameMap) {
     const { id, name, positions } = snakeInfo;
-    const coordinates = positions.map(position => Coordinate.fromPosition(position, mapWidth));
+    const coordinates = positions.map((position) => Coordinate.fromPosition(position, mapWidth));
     // Calculate the direction of the snake
     let direction = Direction.Up;
     if (coordinates.length > 1) {

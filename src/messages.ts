@@ -1,6 +1,6 @@
-import { ClientInfo } from "./client";
-import { GameSettings } from "./types";
-import type { Direction } from "./types";
+import { ClientInfo } from './client';
+import { GameSettings } from './types';
+import type { Direction } from './types';
 
 export enum MessageType {
   // Exceptions
@@ -31,11 +31,7 @@ export enum MessageType {
   HeartbeatRequest = 'se.cygni.snake.api.request.HeartBeatRequest',
 }
 
-export function createClientInfoMessage({
-  clientVersion,
-  operatingSystem,
-  operatingSystemVersion,
-}: ClientInfo) {
+export function createClientInfoMessage({ clientVersion, operatingSystem, operatingSystemVersion }: ClientInfo) {
   return {
     type: MessageType.ClientInfo,
     language: 'JavaScript',
@@ -51,7 +47,12 @@ export function createHeartbeatRequestMessage(receivingPlayerId: string) {
   return { type: MessageType.HeartbeatRequest, receivingPlayerId };
 }
 
-export function createRegisterMoveMessage(direction: Direction, receivingPlayerId: string, gameId: string, gameTick: number) {
+export function createRegisterMoveMessage(
+  direction: Direction,
+  receivingPlayerId: string,
+  gameId: string,
+  gameTick: number,
+) {
   return { type: MessageType.RegisterMove, direction, receivingPlayerId, gameId, gameTick };
 }
 

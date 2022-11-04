@@ -37,13 +37,13 @@ export type SnakeImplementation = {
   getNextMove: (gameMap: GameMap) => Promise<Direction>;
   onMessage?: (message: any) => void;
   trainingGameSettings: GameSettings;
-}
+};
 
 export type ClientInfo = {
   clientVersion: string;
   operatingSystem: string;
   operatingSystemVersion: string;
-}
+};
 
 export type ClientOptions = {
   name: string;
@@ -71,10 +71,10 @@ export function createClient({
   if (snake == null) {
     throw new Error('You must specify a snake to use!');
   }
-  
+
   // Update snakeConsole to use the given logger
   snakeConsole = logger;
-  
+
   let apiEndpoint;
   // If the venue is an arena code, we add '/arena' to the endpoint
   if (venue.toUpperCase() !== GameMode.Tournament && venue.toUpperCase() !== GameMode.Training) {
@@ -118,8 +118,8 @@ export function createClient({
 
   /** Dispatches received messages to respective handlers (if any)
    * and also passes the messages to the snake onMessage function as a subscription */
-  function handleMessage({data}: MessageEvent) {
-    const message: Message = JSON.parse(data as string);    
+  function handleMessage({ data }: MessageEvent) {
+    const message: Message = JSON.parse(data as string);
     switch (message.type) {
       case MessageType.PlayerRegistered:
         playerRegisteredEvent(message as PlayerRegisteredMessage);
@@ -165,10 +165,10 @@ export function createClient({
         break;
       default:
         logger.warn(colors.bold.red('Unknown Event'), message.type);
-        logger.log("Message was:", data);
+        logger.log('Message was:', data);
         break;
     }
-    
+
     // If the snake implementation has a onMessage function, pass the message to it
     if (snake.onMessage !== undefined) {
       snake.onMessage(message);
@@ -182,7 +182,7 @@ export function createClient({
     logger.info(`WebSocket is closing`);
   }
 
-  function handleClose({ code, reason, wasClean }: { code: number, reason: string, wasClean: boolean }) {
+  function handleClose({ code, reason, wasClean }: { code: number; reason: string; wasClean: boolean }) {
     logger.info(`WebSocket is closed`, { code, reason, wasClean });
     clearTimeout(heartbeatTimeout);
     ws.removeEventListener('open', handleOpen);
@@ -199,15 +199,15 @@ export function createClient({
     } else {
       logger.info(colors.green(`Player ${name} was successfully registered!`));
       logger.info('Game mode:', colors.blue.bold(gameMode));
-      
+
       // Don't spoil if we are in a tournament
       if (gameMode === GameMode.Tournament && !spoiler) {
         logger.info(colors.yellow(`Disabling logs to prevent spoilers`));
         logger = {
-          log: () => {},
+          log: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
           error: logger.error,
           warn: logger.warn,
-          info: () => {},
+          info: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
         } as Console;
 
         // Prevent the snake from logging
@@ -218,7 +218,11 @@ export function createClient({
   }
 
   function heartbeatResponseEvent(message: HeartBeatResponseMessage) {
-    heartbeatTimeout = setTimeout(sendMessage, HEARTBEAT_INTERVAL, createHeartbeatRequestMessage(message.receivingPlayerId));
+    heartbeatTimeout = setTimeout(
+      sendMessage,
+      HEARTBEAT_INTERVAL,
+      createHeartbeatRequestMessage(message.receivingPlayerId),
+    );
   }
 
   function gameLinkEvent(message: GameLinkEventMessage) {
@@ -232,11 +236,14 @@ export function createClient({
 
   function gameStartingEvent(message: GameStartingEventMessage) {
     logger.info(colors.rainbow('Game is starting'));
-    logger.info(colors.blue.bold('Received updated game settings from server:'), colors.blue(JSON.stringify(message.gameSettings)));
+    logger.info(
+      colors.blue.bold('Received updated game settings from server:'),
+      colors.blue(JSON.stringify(message.gameSettings)),
+    );
     gameSettings = message.gameSettings; // Update game settings with the ones from the server
   }
 
-  async function mapUpdateEvent({map, receivingPlayerId, gameId, gameTick, timestamp}: MapUpdateEventMessage) {
+  async function mapUpdateEvent({ map, receivingPlayerId, gameId, gameTick, timestamp }: MapUpdateEventMessage) {
     // logger.debug(`Game turn #${gameTick}`);
     const gameMap = new GameMap(map, receivingPlayerId, gameSettings, gameTick);
     const direction = await snake.getNextMove(gameMap);
