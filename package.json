@@ -21,7 +21,12 @@
   "scripts": {
     "lint": "eslint .",
     "test": "ts-mocha -p ./tsconfig.json test/utils.ts ",
-    "start": "ts-node snake-cli.ts"
+    "start": "ts-node snake-cli.ts",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.{js,ts,md,mdx,css,yaml,yml}": "prettier --write",
+    "!(snakepit/**/*)*.ts": "eslint"
   },
   "dependencies": {
     "colors": "^1.4.0",
@@ -37,6 +42,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "mocha": "^10.0.0",
     "prettier": "^2.7.1",
     "ts-mocha": "^10.0.0",

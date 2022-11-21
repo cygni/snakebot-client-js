@@ -18,10 +18,10 @@ function getRandomItem<T>(array: T[]): T {
  */
 export async function getNextMove(gameMap: GameMap): Promise<Direction> {
   const myHeadPosition = gameMap.playerSnake.headCoordinate; // Coordinate of my snake's head
-  const possibleMoves = allDirections.filter(direction => gameMap.playerSnake.canMoveInDirection(direction)); //Filters safe directions to move in
+  const possibleMoves = allDirections.filter((direction) => gameMap.playerSnake.canMoveInDirection(direction)); //Filters safe directions to move in
 
   // If there are no safe moves, bad luck!
-  if (possibleMoves.length === 0){
+  if (possibleMoves.length === 0) {
     return Direction.Down;
   }
 

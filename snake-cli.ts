@@ -20,9 +20,12 @@ program
   .option('-s, --snake <path>', 'Path to the snake file', defaultSnakePath)
   .option('-sp, --spoiler', 'Show the results', false);
 
-program.addHelpText('after', `
+program.addHelpText(
+  'after',
+  `
   Example:\tnpm start --host http://localhost:8080 --venue training --name Slither --snake ${defaultSnakePath}
-  Or:\t\tnpm start -h http://localhost:8080 -v training -n Slither -s ${defaultSnakePath}`);
+  Or:\t\tnpm start -h http://localhost:8080 -v training -n Slither -s ${defaultSnakePath}`,
+);
 
 program.parse(process.argv);
 const options = program.opts();
@@ -32,11 +35,14 @@ console.log('Starting snake with options:', options);
 (async () => {
   const clientVer = process.env.npm_package_version ?? 'unknown';
   const snake: SnakeImplementation = await import(path.resolve(options.snake));
-  console.log("Hi", colors.green(process.env.USER ?? 'friend'), "and welcome to the snake pit!");
-  console.log("Using client version", colors.red.underline(clientVer));
-  console.log("To display options, type", colors.yellow("npm start -- --help"));
+  console.log('Hi', colors.green(process.env.USER ?? 'friend'), 'and welcome to the snake pit!');
+  console.log('Using client version', colors.red.underline(clientVer));
+  console.log('To display options, type', colors.yellow('npm start -- --help'));
   if (options.venue.toUpperCase() === GameMode.Training) {
-    console.log("Overwriting training game settings with", colors.red.underline(JSON.stringify(snake.trainingGameSettings)));
+    console.log(
+      'Overwriting training game settings with',
+      colors.red.underline(JSON.stringify(snake.trainingGameSettings)),
+    );
   }
 
   const client = createClient({
