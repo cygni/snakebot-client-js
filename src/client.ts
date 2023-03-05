@@ -204,11 +204,30 @@ export function createClient({
       if (gameMode === GameMode.Tournament && !spoiler) {
         logger.info(colors.yellow(`Disabling logs to prevent spoilers`));
         logger = {
+          Console: console.Console,
           log: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
           error: logger.error,
           warn: logger.warn,
           info: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
-        } as Console;
+          assert: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          time: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          clear: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          count: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          debug: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          countReset: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          dir: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          dirxml: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          group: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          groupCollapsed: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          groupEnd: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          table: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          timeEnd: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          timeLog: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          trace: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          profile: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          profileEnd: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+          timeStamp: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+        };
 
         // Prevent the snake from logging
         snakeConsole = logger;
